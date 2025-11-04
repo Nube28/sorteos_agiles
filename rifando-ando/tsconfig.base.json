@@ -2,7 +2,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "moduleResolution": "node",
-    "emitDecoratorMetadata": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "target": "es2022",
     "module": "esnext",
     "lib": ["es2020", "dom"],
@@ -11,7 +12,7 @@
       "@rifando-ando/shared": ["libs/shared/src/index.ts"],
       "@rifando-ando/libs": ["libs/src/index.ts"],
       "@rifando-ando/database": ["libs/database/src/index.ts"],
-      "@prisma/client": ["generated/prisma/client.ts"]
+      "@rifando-ando/dtos": ["libs/dtos/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
