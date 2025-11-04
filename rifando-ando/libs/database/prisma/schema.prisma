@@ -8,10 +8,82 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Numero {
+  id            Int      @id @default(autoincrement())
+  posicion      Int      @unique
+  fechaApartado DateTime
+
+  sorteoId Int
+  sorteo   Sorteo @relation(fields: [sorteoId], references: [id])
+
+  clienteId Int?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id])
+
+  pagosId Int?
+  Pagos   Pagos? @relation(fields: [pagosId], references: [id])
+
+  // Cada posición en un sorteo debe ser única
+  @@unique([sorteoId, posicion])
+}
+
+model Sorteo {
+  id                 Int      @id @default(autoincrement())
+  urlImg             String
+  descripcion        String
+  premio             String
+  periodoInicioVenta DateTime
+  periodoFinVenta    DateTime
+  costo              Float
+  fechaSorteo        DateTime
+  tiempoLimitePago   DateTime
+
+  organizadorId Int
+  organizador   Organizador @relation(fields: [organizadorId], references: [id])
+  Numero        Numero[]
+}
+
+model Usuario {
+  id            Int    @id @default(autoincrement())
+  nombre        String
+  contrasenia   String
+  nombreUsuario String @unique
+  apellidos     String
+  rol           Rol
+
+  Organizador Organizador?
+  Cliente     Cliente?
+}
+
+enum Rol {
+  ORGANIZADOR
+  USUARIO
+}
+
+model Organizador {
+  id Int @id @default(autoincrement())
+
+  usuarioId Int     @unique
+  user      Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  sorteos Sorteo[]
+}
+
+model Cliente {
+  id Int @id @default(autoincrement())
+
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  numeros Numero[]
+  pagos   Pagos[]
+}
+
+model Pagos {
+  id Int @id @default(autoincrement())
+
+  usuarioId Int
+  usuario   Cliente @relation(fields: [usuarioId], references: [id])
+
+  urlComprobante String
+  numerosPagados Numero[]
 }
