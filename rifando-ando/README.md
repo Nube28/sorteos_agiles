@@ -1,82 +1,106 @@
-# RifandoAndo
+# RifandoAndo# RifandoAndo
+Monorepo para el sistema de sorteos ágiles usando Nx, Angular y Nest.js.
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+## Estructura del Proyecto
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
-
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-## Finish your remote caching setup
-
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/jSzgrC9mHZ)
-
-
-## Run tasks
-
-To run the dev server for your app, use:
-
-```sh
-npx nx serve rifando-ando
+```
+rifando-ando/
+├── apps/
+│   ├── api/          # API REST con Nest.js
+│   └── web/          # Aplicación web con Angular
+├── libs/
+│   └── shared/       # Librería compartida (entidades, DTOs, interfaces)
+└── dist/             # Archivos compilados
 ```
 
-To create a production bundle:
+## Inicio Rápido
 
-```sh
-npx nx build rifando-ando
+### Prerequisitos
+- Node.js v18 o superior
+- pnpm (gestor de paquetes)
+
+### Instalación
+
+```bash
+# Habilitar corepack (si no está habilitado)
+corepack enable
+
+# Instalar dependencias
+pnpm install
 ```
 
-To see all available targets to run for a project, run:
+## Comandos Disponibles
 
-```sh
-npx nx show project rifando-ando
+### Desarrollo
+
+```bash
+# Servir aplicación web (Angular) en http://localhost:4200
+pnpm web
+
+# Servir API (Nest.js) en http://localhost:3000/api
+pnpm api
+
+# Servir ambas aplicaciones simultáneamente
+pnpm dev
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Build de Producción
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+# Compilar aplicación web
+pnpm nx build web
 
-## Add new projects
+# Compilar API
+pnpm nx build api
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/angular:app demo
+# Compilar todo
+pnpm nx run-many --target=build --all
 ```
 
-To generate a new library, use:
+### Otros Comandos
 
-```sh
-npx nx g @nx/angular:lib mylib
+```bash
+# Ver todos los proyectos
+pnpm nx show projects
+
+# Ver el grafo de dependencias
+pnpm nx graph
+
+# Ejecutar tests
+pnpm nx test <project-name>
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## Uso de la Librería Compartida
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+La librería `@rifando-ando/shared` contiene código compartido entre el API y la aplicación web.
 
+### Estructura de la Librería
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```
+libs/shared/src/lib/
+├── entities/     # Entidades de base de datos
+├── dtos/         # Data Transfer Objects
+└── interfaces/   # Interfaces TypeScript
+```
 
-## Install Nx Console
+## Tecnologías
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+- **Nx 22**: Herramientas de monorepo
+- **Angular 20**: Framework frontend
+- **Nest.js 10**: Framework backend
+- **TypeScript 5.9**: Lenguaje
+- **pnpm 10**: Gestor de paquetes
+- **ES Modules**: Sistema de módulos
+- **Webpack 5**: Bundler para el API
+- **Prisma 6**: ORM
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📝 Configuración Adicional
 
-## Useful links
+### Variables de Entorno
 
-Learn more:
+Crea archivos `.env` en las siguientes ubicaciones según necesites:
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```
+apps/api/.env          # Variables del API
+apps/web/.env          # Variables de la app web
+```
