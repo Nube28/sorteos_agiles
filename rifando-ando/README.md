@@ -94,7 +94,7 @@ libs/shared/src/lib/
 - **Webpack 5**: Bundler para el API
 - **Prisma 6**: ORM
 
-## 📝 Configuración Adicional
+## Configuración Adicional
 
 ### Variables de Entorno
 
