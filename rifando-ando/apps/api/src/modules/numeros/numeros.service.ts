@@ -7,20 +7,20 @@ export class NumeroService {
     async crearNumero(createNumeroDto: CreateNumeroDto, userId: number, sorteoId: number, pagoId: number) {
         try {
             return await prisma.numero.create({
-             data: {
-                ...createNumeroDto,
-                cliente: {
-                    connect: { id: userId }
+                data: {
+                    ...createNumeroDto,
+                    cliente: {
+                        connect: { id: userId }
+                    },
+                    sorteo: {
+                        connect: { id: sorteoId }
+                    },
+                    Pagos: {
+                        connect: { id: pagoId }
+                    }
                 },
-                sorteo: {
-                    connect: { id: sorteoId }
-                },
-                Pagos: {
-                    connect: { id: pagoId }
-                }
-            },
-        });
-    }catch (error) {
+            });
+        } catch (error) {
             throw new Error(`Error al crear numero: ${error.message}`);
         }
     }
@@ -29,7 +29,7 @@ export class NumeroService {
         return await prisma.numero.findMany({
             include: {
                 cliente: true,
-                sorteo:true,
+                sorteo: true,
             },
         });
     }
@@ -38,13 +38,13 @@ export class NumeroService {
         return await prisma.numero.findUnique({
             where: { id },
             include: {
-               cliente: true,
-                sorteo:true,
+                cliente: true,
+                sorteo: true,
             },
         });
     }
 
-    async updateNumero(id: number, UpdateNumeroDto: Partial<UpdateNumeroDto>, ) {
+    async updateNumero(id: number, UpdateNumeroDto: Partial<UpdateNumeroDto>,) {
         try {
             await this.getNumeroById(id);
             return await prisma.numero.update({

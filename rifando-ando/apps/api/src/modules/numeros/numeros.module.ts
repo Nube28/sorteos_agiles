@@ -7,4 +7,4 @@ import { NumeroController } from './numeros.controller';
   providers: [NumeroService],
   exports: [NumeroService],
 })
-export class NumerosModule {}
+export class NumerosModule { }

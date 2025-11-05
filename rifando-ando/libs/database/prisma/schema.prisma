@@ -27,7 +27,7 @@ model Numero {
 
 model Sorteo {
   id                 Int      @id @default(autoincrement())
-  urlImg             String
+  urlImg             String?
   descripcion        String
   premio             String
   periodoInicioVenta DateTime
@@ -55,7 +55,7 @@ model Usuario {
 
 enum Rol {
   ORGANIZADOR
-  USUARIO
+  CLIENTE
 }
 
 model Organizador {

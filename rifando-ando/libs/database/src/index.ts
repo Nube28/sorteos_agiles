@@ -6,7 +6,7 @@ const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
 };
 
-// nueva instancia si no existe
+// Nueva instancia si no existe
 export const prisma = globalForPrisma.prisma ?? new PrismaClient();
 
 // En desarrollo, guardar la instancia globalmente para reutilizarla
@@ -14,7 +14,7 @@ if (process.env['NODE_ENV'] !== 'production') {
     globalForPrisma.prisma = prisma;
 }
 
-// cierre  de la conexión
+// Cierre de la conexión
 process.on('beforeExit', async () => {
     await prisma.$disconnect();
 });

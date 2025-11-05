@@ -6,9 +6,22 @@ import { CreateSorteoDto, UpdateSorteoDto } from '@rifando-ando/dtos';
 export class SorteosService {
     async crearSorteo(createSorteoDto: CreateSorteoDto, userId: number) {
         try {
+            const { 
+                periodoInicioVenta, 
+                periodoFinVenta, 
+                fechaSorteo, 
+                tiempoLimitePago, 
+                ...restData 
+            } = createSorteoDto;
+
+            // Recibe strings, los convierte al necesario por prisma
             return await prisma.sorteo.create({
                 data: {
-                    ...createSorteoDto,
+                    ...restData,
+                    periodoInicioVenta: new Date(periodoInicioVenta).toISOString(),
+                    periodoFinVenta: new Date(periodoFinVenta).toISOString(),
+                    fechaSorteo: new Date(fechaSorteo).toISOString(),
+                    tiempoLimitePago: new Date(tiempoLimitePago).toISOString(),
                     organizadorId: userId,
                 },
             });

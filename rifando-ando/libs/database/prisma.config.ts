@@ -1,9 +1,13 @@
 import { defineConfig, env } from "prisma/config";
 
+// Desde el package.json está deprecado, se usa config
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+  },
+  seed: {
+    command: "tsx prisma/seed.ts",
   },
   engine: "classic",
   datasource: {

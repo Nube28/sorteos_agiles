@@ -7,4 +7,4 @@ import { SorteosController } from './sorteos.controller';
   providers: [SorteosService],
   exports: [SorteosService],
 })
-export class SorteosModule {}
+export class SorteosModule { }
