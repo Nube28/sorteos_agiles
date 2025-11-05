@@ -2,11 +2,9 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
+  selector: 'app-main',
   imports: [RouterOutlet],
-  selector: 'app-root',
-  templateUrl: './app.html',
-  styleUrl: './app.css',
+  templateUrl: './main.html',
+  styleUrl: './main.css',
 })
-export class App {
-  protected title = 'rifando-ando';
-}
+export class Main {}
