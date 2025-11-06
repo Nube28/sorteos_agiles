@@ -1,0 +1,46 @@
+<div>
+    <h2 class="text-3xl text-(--light) font-(--font-family-inria-sans-bold) mb-6">
+        Sorteos
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        @if (sorteos().length > 0) {
+
+        @for (sorteo of sorteos(); track sorteo.id) {
+        <div class="bg-(--dark) rounded-lg shadow-lg overflow-hidden cursor-pointer
+                    transition-transform duration-300 hover:scale-105">
+
+            <div class="relative h-40 bg-(--dark-gray)">
+                <span class="absolute top-4 right-4 text-xs font-semibold px-2.5 py-0.5 rounded-full 
+                         bg-(--primary-color) text-(--light)">
+                    Numeros Restantes: {{ sorteo.numerosDisponibles }}/{{ sorteo.numerosTotales }}
+                </span>
+            </div>
+
+            <div class="p-5">
+                <h3 class="text-xl text-(--light) font-(--font-family-inria-sans-bold)">
+                    {{ sorteo.nombre }}
+                </h3>
+                <p class="text-sm text-(--gray) mt-1">
+                    Fecha sorteo: {{ sorteo.fecha }}
+                </p>
+            </div>
+
+        </div>
+        }
+
+        }
+
+        @for (i of [1, 2, 3,4,5,6,7,8]; track $index) {
+        <div class="bg-(--dark) rounded-lg shadow-lg overflow-hidden animate-pulse">
+            <div class="h-40 bg-(--dark-gray)"></div>
+            <div class="p-5">
+                <div class="h-5 bg-(--dark-gray) rounded w-3/4"></div>
+                <div class="h-4 bg-(--dark-gray) rounded w-1/2 mt-2"></div>
+            </div>
+        </div>
+        }
+
+    </div>
+</div>

@@ -11,7 +11,9 @@ export class SorteoService {
 
     sorteos = signal<Sorteo[]>([]);
     readonly sorteos$ = this.sorteos.asReadonly();
-
+    constructor() {
+        this.getSorteos();
+    }
     crearSorteo(sorteo: Sorteo) {
         try {
             // convertir strings a números antes de enviar
@@ -26,5 +28,12 @@ export class SorteoService {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    getSorteos() {
+        this.httpClient.get<Sorteo[]>(this.apiURL).subscribe({
+            next: (data) => this.sorteos.set(data),
+            error: (err) => console.error('Error al cargar sorteos:', err),
+        });
     }
 }

@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Rol" AS ENUM ('ORGANIZADOR', 'USUARIO');
+CREATE TYPE "Rol" AS ENUM ('ORGANIZADOR', 'CLIENTE');
 
 -- CreateTable
 CREATE TABLE "Numero" (
@@ -16,14 +16,16 @@ CREATE TABLE "Numero" (
 -- CreateTable
 CREATE TABLE "Sorteo" (
     "id" SERIAL NOT NULL,
-    "urlImg" TEXT NOT NULL,
+    "nombre" TEXT NOT NULL,
+    "urlImg" TEXT,
     "descripcion" TEXT NOT NULL,
     "premio" TEXT NOT NULL,
+    "cantidadNumeros" INTEGER NOT NULL,
     "periodoInicioVenta" TIMESTAMP(3) NOT NULL,
     "periodoFinVenta" TIMESTAMP(3) NOT NULL,
     "costo" DOUBLE PRECISION NOT NULL,
     "fechaSorteo" TIMESTAMP(3) NOT NULL,
-    "tiempoLimitePago" TIMESTAMP(3) NOT NULL,
+    "tiempoLimitePago" INTEGER NOT NULL,
     "organizadorId" INTEGER NOT NULL,
 
     CONSTRAINT "Sorteo_pkey" PRIMARY KEY ("id")
@@ -65,9 +67,6 @@ CREATE TABLE "Pagos" (
 
     CONSTRAINT "Pagos_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "Numero_posicion_key" ON "Numero"("posicion");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Numero_sorteoId_posicion_key" ON "Numero"("sorteoId", "posicion");
