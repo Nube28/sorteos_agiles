@@ -8,25 +8,30 @@
         </div>
 
         <ul class="flex items-center gap-[3vw] text-sm justify-center">
-            <li class="cursor-pointer hover:underline underline-offset-4"><a routerLink="/ver-sorteo">Ver
+            <li class="cursor-pointer hover:underline underline-offset-4" [ngClass]="{
+                    'text-(--primary-color)': menuSelected === 'Ver Sorteos'
+                }"><a routerLink="/ver-sorteo">Ver
                     Sorteos</a></li>
-            <li class="cursor-pointer hover:underline underline-offset-4"><a routerLink="/mis-sorteo">Mis
+            <li class="cursor-pointer hover:underline underline-offset-4" [ngClass]="{
+                    'text-(--primary-color)': menuSelected === 'Mis Sorteos'
+                }"><a routerLink="/mis-sorteo">Mis
                     Sorteos</a></li>
-            <li class="cursor-pointer hover:underline underline-offset-4"><a routerLink="/crear-sorteo">Crear
+            <li class="cursor-pointer hover:underline underline-offset-4" [ngClass]="{
+                    'text-(--primary-color)': menuSelected === 'Crear Sorteos'
+                }"><a routerLink="/crear-sorteo">Crear
                     Sorteos</a></li>
         </ul>
 
         <div class="flex items-center gap-3 text-sm justify-end cursor-pointer">
             <span>Jésus Tapía Maldónado</span>
-            <div
-                class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
+            <div class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
                 <!-- user icon -->
             </div>
         </div>
     </header>
 
-    <!-- aqui iría finalmente el crear sorteo -->
-    <main class="">
+    <!--overflow cambiar a crear sorteo to do  -->
+    <main class="flex-1 overflow-auto">
         <router-outlet></router-outlet>
     </main>
 </div>

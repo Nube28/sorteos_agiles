@@ -9,7 +9,7 @@ datasource db {
 
 model Numero {
   id            Int      @id @default(autoincrement())
-  posicion      Int      
+  posicion      Int
   fechaApartado DateTime
 
   sorteoId Int
@@ -27,14 +27,16 @@ model Numero {
 
 model Sorteo {
   id                 Int      @id @default(autoincrement())
+  nombre             String
   urlImg             String?
   descripcion        String
   premio             String
+  cantidadNumeros    Int
   periodoInicioVenta DateTime
   periodoFinVenta    DateTime
   costo              Float
   fechaSorteo        DateTime
-  tiempoLimitePago   DateTime
+  tiempoLimitePago   Int
 
   organizadorId Int
   organizador   Organizador @relation(fields: [organizadorId], references: [id])

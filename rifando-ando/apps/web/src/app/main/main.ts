@@ -1,10 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { InterfaceService } from '../global-services/interface.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-main',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './main.html',
   styleUrl: './main.css',
 })
-export class Main {}
+export class Main {
+  private interfaceService = inject(InterfaceService);
+
+  get menuSelected() {
+    return this.interfaceService.menuSelected();
+  }
+
+  updateMenuSelected(newMenu: string) {
+    this.interfaceService.updateMenuSelected(newMenu);
+  }
+}

@@ -3,14 +3,17 @@ import { Type } from 'class-transformer';
 
 // Validaciones to do
 export class CreateSorteoDto {
-  @IsUrl()
+  @IsOptional()
   @IsString()
-  urlImg: string;
+  urlImg?: string;
 
   @IsString()
-  @MinLength(10)
+  @MinLength(3)
   @MaxLength(500)
   descripcion: string;
+
+  @IsString()
+  nombre: string;
 
   @IsString()
   @MinLength(3)
@@ -23,17 +26,25 @@ export class CreateSorteoDto {
   @IsDateString()
   periodoFinVenta: string;
 
+  @Type(() => Number)
   @IsNumber()
   @IsPositive()
   costo: number;
 
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  cantidadNumeros: number;
+
   @IsDateString()
   fechaSorteo: string;
 
-  @IsDateString()
-  tiempoLimitePago: string;
+  @Type(() => Number)
+  @IsNumber()
+  tiempoLimitePago: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @IsPositive()
   organizadorId?: number; // temporal hasta que le metamos JWT

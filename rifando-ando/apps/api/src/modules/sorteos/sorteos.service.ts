@@ -9,20 +9,18 @@ export class SorteosService {
             const { 
                 periodoInicioVenta, 
                 periodoFinVenta, 
-                fechaSorteo, 
-                tiempoLimitePago, 
+                fechaSorteo,
+                organizadorId,
                 ...restData 
             } = createSorteoDto;
 
-            // Recibe strings, los convierte al necesario por prisma
             return await prisma.sorteo.create({
                 data: {
+                    periodoInicioVenta: new Date(periodoInicioVenta),
+                    periodoFinVenta: new Date(periodoFinVenta),
+                    fechaSorteo: new Date(fechaSorteo),
+                    organizadorId: organizadorId || userId,
                     ...restData,
-                    periodoInicioVenta: new Date(periodoInicioVenta).toISOString(),
-                    periodoFinVenta: new Date(periodoFinVenta).toISOString(),
-                    fechaSorteo: new Date(fechaSorteo).toISOString(),
-                    tiempoLimitePago: new Date(tiempoLimitePago).toISOString(),
-                    organizadorId: userId,
                 },
             });
         } catch (error) {
