@@ -9,19 +9,30 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/web",
         "browser": "apps/web/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/web/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "public"
+            "input": "apps/web/assets",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/web/public"
           }
         ],
-        "styles": ["apps/web/src/styles.css"]
+        "styles": [
+          "apps/web/src/styles.css"
+        ]
       },
       "configurations": {
         "production": {
@@ -69,7 +80,9 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": ["web/src"]
+        "lintFilePatterns": [
+          "web/src"
+        ]
       }
     },
     "serve-static": {

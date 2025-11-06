@@ -1,22 +1,20 @@
 @import "tailwindcss";
 
-@theme {
-    --font-family-inria-sans: 'InriaSans', sans-serif;
-    --font-family-inria-sans-bold: 'InriaSansBold', sans-serif;
-}
-
 @font-face {
     font-family: 'InriaSans';
     src: url('/assets/fonts/Inria_Sans/InriaSans-Regular.woff2') format('woff2');
-    font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'InriaSansBold';
     src: url('/assets/fonts/Inria_Sans/InriaSans-Bold.woff2') format('woff2');
-    font-weight: bold;
     font-style: normal;
+}
+
+@theme {
+    --font-family-inria-sans: 'InriaSans', sans-serif;
+    --font-family-inria-sans-bold: 'InriaSansBold', sans-serif;
 }
 
 :root {
@@ -31,5 +29,6 @@
 }
 
 body {
+    background: var(--secondary-color);
     font-family: var(--font-family-inria-sans);
 }

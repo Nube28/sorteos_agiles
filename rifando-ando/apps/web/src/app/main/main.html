@@ -1,7 +1,32 @@
 <!-- en el main va a ir el componente del header, y dentro va a ir una condición, 
  si está dentro del crear-sorteo, van a aparecer los ver sorteo, crear sorteo, 
  etc, si no (en el caso de estar en la landing page), no lo mostraría -->
-<p>main works!</p>
+<div class="w-screen h-screen p-[4vh] gap-5 flex flex-col">
+    <header class="grid grid-cols-3 justify-between items-center text-(--light) w-full">
+        <div class="font-family-inria-sans-bold text-lg">
+            <span>Rifando</span><span class="text-(--primary-color)">ando</span>
+        </div>
 
-<!-- aqui iría finalmente el crear sorteo -->
-<router-outlet></router-outlet>
+        <ul class="flex items-center gap-[3vw] text-sm justify-center">
+            <li class="cursor-pointer hover:underline underline-offset-4"><a routerLink="/ver-sorteo">Ver
+                    Sorteos</a></li>
+            <li class="cursor-pointer hover:underline underline-offset-4"><a routerLink="/mis-sorteo">Mis
+                    Sorteos</a></li>
+            <li class="cursor-pointer hover:underline underline-offset-4"><a routerLink="/crear-sorteo">Crear
+                    Sorteos</a></li>
+        </ul>
+
+        <div class="flex items-center gap-3 text-sm justify-end cursor-pointer">
+            <span>Jésus Tapía Maldónado</span>
+            <div
+                class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
+                <!-- user icon -->
+            </div>
+        </div>
+    </header>
+
+    <!-- aqui iría finalmente el crear sorteo -->
+    <main class="">
+        <router-outlet></router-outlet>
+    </main>
+</div>
