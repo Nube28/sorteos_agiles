@@ -8,7 +8,7 @@ export class NumeroService {
         try {
             return await prisma.numero.create({
                 data: {
-                    ...createNumeroDto,
+                    ...CreateNumeroDto,
                     cliente: {
                         connect: { id: userId }
                     },

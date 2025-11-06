@@ -8,6 +8,10 @@ export const appRoutes: Route[] = [
             {
                 path: 'crear-sorteo',
                 loadComponent: () => import('./main/crear-sorteo/crear-sorteo').then((m) => m.CrearSorteo),
+            },
+              {
+                path: 'sorteos',
+                loadComponent: () => import('./main/sorteos/sorteos').then((m) => m.Sorteos),
             }
         ]
     }

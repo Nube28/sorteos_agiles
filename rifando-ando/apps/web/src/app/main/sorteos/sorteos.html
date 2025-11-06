@@ -1,0 +1,55 @@
+<!-- Usamos las variables CSS en Tailwind: bg-secondary-color, text-light, etc. -->
+<div class="min-h-screen p-8 bg-secondary-color text-light">
+
+  <header class="flex flex-wrap justify-between items-center gap-4 mb-8">
+    <h1 class="text-3xl font-bold font-inria-sans-bold">Sorteos</h1>
+
+    <div class="flex items-center gap-6">
+      <button class="text-gray hover:text-light transition-colors">
+        Boletos <span class="opacity-50 ml-1">▼</span>
+      </button>
+      <button class="text-gray hover:text-light transition-colors">
+        Fecha <span class="opacity-50 ml-1">▼</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    @for (sorteo of sorteos(); track sorteo.id) {
+      <div class="relative flex flex-col justify-between p-6 rounded-xl
+                  min-h-[250px] overflow-hidden transition-transform cursor-pointer
+                  hover:scale-[1.02] group bg-dark-gray">
+
+        @if (sorteo.urlImg) {
+          <img [src]="sorteo.urlImg"
+               class="absolute inset-0 w-full h-full object-cover
+                      opacity-30 group-hover:opacity-40 transition-opacity z-0"
+               alt="Imagen del sorteo">
+        }
+
+        <div class="relative z-10 flex flex-col justify-between grow h-full">
+
+          <div class="flex justify-end">
+            <!--
+            Cuando se tenga mapeado bien numeros
+           Números: {{ sorteo.numerosRestantes ?? '?' }} / {{ sorteo.numerosTotales ?? '?' }}
+            -->
+            <span class="text-white text-xs font-semibold px-3 py-1 rounded-full bg-primary-color">
+                Numeros Restantes: 
+            </span>
+          </div>
+
+          <div>
+          
+            <h3 class="text-xl font-bold text-white mb-1 font-inria-sans-bold">{{ sorteo.premio }}</h3>
+          
+            <p class="text-sm text-gray-400">
+              Fecha: {{ formatDate(sorteo.fechaSorteo) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

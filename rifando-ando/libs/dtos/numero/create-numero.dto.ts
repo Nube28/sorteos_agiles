@@ -1,7 +1,12 @@
-import { IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsDateString } from 'class-validator';
 
 export class CreateNumeroDto {
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   posicion: number;
-    fechaApartado :Date;
+
+  @IsDateString()
+  fechaApartado: Date;
 
 }
