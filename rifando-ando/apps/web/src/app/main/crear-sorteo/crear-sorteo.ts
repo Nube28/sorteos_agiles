@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SorteoService } from '../../global-services/sorteo.service';
 
@@ -12,7 +12,7 @@ export class CrearSorteo {
   private fb = inject(FormBuilder);
   private sorteoService = inject(SorteoService);
   crearSorteoForm!: FormGroup;
-
+  showSuccessAlert = signal(false);
   constructor() {
     this.setupForm();
   }
@@ -38,6 +38,10 @@ export class CrearSorteo {
       const sorteoData = this.crearSorteoForm.value;
       this.sorteoService.crearSorteo(sorteoData).subscribe();
       console.log('Sorteo creado:', sorteoData);
+      this.showSuccessAlert.set(true);
+      setTimeout(() => {
+        this.showSuccessAlert.set(false);
+      }, 3000);
     } else {
       // campos como touched para mostrar errores
       Object.keys(this.crearSorteoForm.controls).forEach(key => {

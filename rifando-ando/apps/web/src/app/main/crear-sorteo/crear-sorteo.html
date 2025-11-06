@@ -1,3 +1,9 @@
+@if (showSuccessAlert()) {
+<div
+    class="fixed top-24 right-4 md:right-8 p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-pulse">
+    <span class="font-(--font-family-inria-sans-bold)">¡Éxito!</span> Sorteo creado correctamente.
+</div>
+}
 <form [formGroup]="crearSorteoForm" (ngSubmit)="onSubmit()">
     <h1
         class="font-family-inria-sans-bold text-center sm:text-start text-(--light) text-[clamp(2rem,2vw,3rem)] font-family-roboto-slab-bold mb-5">

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './main.css',
 })
 export class Main {
-  private interfaceService = inject(InterfaceService);
+   interfaceService = inject(InterfaceService);
 
   get menuSelected() {
     return this.interfaceService.menuSelected();
