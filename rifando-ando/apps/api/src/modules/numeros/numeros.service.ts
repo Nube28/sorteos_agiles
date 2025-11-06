@@ -4,7 +4,7 @@ import { CreateNumeroDto, UpdateNumeroDto } from '@rifando-ando/dtos';
 
 @Injectable()
 export class NumeroService {
-    async crearNumero(createNumeroDto: CreateNumeroDto, userId: number, sorteoId: number, pagoId: number) {
+    async crearNumero(CreateNumeroDto: CreateNumeroDto, userId: number, sorteoId: number) {
         try {
             return await prisma.numero.create({
                 data: {
@@ -14,9 +14,6 @@ export class NumeroService {
                     },
                     sorteo: {
                         connect: { id: sorteoId }
-                    },
-                    Pagos: {
-                        connect: { id: pagoId }
                     }
                 },
             });

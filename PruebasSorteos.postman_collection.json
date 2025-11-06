@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "7169f676-9f35-4a48-b901-b6335d7919ec",
+		"name": "PruebasSorteos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "39789829"
+	},
+	"item": [
+		{
+			"name": "ConectarConApi",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GuardarSorteo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"urlImg\": \"https://images.unsplash.com/photo-1549419163-dc42e5661332\",\r\n    \"descripcion\": \"Un emocionante sorteo para ganar una motocicleta de alta gama con todos los papeles en regla.\",\r\n    \"premio\": \"Motocicleta Deportiva Kawasaki Z900\",\r\n    \"periodoInicioVenta\": \"2025-11-10T00:00:00.000Z\",\r\n    \"periodoFinVenta\": \"2025-12-25T23:59:59.000Z\",\r\n    \"costo\": 50.00,\r\n    \"fechaSorteo\": \"2025-12-30T15:00:00.000Z\",\r\n    \"tiempoLimitePago\": \"2025-12-27T12:00:00.000Z\",\r\n    \"organizadorId\": 1 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/sorteos"
+			},
+			"response": []
+		},
+		{
+			"name": "ObtenerSorteos",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/sorteos"
+			},
+			"response": []
+		},
+		{
+			"name": "ObtenerSorteoId1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/sorteos/1"
+			},
+			"response": []
+		},
+		{
+			"name": "BorrarSorteo",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/sorteos/3"
+			},
+			"response": []
+		},
+		{
+			"name": "EditarSorteo",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"urlImg\": \"https://images.unsplash.com/photo-1549419163-dc42e5661332\",\r\n    \"descripcion\": \"Un emocionante sorteo para ganar una motocicleta de alta gama con todos los papeles en regla.\",\r\n    \"premio\": \"Motocicleta Deportiva Kawasaki Z900\",\r\n    \"periodoInicioVenta\": \"2025-11-10T00:00:00.000Z\",\r\n    \"periodoFinVenta\": \"2025-12-25T23:59:59.000Z\",\r\n    \"costo\": 40.00,\r\n    \"fechaSorteo\": \"2025-12-30T15:00:00.000Z\",\r\n    \"tiempoLimitePago\": \"2025-12-27T12:00:00.000Z\",\r\n    \"organizadorId\": 1 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/sorteos/1"
+			},
+			"response": []
+		}
+	]
+}
