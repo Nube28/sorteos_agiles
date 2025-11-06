@@ -1,7 +1,21 @@
-import { IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 export class CreateNumeroDto {
-  posicion: number;
-    fechaApartado :Date;
+    @IsNumber() 
+    @IsNotEmpty()
+    posicion: number;
 
+    @IsDateString() 
+    @IsNotEmpty()
+    fechaApartado: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    sorteoId: number;
+
+    @IsOptional()
+    @IsNumber()
+    @IsPositive()
+    clienteId?: number;
 }

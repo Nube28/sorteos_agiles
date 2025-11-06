@@ -8,8 +8,10 @@ export class NumeroController {
     constructor(private readonly numeroService: NumeroService) { }
 
     @Post()
-    createNumero(@Body() CreateNumeroDto: CreateNumeroDto, @UserId() userId: number, sorteoId: number) {
-        return this.numeroService.crearNumero(CreateNumeroDto, userId, sorteoId);
+    createNumero(@Body() createNumeroDto: CreateNumeroDto) {
+
+        const userId = createNumeroDto.clienteId;
+        return this.numeroService.crearNumero(createNumeroDto, userId);
     }
 
     @Get()

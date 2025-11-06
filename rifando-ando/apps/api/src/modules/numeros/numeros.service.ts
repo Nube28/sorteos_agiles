@@ -4,21 +4,23 @@ import { CreateNumeroDto, UpdateNumeroDto } from '@rifando-ando/dtos';
 
 @Injectable()
 export class NumeroService {
-    async crearNumero(CreateNumeroDto: CreateNumeroDto, userId: number, sorteoId: number) {
+    async crearNumero(createNumeroDto: CreateNumeroDto, userId: number) {
         try {
+            const { 
+                fechaApartado, 
+                ...restData 
+            } = createNumeroDto;
+
+            // Recibe strings, los convierte al necesario por prisma
             return await prisma.numero.create({
                 data: {
-                    ...createNumeroDto,
-                    cliente: {
-                        connect: { id: userId }
-                    },
-                    sorteo: {
-                        connect: { id: sorteoId }
-                    }
+                    ...restData,
+                    fechaApartado: new Date(fechaApartado).toISOString(),
+                    clienteId: userId
                 },
             });
         } catch (error) {
-            throw new Error(`Error al crear numero: ${error.message}`);
+            throw new Error(`Error al crear sorteo: ${error.message}`);
         }
     }
 

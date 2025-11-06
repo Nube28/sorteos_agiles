@@ -9,7 +9,7 @@ datasource db {
 
 model Numero {
   id            Int      @id @default(autoincrement())
-  posicion      Int      @unique
+  posicion      Int      
   fechaApartado DateTime
 
   sorteoId Int
