@@ -8,27 +8,32 @@
 
 2.  **Configurar variables de entorno**
 
-    -   Existe un archivo base llamado `.env.example`\
-    -   Crea un nuevo archivo llamado `.env` y coloca tu información
-        siguiendo la plantilla de `.env.example`
+    -   Crea un nuevo archivo llamado `.env` en la raíz del proyecto (dentro de rifando-ando)
+    -   Coloca tu información siguiendo la plantilla de `.env.example`
 
-3.  **Crear base de datos**
+3.  **Base de datos**
 
-    -   Crea la base de datos en tu **pgAdmin4**
+    -   Crea la base de datos de postgreSQL siguiendo los siguientes pasos:
 
-4.  **Generar entidades del cliente Prisma**
+    3.1.  **Generar entidades del cliente Prisma**
 
-    ``` bash
-    pnpm prisma:generate
-    ```
+        ``` bash
+        pnpm prisma:generate
+        ```
 
-5.  **Aplicar migraciones en tu host local**
+    3.2.  **Aplicar migraciones en tu host local**
 
-    ``` bash
-    pnpm prisma:migrate
-    ```
+        ``` bash
+        pnpm prisma:migrate
+        ```
 
-6.  **Ejecutar los servicios**
+    3.3.  **Visualizar el contenido de la base de datos desde el navegador (opcional)**
+
+        ``` bash
+        pnpm prisma:studio
+        ```
+
+4.  **Ejecutar los servicios**
 
     -   Para correr el **frontend**:
 
@@ -41,6 +46,11 @@
         ``` bash
         pnpm api
         ```
+
+5.  **Visualizar los enpoints usando Swagger**
+
+    -   Después de correr el **backend**, ir a la ruta:
+    -   http://localhost:3000/api
 
 ------------------------------------------------------------------------
 
