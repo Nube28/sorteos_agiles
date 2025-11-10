@@ -36,6 +36,8 @@
     <!-- overflow needed para scrollear dentro del contenedor en el crear-sorteos-->
     <!-- botones fixed maybe to do -->
     <main class="flex-1 overflow-auto" [ngClass]="{
+        'overflow-visible': menuSelected !== 'Crear Sorteos',
+        'overflow-auto': menuSelected === 'Crear Sorteos',
     }">
         <router-outlet></router-outlet>
     </main>
