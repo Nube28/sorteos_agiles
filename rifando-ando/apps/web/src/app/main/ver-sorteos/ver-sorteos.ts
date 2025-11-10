@@ -1,13 +1,14 @@
 import { Component, computed, inject } from '@angular/core';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { InterfaceService } from '../../global-services/interface.service';
+import { SorteoContainer } from "../sorteo-container/sorteo-container";
 @Component({
-  selector: 'app-ver-sorteo',
-
-  templateUrl: './ver-sorteo.html',
-  styleUrl: '../../../styles.css',
+  selector: 'app-ver-sorteos',
+  templateUrl: './ver-sorteos.html',
+  styleUrl: './ver-sorteos.css',
+  imports: [SorteoContainer],
 })
-export class VerSorteo {
+export class VerSorteos {
   private sorteoService = inject(SorteoService);
   private interfaceService = inject(InterfaceService);
 

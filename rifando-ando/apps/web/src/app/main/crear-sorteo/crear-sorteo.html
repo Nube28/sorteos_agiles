@@ -1,101 +1,103 @@
+<!-- Haganlo componente global para alertas, feeling tired, bitte -->
 @if (showSuccessAlert()) {
 <div
-    class="fixed top-24 right-4 md:right-8 p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-pulse">
+    class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-bounce duration-75">
     <span class="font-(--font-family-inria-sans-bold)">¡Éxito!</span> Sorteo creado correctamente.
 </div>
 }
-<form [formGroup]="crearSorteoForm" (ngSubmit)="onSubmit()">
-    <h1
-        class="font-family-inria-sans-bold text-center sm:text-start text-(--light) text-[clamp(2rem,2vw,3rem)] font-family-roboto-slab-bold mb-5">
-        Crear Sorteos</h1>
-
-    <div class="flex flex-col gap-5 items-end">
-        <div class="w-full flex flex-col sm:flex-row gap-[2vw]">
-            <div class="w-full flex flex-col gap-5">
-                <div class="flex flex-col gap-2">
-                    <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">ORGANIZADOR</label>
-                    <!-- <input type="text" placeholder="Jesus Tapia Maldonado" formControlName="organizador"
+<app-sorteo-container [title]="'Crear Sorteo'">
+    <form [formGroup]="crearSorteoForm" (ngSubmit)="onSubmit()">
+        <div class="flex flex-col gap-5 items-end">
+            <div class="w-full flex flex-col sm:flex-row gap-[2vw]">
+                <div class="w-full flex flex-col gap-5">
+                    <div class="flex flex-col gap-2">
+                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">ORGANIZADOR</label>
+                        <!-- <input type="text" placeholder="Jesus Tapia Maldonado" formControlName="organizador"
                         class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" /> -->
-                    <input type="text" placeholder="Jesus Tapia Maldonado"
-                        class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">NOMBRE DEL SORTEO</label>
-                    <input type="text" placeholder="Nombre del sorteo" formControlName="nombre"
-                        class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">PREMIO</label>
-                    <input type="text" placeholder="Premio del sorteo" formControlName="premio"
-                        class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                </div>
-                <!-- flex-1 -->
-                <div class="flex flex-col gap-2 h-full flex-1">
-                    <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">DESCRIPCIÓN DEL
-                        SORTEO</label>
-                    <textarea name="" id="" placeholder="Descripción del sorteo" formControlName="descripcion"
-                        class="h-full min-h-[150px] max-h-[200px] text-sm w-full focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)"></textarea>
-                </div>
-                <div class="w-full gap-5  flex">
-                    <div class="flex flex-col gap-2 w-full">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">CANTIDAD DE
-                            NÚMEROS</label>
-                        <input type="text" placeholder="Cantidad de números" formControlName="cantidadNumeros"
+                        <input type="text" placeholder="Jesus Tapia Maldonado"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                     </div>
-                    <div class="flex flex-col gap-2 w-full">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">COSTO POR NÚMERO
-                            (MXN)</label>
-                        <input type="text" placeholder="Costo por número" formControlName="costo"
+                    <div class="flex flex-col gap-2">
+                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">NOMBRE DEL
+                            SORTEO</label>
+                        <input type="text" placeholder="Nombre del sorteo" formControlName="nombre"
+                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">PREMIO</label>
+                        <input type="text" placeholder="Premio del sorteo" formControlName="premio"
+                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                    </div>
+                    <!-- flex-1 -->
+                    <div class="flex flex-col gap-2 h-full flex-1">
+                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">DESCRIPCIÓN DEL
+                            SORTEO</label>
+                        <textarea name="" id="" placeholder="Descripción del sorteo" formControlName="descripcion"
+                            class="h-full min-h-[150px] max-h-[200px] text-sm w-full focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)"></textarea>
+                    </div>
+                    <div class="w-full gap-5  flex">
+                        <div class="flex flex-col gap-2 w-full">
+                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">CANTIDAD DE
+                                NÚMEROS</label>
+                            <input type="text" placeholder="Cantidad de números" formControlName="cantidadNumeros"
+                                class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        </div>
+                        <div class="flex flex-col gap-2 w-full">
+                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">COSTO POR NÚMERO
+                                (MXN)</label>
+                            <input type="text" placeholder="Costo por número" formControlName="costo"
+                                class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full flex flex-col gap-5">
+                    <div class="flex flex-col gap-2">
+                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">SUBIR IMAGEN
+                            (OPCIONAL)</label>
+                        <input type="text" placeholder="Subir imagen" formControlName="urlImg"
+                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                    </div>
+                    <!-- flex-1 -->
+                    <div class="flex flex-col gap-2 h-full flex-1 items-center">
+                        <div
+                            class="h-full w-[80%] min-h-[100px] focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)">
+                        </div>
+                    </div>
+                    <div class="w-full gap-5  flex">
+                        <div class="flex flex-col gap-2 w-full justify-between">
+                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE
+                                VENTA</label>
+                            <input type="date" placeholder="Fecha de venta" formControlName="periodoInicioVenta"
+                                class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        </div>
+                        <div class="flex flex-col gap-2 w-full justify-between">
+                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE LA VENTA DE
+                                NÚMEROS</label>
+                            <input type="date" placeholder="Fecha de la venta de números"
+                                formControlName="periodoFinVenta"
+                                class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE SORTEO</label>
+                        <input type="date" placeholder="Fecha de sorteo" formControlName="fechaSorteo"
+                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">TIEMPO LIMITE DEL PAGO
+                            (DÍAS)</label>
+                        <input type="text" placeholder="Tiempo limite del pago" formControlName="tiempoLimitePago"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                     </div>
                 </div>
             </div>
-            <div class="w-full flex flex-col gap-5">
-                <div class="flex flex-col gap-2">
-                    <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">SUBIR IMAGEN
-                        (OPCIONAL)</label>
-                    <input type="text" placeholder="Subir imagen" formControlName="urlImg"
-                        class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                </div>
-                <!-- flex-1 -->
-                <div class="flex flex-col gap-2 h-full flex-1 items-center">
-                    <div
-                        class="h-full w-[80%] min-h-[100px] focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)">
-                    </div>
-                </div>
-                <div class="w-full gap-5  flex">
-                    <div class="flex flex-col gap-2 w-full justify-between">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE VENTA</label>
-                        <input type="date" placeholder="Fecha de venta" formControlName="periodoInicioVenta"
-                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                    </div>
-                    <div class="flex flex-col gap-2 w-full justify-between">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE LA VENTA DE
-                            NÚMEROS</label>
-                        <input type="date" placeholder="Fecha de la venta de números" formControlName="periodoFinVenta"
-                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                    </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE SORTEO</label>
-                    <input type="date" placeholder="Fecha de sorteo" formControlName="fechaSorteo"
-                        class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">TIEMPO LIMITE DEL PAGO
-                        (DÍAS)</label>
-                    <input type="text" placeholder="Tiempo limite del pago" formControlName="tiempoLimitePago"
-                        class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                </div>
+            <div class="flex items-center gap-2">
+                <button
+                    class="duration-200 transition-all hover:bg-(--dark) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md text-(--light)">Cancel</button>
+                <button type="submit"
+                    class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md bg-(--primary-color) text-(--light)">Crear
+                    Sorteo</button>
             </div>
         </div>
-        <div class="flex items-center gap-2">
-            <button
-                class="duration-200 transition-all hover:bg-(--dark) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md text-(--light)">Cancel</button>
-            <button type="submit"
-                class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md bg-(--primary-color) text-(--light)">Crear
-                Sorteo</button>
-        </div>
-    </div>
-</form>
+    </form>
+</app-sorteo-container>

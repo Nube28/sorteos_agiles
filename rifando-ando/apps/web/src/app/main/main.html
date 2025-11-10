@@ -8,30 +8,37 @@
         </div>
 
         <ul class="flex items-center gap-[3vw] text-sm justify-center">
-            <li class="cursor-pointer hover:underline underline-offset-4" [ngClass]="{
-                    'text-(--primary-color)': menuSelected === 'Ver Sorteos'
-                }"><a routerLink="/ver-sorteo">Ver
+            <li (click)="onMenuClick('Ver Sorteos')"
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
+                    'text-(--primary-color) underline': menuSelected === 'Ver Sorteos'
+                }"><a routerLink="./ver-sorteos">Ver
                     Sorteos</a></li>
-            <li class="cursor-pointer hover:underline underline-offset-4" [ngClass]="{
-                    'text-(--primary-color)': menuSelected === 'Mis Sorteos'
-                }"><a routerLink="/mis-sorteo">Mis
+            <li (click)="onMenuClick('Mis Sorteos')"
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
+                    'text-(--primary-color) underline': menuSelected === 'Mis Sorteos'
+                }"><a routerLink="./ver-sorteos">Mis
                     Sorteos</a></li>
-            <li class="cursor-pointer hover:underline underline-offset-4" [ngClass]="{
-                    'text-(--primary-color)': menuSelected === 'Crear Sorteos'
-                }"><a routerLink="/crear-sorteo">Crear
+            <li (click)="onMenuClick('Crear Sorteos')"
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
+                    'text-(--primary-color) underline': menuSelected === 'Crear Sorteos'
+                }"><a routerLink="./crear-sorteo">Crear
                     Sorteos</a></li>
         </ul>
 
         <div class="flex items-center gap-3 text-sm justify-end cursor-pointer">
-            <span>Jésus Tapía Maldónado</span>
+            <span class="text-nowrap">Jésus Tapía Maldónado</span>
             <div class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
                 <!-- user icon -->
             </div>
         </div>
     </header>
 
-    <!--overflow cambiar a crear sorteo to do  -->
-    <main class="flex-1 overflow-auto">
+    <!-- overflow needed para scrollear dentro del contenedor en el crear-sorteos-->
+    <!-- botones fixed maybe to do -->
+    <main class="flex-1" [ngClass]="{
+        'overflow-visible': menuSelected !== 'Crear Sorteos',
+        'overflow-auto': menuSelected === 'Crear Sorteos',
+    }">
         <router-outlet></router-outlet>
     </main>
 </div>

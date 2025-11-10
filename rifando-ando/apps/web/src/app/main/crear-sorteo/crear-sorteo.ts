@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SorteoService } from '../../global-services/sorteo.service';
+import { SorteoContainer } from "../sorteo-container/sorteo-container";
 
 @Component({
   selector: 'app-crear-sorteo',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SorteoContainer],
   templateUrl: './crear-sorteo.html',
   styleUrl: './crear-sorteo.css',
 })

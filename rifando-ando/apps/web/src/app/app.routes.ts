@@ -9,9 +9,13 @@ export const appRoutes: Route[] = [
                 path: 'crear-sorteo',
                 loadComponent: () => import('./main/crear-sorteo/crear-sorteo').then((m) => m.CrearSorteo),
             },
-              {
-                path: 'ver-sorteo',
-                loadComponent: () => import('./main/ver-sorteo/ver-sorteo').then((m) => m.VerSorteo),
+            {
+                path: 'ver-sorteos',
+                loadComponent: () => import('./main/ver-sorteos/ver-sorteos').then((m) => m.VerSorteos),
+            },
+            {
+                path: '**',
+                redirectTo: 'ver-sorteos'
             }
         ]
     }
