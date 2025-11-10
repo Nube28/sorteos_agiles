@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { InterfaceService } from '../global-services/interface.service';
 import { CommonModule } from '@angular/common';
-import { SorteoContainer } from "./sorteo-container/sorteo-container";
 
 @Component({
   selector: 'app-main',

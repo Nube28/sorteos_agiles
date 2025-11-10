@@ -7,6 +7,7 @@
             <span>Rifando</span><span class="text-(--primary-color)">ando</span>
         </div>
 
+        <!-- cambiar a segun la ruta, elija uno u otro, no manejar usando el servicio -->
         <ul class="flex items-center gap-[3vw] text-sm justify-center">
             <li (click)="onMenuClick('Ver Sorteos')"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
@@ -33,12 +34,8 @@
         </div>
     </header>
 
-    <!-- overflow needed para scrollear dentro del contenedor en el crear-sorteos-->
     <!-- botones fixed maybe to do -->
-    <main class="flex-1 overflow-auto" [ngClass]="{
-        'overflow-visible': menuSelected !== 'Crear Sorteos',
-        'overflow-auto': menuSelected === 'Crear Sorteos',
-    }">
+    <main class="flex-1 overflow-auto px-1 scrollbar-hide">
         <router-outlet></router-outlet>
     </main>
 </div>

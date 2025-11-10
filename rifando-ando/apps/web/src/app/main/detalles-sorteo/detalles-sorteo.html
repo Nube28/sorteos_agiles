@@ -1,0 +1,17 @@
+@if (sorteo()){
+<app-sorteo-container [title]="sorteo().nombre">
+    <!-- aqui metemos todo el cochinero lollolololo -->
+    <!-- en la noche lo saco -->
+    <span class="text-white">
+        {{ sorteo().nombre }}
+    </span>
+    <span class="text-white">
+        {{ sorteo().descripcion }}
+    </span>
+    <span class="text-white">
+        {{ sorteo().cantidadNumeros }}
+    </span>
+</app-sorteo-container>
+} @else {
+<!-- fallback -->
+}

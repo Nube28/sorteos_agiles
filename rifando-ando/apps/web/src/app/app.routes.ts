@@ -14,6 +14,10 @@ export const appRoutes: Route[] = [
                 loadComponent: () => import('./main/ver-sorteos/ver-sorteos').then((m) => m.VerSorteos),
             },
             {
+                path: 'detalles-sorteo/:id',
+                loadComponent: () => import('./main/detalles-sorteo/detalles-sorteo').then((m) => m.DetallesSorteo)
+            },
+            {
                 path: '**',
                 redirectTo: 'ver-sorteos'
             }

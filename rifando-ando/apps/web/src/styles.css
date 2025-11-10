@@ -35,3 +35,17 @@ body {
     background: var(--secondary-color);
     font-family: var(--font-family-inria-sans);
 }
+
+@layer utilities {
+    .scrollbar-hide {
+        /* Firefox */
+        scrollbar-width: none;
+        /* IE and Edge */
+        -ms-overflow-style: none;
+    }
+
+    /* Chrome, Safari and Opera */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}
