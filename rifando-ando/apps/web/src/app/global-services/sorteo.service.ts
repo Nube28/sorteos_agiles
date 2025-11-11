@@ -26,6 +26,7 @@ export class SorteoService {
                 costo: Number(sorteo.costo),
                 cantidadNumeros: Number(sorteo.cantidadNumeros),
                 tiempoLimitePago: Number(sorteo.tiempoLimitePago),
+                numerosDisponibles: Number(sorteo.cantidadNumeros),
                 organizadorId: 1
             };
             return this.httpClient.post(this.apiURL, sorteoData);

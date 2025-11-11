@@ -26,6 +26,7 @@ CREATE TABLE "Sorteo" (
     "costo" DOUBLE PRECISION NOT NULL,
     "fechaSorteo" TIMESTAMP(3) NOT NULL,
     "tiempoLimitePago" INTEGER NOT NULL,
+    "numerosDisponibles" INTEGER NOT NULL,
     "organizadorId" INTEGER NOT NULL,
 
     CONSTRAINT "Sorteo_pkey" PRIMARY KEY ("id")

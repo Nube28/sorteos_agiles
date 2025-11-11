@@ -1,17 +1,144 @@
 @if (sorteo()){
-<app-sorteo-container [title]="sorteo().nombre">
-    <!-- aqui metemos todo el cochinero lollolololo -->
-    <!-- en la noche lo saco -->
-    <span class="text-white">
-        {{ sorteo().nombre }}
-    </span>
-    <span class="text-white">
-        {{ sorteo().descripcion }}
-    </span>
-    <span class="text-white">
-        {{ sorteo().cantidadNumeros }}
-    </span>
+<app-sorteo-container [title]="sorteo()!.nombre">
+
+    <div class="w-full flex flex-col gap-6 text-(--light)">
+
+        <div class="bg-(--dark-gray) rounded-3xl p-5 w-full">
+            <h3 class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] mb-3">
+                Descripción
+            </h3>
+            <p class="text-sm text-(--gray) leading-relaxed">
+                {{ sorteo()!.descripcion }}
+            </p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+
+            <div class="bg-(--dark-gray) rounded-3xl p-5 flex-1 lg:w-1/3 flex flex-col">
+                <h3 class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] mb-4">
+                    Premio
+                </h3>
+
+                @if (sorteo()!.urlImg) {
+                <img [src]="sorteo()!.urlImg" alt="Premio"
+                    class="grow bg-(--dark) rounded-2xl min-h-[300px] object-cover">
+                } @else {
+                <div class="grow bg-(--dark) rounded-2xl min-h-[300px] flex items-center justify-center">
+                    <span class="text-(--gray)">(Imagen no disponible)</span>
+                </div>
+                }
+            </div>
+
+            <div class="flex flex-col gap-6 flex-1 lg:w-1/3">
+
+                <div class="bg-(--dark-gray) rounded-3xl p-5">
+                    <h3 class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.srem)] mb-4">
+                        Fechas importantes
+                    </h3>
+                    <div class="flex flex-col gap-3">
+
+                        <div class="bg-(--dark) p-3 rounded-xl flex items-center gap-3">
+                            <span class="p-2 bg-(--dark-gray) rounded-lg">
+                                <svg class="h-6 w-6 text-(--light)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-18 0h18" />
+                                </svg>
+                            </span>
+                            <div>
+                                <span class="text-sm text-(--gray)">Inicio de venta</span>
+                                <p class="text-(--light) font-bold">{{ sorteo()!.periodoInicioVenta | date: 'dd/MM/yyyy' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-(--dark) p-3 rounded-xl flex items-center gap-3">
+                             <span class="p-2 bg-(--dark-gray) rounded-lg">
+                                <svg class="h-6 w-6 text-(--light)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-18 0h18" />
+                                </svg>
+                            </span>
+                            <div>
+                                <span class="text-sm text-(--gray)">Fin de venta</span>
+                                <p class="text-(--light) font-bold">{{ sorteo()!.periodoFinVenta | date: 'dd/MM/yyyy' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-(--dark) p-3 rounded-xl flex items-center gap-3">
+                             <span class="p-2 bg-(--dark-gray) rounded-lg">
+                                <svg class="h-6 w-6 text-(--light)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </span>
+                            <div>
+                                <span class="text-sm text-(--gray)">Sorteo</span>
+                                <p class="text-(--light) font-bold">{{ sorteo()!.fechaSorteo | date: 'dd/MM/yyyy - h:mm a' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-(--dark-gray) rounded-3xl p-5 grow flex flex-col items-center justify-center">
+                    <span class="text-4xl font-family-inria-sans-bold text-(--light)">
+                        {{ sorteo()!.numerosDisponibles }} / {{ sorteo()!.cantidadNumeros }}
+                    </span>
+                    <span class="text-sm text-(--gray) mt-1">
+                        Números disponibles
+                    </span>
+                </div>
+            </div>
+
+            <div class="bg-(--dark-gray) rounded-3xl p-5 flex-1 lg:w-1/3 flex flex-col gap-4">
+                <h3 class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] mb-2">
+                    Apartar números
+                </h3>
+
+                <div class="bg-(--dark) p-3 rounded-xl flex items-center gap-3">
+                     <span class="p-2 bg-(--dark-gray) rounded-lg">
+                        <svg class="h-6 w-6 text-(--light)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-12v.75m0 3v.75m0 3v.75m0 3V18m-3 .75h18A2.25 2.25 0 0 0 21 16.5V7.5A2.25 2.25 0 0 0 18.75 6H4.5A2.25 2.25 0 0 0 2.25 7.5v9A2.25 2.25 0 0 0 4.5 18.75Zm+18-9h-18" />
+                        </svg>
+                    </span>
+                    <div>
+                        <span class="text-sm text-(--gray)">Costo por número</span>
+                        <p class="text-(--light) font-bold">{{ sorteo()!.costo | currency:'MXN' }}</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-(--gray) font-bold uppercase" for="cantidad">
+                        Cantidad de números
+                    </label>
+                    <input type="number" id="cantidad" min="1"
+                        class="w-full bg-(--dark) border-none rounded-lg p-3 mt-2 text-(--light) focus:ring-2 focus:ring-(--primary-color)"
+                        placeholder="Ingrese la cantidad de números" [(ngModel)]="cantidadApartar">
+                </div>
+
+                <div class="bg-(--dark) p-3 rounded-xl flex items-center gap-3">
+                     <span class="p-2 bg-(--dark-gray) rounded-lg">
+                        <svg class="h-6 w-6 text-(--light)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.82-1.106-2.17 0-2.99 1.104-.82 2.75-.82 3.854 0l.793.59" />
+                        </svg>
+                    </span>
+                    <div>
+                        <span class="text-sm text-(--gray)">Total</span>
+                        <p class="text-(--light) font-bold">
+                            {{ totalCalculado() | currency:'MXN' }} </p>
+                    </div>
+                </div>
+
+                <div class="mt-auto flex flex-col gap-2 pt-4">
+                    <button
+                        class="w-full bg-(--primary-color) text-(--dark) font-bold p-3 rounded-lg hover:brightness-110 transition">
+                        Confirmar
+                    </button>
+                    <button class="w-full text-(--gray) p-2 rounded-lg hover:bg-(--dark) transition">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </app-sorteo-container>
 } @else {
-<!-- fallback -->
+<div class="text-(--light) text-center p-10">Cargando detalles del sorteo...</div>
 }

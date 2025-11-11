@@ -2,6 +2,11 @@ import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
     {
+        path: '',
+        redirectTo: 'main/ver-sorteos', 
+        pathMatch: 'full'    
+    },
+    {
         path: 'main',
         loadComponent: () => import('./main/main').then((m) => m.Main),
         children: [

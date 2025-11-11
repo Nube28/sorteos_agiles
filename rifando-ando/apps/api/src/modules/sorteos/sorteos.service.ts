@@ -11,15 +11,18 @@ export class SorteosService {
                 periodoFinVenta,
                 fechaSorteo,
                 organizadorId,
+                cantidadNumeros,
                 ...restData
             } = createSorteoDto;
-
+            const totalNumeros = Number(cantidadNumeros);
             return await prisma.sorteo.create({
                 data: {
                     periodoInicioVenta: new Date(periodoInicioVenta),
                     periodoFinVenta: new Date(periodoFinVenta),
                     fechaSorteo: new Date(fechaSorteo),
                     organizadorId: organizadorId || userId,
+                    cantidadNumeros: totalNumeros,
+                    numerosDisponibles: totalNumeros,
                     ...restData,
                 },
             });

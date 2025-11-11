@@ -37,6 +37,7 @@ model Sorteo {
   costo              Float
   fechaSorteo        DateTime
   tiempoLimitePago   Int
+  numerosDisponibles Int
 
   organizadorId Int
   organizador   Organizador @relation(fields: [organizadorId], references: [id])
