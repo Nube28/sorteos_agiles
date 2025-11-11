@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
+import { CloudinaryService } from '../../global-services/cloudinary.service';
 
 @Component({
   selector: 'app-crear-sorteo',
@@ -12,8 +13,13 @@ import { SorteoContainer } from "../sorteo-container/sorteo-container";
 export class CrearSorteo {
   private fb = inject(FormBuilder);
   private sorteoService = inject(SorteoService);
+  private cloudinaryService = inject(CloudinaryService);
+
   crearSorteoForm!: FormGroup;
   showSuccessAlert = signal(false);
+  isUploading = signal(false);
+  previewUrl = signal<string | null>(null);
+
   constructor() {
     this.setupForm();
   }
@@ -24,7 +30,7 @@ export class CrearSorteo {
       nombre: ['', Validators.required],
       premio: ['', Validators.required],
       descripcion: ['', Validators.required],
-      cantidadNumeros: [''],
+      cantidadNumeros: ['', Validators.required],
       costo: ['', [Validators.required, Validators.min(0)]],
       urlImg: [''],
       periodoInicioVenta: ['', Validators.required],
@@ -34,36 +40,59 @@ export class CrearSorteo {
     });
   }
 
-  onSubmit() {
-    if (this.crearSorteoForm.valid) {
-      const sorteoData = this.crearSorteoForm.value;
-      this.sorteoService.crearSorteo(sorteoData).subscribe({
-        next: (response) => {
-          console.log('Sorteo creado exitosamente:', response);
-          this.crearSorteoForm.reset();
-          this.showSuccessAlert.set(true);
-          setTimeout(() => {
-            this.showSuccessAlert.set(false);
-          }, 3000);
+  isFieldInvalid(fieldName: string): boolean {
+    const control = this.crearSorteoForm.get(fieldName);
+    // Retorna true si es inválido Y el usuario ya interactuó con él
+    return !!(control && control.invalid && (control.touched || control.dirty));
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.isUploading.set(true);
+
+      // 1. Crear preview local inmediato (UX)
+      const reader = new FileReader();
+      reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
+      reader.readAsDataURL(file);
+
+      // 2. Subir a Cloudinary
+      this.cloudinaryService.uploadImage(file).subscribe({
+        next: (url) => {
+          this.crearSorteoForm.patchValue({ urlImg: url }); // Guardamos la URL real en el form
+          this.isUploading.set(false);
         },
         error: (err) => {
-          console.error('Error al crear sorteo:', err);
+          console.error('Error subiendo imagen', err);
+          this.isUploading.set(false);
+          // Aquí podrías mostrar un error visual
         }
+      });
+    }
+  }
+  
+  // Método para eliminar la imagen si se arrepienten
+  removeImage() {
+      this.previewUrl.set(null);
+      this.crearSorteoForm.patchValue({ urlImg: '' });
+  }
+
+  onSubmit() {
+    if (this.crearSorteoForm.valid) {
+      console.log('Formulario válido, enviando...');
+       const sorteoData = this.crearSorteoForm.value;
+      this.sorteoService.crearSorteo(sorteoData).subscribe({
+        next: (response) => {
+          this.crearSorteoForm.reset();
+          this.showSuccessAlert.set(true);
+          setTimeout(() => this.showSuccessAlert.set(false), 3000);
+        },
+        error: (err) => console.error(err)
       });
     } else {
-      // campos como touched para mostrar errores
-      Object.keys(this.crearSorteoForm.controls).forEach(key => {
-        this.crearSorteoForm.get(key)?.markAsTouched();
-      });
-
-      // errores específicos de cada campo
-      console.log('Formulario inválido');
-      Object.keys(this.crearSorteoForm.controls).forEach(key => {
-        const control = this.crearSorteoForm.get(key);
-        if (control?.invalid) {
-          console.log(`${key}:`, control.errors);
-        }
-      });
+      this.crearSorteoForm.markAllAsTouched(); // Esto marca TODO como 'touched' para disparar las validaciones visuales
     }
   }
 }

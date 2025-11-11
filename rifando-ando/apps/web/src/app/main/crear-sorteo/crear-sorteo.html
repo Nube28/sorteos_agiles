@@ -1,102 +1,187 @@
-<!-- Haganlo componente global para alertas, feeling tired, bitte -->
 @if (showSuccessAlert()) {
-<div
-    class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-bounce duration-75">
+<div class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-bounce duration-75 z-50">
     <span class="font-(--font-family-inria-sans-bold)">¡Éxito!</span> Sorteo creado correctamente.
 </div>
 }
+
 <app-sorteo-container [title]="'Crear Sorteo'">
     <form [formGroup]="crearSorteoForm" (ngSubmit)="onSubmit()">
         <div class="flex flex-col gap-5 items-end">
             <div class="w-full flex flex-col sm:flex-row gap-[2vw]">
+                
                 <div class="w-full flex flex-col gap-5">
+                    <!-- TextField de Organizador -->
                     <div class="flex flex-col gap-2">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">ORGANIZADOR</label>
-                        <!-- <input type="text" placeholder="Jesus Tapia Maldonado" formControlName="organizador"
-                        class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" /> -->
+                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">ORGANIZADOR</label>
                         <input type="text" placeholder="Jesus Tapia Maldonado"
-                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                            class="text-sm w-full border border-transparent outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray) " />
                     </div>
+
+                    <!-- TextField de Nombre de sorteo -->
                     <div class="flex flex-col gap-2">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">NOMBRE DEL
-                            SORTEO</label>
+                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">NOMBRE DEL SORTEO</label>
                         <input type="text" placeholder="Nombre del sorteo" formControlName="nombre"
+                            [class.border-red-500]="isFieldInvalid('nombre')"
+                            [class.focus:border-red-500]="isFieldInvalid('nombre')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        
+                        <!-- Si es invalido (el metdodo esta en el ts) te va a decir en rojo que es requerido -->
+                        @if (isFieldInvalid('nombre')) {
+                            <span class="text-red-500 text-xs ml-1">El nombre es requerido.</span>
+                        }
                     </div>
+
+                    <!-- TextField de Premio -->
                     <div class="flex flex-col gap-2">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">PREMIO</label>
+                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">PREMIO</label>
                         <input type="text" placeholder="Premio del sorteo" formControlName="premio"
+                            [class.border-red-500]="isFieldInvalid('premio')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        
+                        @if (isFieldInvalid('premio')) {
+                            <span class="text-red-500 text-xs ml-1">Debes especificar un premio.</span>
+                        }
                     </div>
-                    <!-- flex-1 -->
+
+                    <!-- TextArea de Descripcion de proyecto -->
                     <div class="flex flex-col gap-2 h-full flex-1">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">DESCRIPCIÓN DEL
-                            SORTEO</label>
-                        <textarea name="" id="" placeholder="Descripción del sorteo" formControlName="descripcion"
+                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">DESCRIPCIÓN DEL SORTEO</label>
+                        <textarea placeholder="Descripción del sorteo" formControlName="descripcion"
+                            [class.border-red-500]="isFieldInvalid('descripcion')"
                             class="h-full min-h-[150px] max-h-[200px] text-sm w-full focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)"></textarea>
+                        
+                        @if (isFieldInvalid('descripcion')) {
+                            <span class="text-red-500 text-xs ml-1">La descripción es obligatoria.</span>
+                        }
                     </div>
-                    <div class="w-full gap-5  flex">
+
+                    
+                    <div class="w-full gap-5 flex">
+
+                        <!-- NumberField de Cantidad de numeros -->
                         <div class="flex flex-col gap-2 w-full">
-                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">CANTIDAD DE
-                                NÚMEROS</label>
-                            <input type="text" placeholder="Cantidad de números" formControlName="cantidadNumeros"
+                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">CANTIDAD DE NÚMEROS</label>
+                            <input type="number" placeholder="Ej. 100" formControlName="cantidadNumeros"
+                                [class.border-red-500]="isFieldInvalid('cantidadNumeros')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                            
+                            @if (isFieldInvalid('cantidadNumeros')) {
+                                <span class="text-red-500 text-xs ml-1">Requerido.</span>
+                            }
                         </div>
+
+                        <!-- NumberField de Costo de numeros -->
                         <div class="flex flex-col gap-2 w-full">
-                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">COSTO POR NÚMERO
-                                (MXN)</label>
-                            <input type="text" placeholder="Costo por número" formControlName="costo"
+                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">COSTO POR NÚMERO (MXN)</label>
+                            <input type="number" placeholder="Ej. 50" formControlName="costo"
+                                [class.border-red-500]="isFieldInvalid('costo')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                            
+                            @if (isFieldInvalid('costo')) {
+                                <span class="text-red-500 text-xs ml-1">Requerido y mayor a 0.</span>
+                            }
                         </div>
                     </div>
                 </div>
+
                 <div class="w-full flex flex-col gap-5">
+                    
+                    <!-- Imagen de sorteo -->
                     <div class="flex flex-col gap-2">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">SUBIR IMAGEN
-                            (OPCIONAL)</label>
-                        <input type="text" placeholder="Subir imagen" formControlName="urlImg"
-                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">IMAGEN DEL SORTEO (OPCIONAL)</label>
+
+                        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
+
+                        @if (!previewUrl()) {
+                            <div (click)="!isUploading() && fileInput.click()" 
+                                 class="w-full min-h-[200px] border-2 border-dashed border-(--gray) hover:border-(--primary-color) rounded-md bg-(--dark) flex flex-col items-center justify-center cursor-pointer transition-all duration-200 group relative overflow-hidden">
+
+                                @if (isUploading()) {
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-(--primary-color)"></div>
+                                    <span class="text-xs text-(--gray) mt-2">Subiendo...</span>
+                                } @else {
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-(--gray) group-hover:text-(--primary-color) transition-colors mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="text-sm text-(--gray) group-hover:text-(--light)">Click para subir imagen</span>
+                                }
+                            </div>
+                        } 
+
+                        @else {
+                            <div class="relative w-full min-h-[200px] rounded-md overflow-hidden border border-(--primary-color) group">
+                                <img [src]="previewUrl()" class="w-full h-full object-cover object-center" alt="Preview">
+
+                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                                    <button type="button" (click)="removeImage()" class="text-white bg-red-500 hover:bg-red-600 p-2 rounded-full" title="Eliminar imagen">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="hidden" formControlName="urlImg">
+                        }
                     </div>
-                    <!-- flex-1 -->
-                    <div class="flex flex-col gap-2 h-full flex-1 items-center">
-                        <div
-                            class="h-full w-[80%] min-h-[100px] focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)">
-                        </div>
-                    </div>
-                    <div class="w-full gap-5  flex">
+                    
+                    <div class="w-full gap-5 flex">
+                        <!-- Fecha de inicio de la venta -->
                         <div class="flex flex-col gap-2 w-full justify-between">
-                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE
-                                VENTA</label>
-                            <input type="date" placeholder="Fecha de venta" formControlName="periodoInicioVenta"
+                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">INICIO VENTA</label>
+                            <input type="date" formControlName="periodoInicioVenta"
+                                [class.border-red-500]="isFieldInvalid('periodoInicioVenta')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                                @if (isFieldInvalid('periodoInicioVenta')) { <span class="text-red-500 text-xs">Requerido.</span> }
                         </div>
+
+                        <!-- Fecha de fin de venta -->
                         <div class="flex flex-col gap-2 w-full justify-between">
-                            <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE LA VENTA DE
-                                NÚMEROS</label>
-                            <input type="date" placeholder="Fecha de la venta de números"
-                                formControlName="periodoFinVenta"
+                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">FIN VENTA</label>
+                            <input type="date" formControlName="periodoFinVenta"
+                                [class.border-red-500]="isFieldInvalid('periodoFinVenta')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                                @if (isFieldInvalid('periodoFinVenta')) { <span class="text-red-500 text-xs">Requerido.</span> }
                         </div>
                     </div>
+
+                    <!-- Fecha de sorteo -->
                     <div class="flex flex-col gap-2">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE SORTEO</label>
-                        <input type="date" placeholder="Fecha de sorteo" formControlName="fechaSorteo"
+                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE SORTEO</label>
+                        <input type="date" formControlName="fechaSorteo"
+                            [class.border-red-500]="isFieldInvalid('fechaSorteo')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        @if (isFieldInvalid('fechaSorteo')) {
+                            <span class="text-red-500 text-xs ml-1">Fecha requerida.</span>
+                        }
                     </div>
+
+                    <!-- Tiempo limite de pago -->
                     <div class="flex flex-col gap-2">
-                        <label for="" class="text-(--gray) font-family-inria-sans-bold text-sm">TIEMPO LIMITE DEL PAGO
-                            (DÍAS)</label>
-                        <input type="text" placeholder="Tiempo limite del pago" formControlName="tiempoLimitePago"
+                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">TIEMPO LIMITE DEL PAGO (DÍAS)</label>
+                        <input type="number" placeholder="Ej. 2" formControlName="tiempoLimitePago"
+                            [class.border-red-500]="isFieldInvalid('tiempoLimitePago')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                        
+                        @if (isFieldInvalid('tiempoLimitePago')) {
+                            <span class="text-red-500 text-xs ml-1">Mínimo 1 día.</span>
+                        }
                     </div>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button
-                    class="duration-200 transition-all hover:bg-(--dark) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md text-(--light)">Cancel</button>
+
+            <div class="flex items-center gap-2 mt-4">
+
+                <!-- Botton cancelar -->
+                <button type="button" (click)="crearSorteoForm.reset()"
+                    class="duration-200 transition-all hover:bg-opacity-80 cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md text-(--light) border border-gray-600">
+                    Cancelar
+                </button>
+
+                <!-- Botton de crear sorteo -->
                 <button type="submit"
-                    class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md bg-(--primary-color) text-(--light)">Crear
-                    Sorteo</button>
+                    class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                    Crear Sorteo
+                </button>
             </div>
         </div>
     </form>
