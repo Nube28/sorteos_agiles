@@ -18,6 +18,8 @@ export class CloudinaryService {
     formData.append('upload_preset', this.uploadPreset);
     formData.append('cloud_name', this.cloudName);
 
+
+    //esto es lo que falla SOLUCIONAR, probalbnem,etne tenga q hacer lo de la api key y ese desmadre
     return this.http.post<any>(
       `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`, 
       formData

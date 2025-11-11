@@ -60,6 +60,7 @@ export class CrearSorteo {
       // Cloudinary
       this.cloudinaryService.uploadImage(file).subscribe({
         next: (url) => {
+          console.log('Imagen subida, URL:', url);
           this.crearSorteoForm.patchValue({ urlImg: url });
           this.isUploading.set(false);
         },
@@ -79,9 +80,14 @@ export class CrearSorteo {
   }
 
   onSubmit() {
+    if (this.isUploading()) {
+      return; 
+    }
+    
     if (this.crearSorteoForm.valid) {
-      console.log('Formulario válido, enviando...');
-       const sorteoData = this.crearSorteoForm.value;
+      console.log('Datos a enviar:', this.crearSorteoForm.value);
+
+      const sorteoData = this.crearSorteoForm.value;
       this.sorteoService.crearSorteo(sorteoData).subscribe({
         next: (response) => {
           this.crearSorteoForm.reset();

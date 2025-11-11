@@ -179,8 +179,16 @@
 
                 <!-- Botton de crear sorteo -->
                 <button type="submit"
-                    class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
-                    Crear Sorteo
+                    [disabled]="crearSorteoForm.invalid || isUploading()"
+                    [class.opacity-50]="crearSorteoForm.invalid || isUploading()"
+                    [class.cursor-not-allowed]="crearSorteoForm.invalid || isUploading()"
+                    class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md">
+
+                    @if (isUploading()) {
+                        Subiendo imagen...
+                    } @else {
+                        Crear Sorteo
+                    }
                 </button>
             </div>
         </div>
