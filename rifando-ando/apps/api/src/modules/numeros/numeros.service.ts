@@ -6,9 +6,9 @@ import { CreateNumeroDto, UpdateNumeroDto } from '@rifando-ando/dtos';
 export class NumeroService {
     async crearNumero(createNumeroDto: CreateNumeroDto, userId: number) {
         try {
-            const { 
-                fechaApartado, 
-                ...restData 
+            const {
+                fechaApartado,
+                ...restData
             } = createNumeroDto;
 
             // Recibe strings, los convierte al necesario por prisma
@@ -24,8 +24,11 @@ export class NumeroService {
         }
     }
 
-    async getNumeros() {
+    async getNumeros(sorteoId: number) {
         return await prisma.numero.findMany({
+            where: {
+                sorteoId: sorteoId,
+            },
             include: {
                 cliente: true,
                 sorteo: true,

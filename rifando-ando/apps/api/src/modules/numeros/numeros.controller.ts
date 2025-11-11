@@ -9,18 +9,17 @@ export class NumeroController {
 
     @Post()
     createNumero(@Body() createNumeroDto: CreateNumeroDto) {
-
         const userId = createNumeroDto.clienteId;
         return this.numeroService.crearNumero(createNumeroDto, userId);
     }
 
-    @Get()
-    getNumeros() {
-        return this.numeroService.getNumeros();
+    @Get(':id')
+    getNumeros(@Param('id', ParseIntPipe) sorteoId: number) {
+        return this.numeroService.getNumeros(sorteoId);
     }
 
     @Get(':id')
-    getNumerosById(@Param('id', ParseIntPipe) id: number) {
+    getNumeroById(@Param('id', ParseIntPipe) id: number) {
         return this.numeroService.getNumeroById(id);
     }
 

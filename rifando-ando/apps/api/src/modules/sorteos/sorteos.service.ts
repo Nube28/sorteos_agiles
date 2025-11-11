@@ -22,7 +22,6 @@ export class SorteosService {
                     fechaSorteo: new Date(fechaSorteo),
                     organizadorId: organizadorId || userId,
                     cantidadNumeros: totalNumeros,
-                    numerosDisponibles: totalNumeros,
                     ...restData,
                 },
             });

@@ -38,10 +38,6 @@ export class CreateSorteoDto {
 
   @IsDateString()
   fechaSorteo: string;
-  
-  @Type(() => Number)
-  @IsNumber()
-  numerosDisponibles:number;
 
   @Type(() => Number)
   @IsNumber()

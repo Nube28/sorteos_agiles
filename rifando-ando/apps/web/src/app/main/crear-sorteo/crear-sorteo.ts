@@ -37,12 +37,19 @@ export class CrearSorteo {
   onSubmit() {
     if (this.crearSorteoForm.valid) {
       const sorteoData = this.crearSorteoForm.value;
-      this.sorteoService.crearSorteo(sorteoData).subscribe();
-      console.log('Sorteo creado:', sorteoData);
-      this.showSuccessAlert.set(true);
-      setTimeout(() => {
-        this.showSuccessAlert.set(false);
-      }, 3000);
+      this.sorteoService.crearSorteo(sorteoData).subscribe({
+        next: (response) => {
+          console.log('Sorteo creado exitosamente:', response);
+          this.crearSorteoForm.reset();
+          this.showSuccessAlert.set(true);
+          setTimeout(() => {
+            this.showSuccessAlert.set(false);
+          }, 3000);
+        },
+        error: (err) => {
+          console.error('Error al crear sorteo:', err);
+        }
+      });
     } else {
       // campos como touched para mostrar errores
       Object.keys(this.crearSorteoForm.controls).forEach(key => {
