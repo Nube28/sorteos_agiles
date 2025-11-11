@@ -53,27 +53,26 @@ export class CrearSorteo {
       const file = input.files[0];
       this.isUploading.set(true);
 
-      // 1. Crear preview local inmediato (UX)
       const reader = new FileReader();
       reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
       reader.readAsDataURL(file);
 
-      // 2. Subir a Cloudinary
+      // Cloudinary
       this.cloudinaryService.uploadImage(file).subscribe({
         next: (url) => {
-          this.crearSorteoForm.patchValue({ urlImg: url }); // Guardamos la URL real en el form
+          this.crearSorteoForm.patchValue({ urlImg: url });
           this.isUploading.set(false);
         },
         error: (err) => {
           console.error('Error subiendo imagen', err);
           this.isUploading.set(false);
-          // Aquí podrías mostrar un error visual
         }
       });
+
+      input.value = '';
     }
   }
   
-  // Método para eliminar la imagen si se arrepienten
   removeImage() {
       this.previewUrl.set(null);
       this.crearSorteoForm.patchValue({ urlImg: '' });
