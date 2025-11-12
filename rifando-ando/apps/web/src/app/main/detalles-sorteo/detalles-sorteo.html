@@ -1,6 +1,6 @@
 @if (sorteo()){
 <app-sorteo-container [title]="sorteo().nombre">
-    <div class="m-auto w-full max-w-[1000px] flex flex-col gap-5 text-(--light) h-full">
+    <div class="m-auto w-full max-w-[1300px] flex flex-col gap-5 text-(--light) h-full">
         <div class="bg-(--dark) rounded-3xl p-5 w-full">
             <h3 class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] mb-3">
                 Descripción
@@ -10,18 +10,17 @@
             </p>
         </div>
 
-        <div class="flex flex-col md:grid grid-cols-3 gap-5 text-(--light) h-full">
+        <div class="flex flex-col lg:grid grid-cols-4 gap-5 text-(--light) h-full">
             <!-- hacer componente -->
-            <div class="bg-(--dark) rounded-3xl p-3 flex flex-col">
+            <div class="bg-(--dark) rounded-3xl p-3 flex flex-col col-span-2">
                 <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-5 pt-2">
                     Premio
                 </h3>
 
                 @if (sorteo().urlImg) {
-                <img [src]="sorteo().urlImg" alt="Premio"
-                    class="bg-(--dark) rounded-2xl min-h-[300px] w-full object-cover">
+                <img [src]="sorteo().urlImg" alt="Premio" class="bg-(--dark) rounded-2xl w-full h-full object-cover">
                 } @else {
-                <div class="bg-(--dark-gray) rounded-2xl min-h-[300px] flex items-center justify-center h-full">
+                <div class="bg-(--dark-gray) rounded-2xl flex items-center justify-center h-full">
                     <span class="text-(--gray)">(Imagen no disponible)</span>
                 </div>
                 }
