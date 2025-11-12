@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { SorteoService } from '../../global-services/sorteo.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { CloudinaryService } from '../../global-services/cloudinary.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-crear-sorteo',
@@ -19,6 +20,8 @@ export class CrearSorteo {
   showSuccessAlert = signal(false);
   isUploading = signal(false);
   previewUrl = signal<string | null>(null);
+
+  private selectedFile: File | null = null; 
 
   constructor() {
     this.setupForm();
@@ -51,24 +54,11 @@ export class CrearSorteo {
     
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      this.isUploading.set(true);
+      this.selectedFile = file; 
 
       const reader = new FileReader();
       reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
       reader.readAsDataURL(file);
-
-      // Cloudinary
-      this.cloudinaryService.uploadImage(file).subscribe({
-        next: (url) => {
-          console.log('Imagen subida, URL:', url);
-          this.crearSorteoForm.patchValue({ urlImg: url });
-          this.isUploading.set(false);
-        },
-        error: (err) => {
-          console.error('Error subiendo imagen', err);
-          this.isUploading.set(false);
-        }
-      });
 
       input.value = '';
     }
@@ -76,28 +66,54 @@ export class CrearSorteo {
   
   removeImage() {
       this.previewUrl.set(null);
+      this.selectedFile = null;
       this.crearSorteoForm.patchValue({ urlImg: '' });
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.isUploading()) {
       return; 
     }
     
-    if (this.crearSorteoForm.valid) {
-      console.log('Datos a enviar:', this.crearSorteoForm.value);
-
-      const sorteoData = this.crearSorteoForm.value;
-      this.sorteoService.crearSorteo(sorteoData).subscribe({
-        next: (response) => {
-          this.crearSorteoForm.reset();
-          this.showSuccessAlert.set(true);
-          setTimeout(() => this.showSuccessAlert.set(false), 3000);
-        },
-        error: (err) => console.error(err)
-      });
-    } else {
-      this.crearSorteoForm.markAllAsTouched(); // Esto marca TODO como 'touched' para disparar las validaciones visuales
+    if (this.crearSorteoForm.invalid) {
+      this.crearSorteoForm.markAllAsTouched();
+      return;
     }
+    
+    this.isUploading.set(true);
+
+    let finalImageUrl = '';
+
+    if (this.selectedFile) {
+      try {
+        // 5. SUBIR A CLOUDINARY AHORA
+        finalImageUrl = await firstValueFrom(this.cloudinaryService.uploadImage(this.selectedFile));
+        console.log('Imagen subida, URL:', finalImageUrl);
+
+      } catch (err) {
+        console.error('Error subiendo imagen', err);
+        this.isUploading.set(false); // Si falla la imagen, detenemos todo
+        // Aquí podrías mostrar una alerta de error de imagen
+        return; 
+      }
+    }
+
+    const sorteoData = { ...this.crearSorteoForm.value, urlImg: finalImageUrl };
+
+    console.log('Datos a enviar a la API:', sorteoData);
+
+    this.sorteoService.crearSorteo(sorteoData).subscribe({
+      next: (response) => {
+        this.crearSorteoForm.reset();
+        this.removeImage();
+        this.showSuccessAlert.set(true);
+        this.isUploading.set(false);
+        setTimeout(() => this.showSuccessAlert.set(false), 3000);
+      },
+      error: (err) => {
+        console.error(err);
+        this.isUploading.set(false);
+      }
+    });
   }
 }

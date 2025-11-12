@@ -6,21 +6,23 @@
 
 <app-sorteo-container [title]="'Crear Sorteo'">
     <form [formGroup]="crearSorteoForm" (ngSubmit)="onSubmit()">
-        <div class="flex flex-col gap-5 items-end">
+        <section class="flex flex-col gap-5 items-end">
             <div class="w-full flex flex-col sm:flex-row gap-[2vw]">
                 
-                <div class="w-full flex flex-col gap-5">
+                <!-- Columna de la Izquierda -->
+                <fieldset class="w-full flex flex-col gap-5">
+
                     <!-- TextField de Organizador -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">ORGANIZADOR</label>
-                        <input type="text" placeholder="Jesus Tapia Maldonado"
+                        <label for="organizador" class="text-(--gray) font-family-inria-sans-bold text-sm">ORGANIZADOR</label>
+                        <input id="organizador" type="text" placeholder="Jesus Tapia Maldonado"
                             class="text-sm w-full border border-transparent outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray) " />
                     </div>
 
                     <!-- TextField de Nombre de sorteo -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">NOMBRE DEL SORTEO</label>
-                        <input type="text" placeholder="Nombre del sorteo" formControlName="nombre"
+                        <label for="nombre-sorteo" class="text-(--gray) font-family-inria-sans-bold text-sm">NOMBRE DEL SORTEO</label>
+                        <input id="nombre-sorteo" type="text" placeholder="Nombre del sorteo" formControlName="nombre"
                             [class.border-red-500]="isFieldInvalid('nombre')"
                             [class.focus:border-red-500]="isFieldInvalid('nombre')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
@@ -33,8 +35,8 @@
 
                     <!-- TextField de Premio -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">PREMIO</label>
-                        <input type="text" placeholder="Premio del sorteo" formControlName="premio"
+                        <label for="premio-sorteo" class="text-(--gray) font-family-inria-sans-bold text-sm">PREMIO</label>
+                        <input id="premio-sorteo" type="text" placeholder="Premio del sorteo" formControlName="premio"
                             [class.border-red-500]="isFieldInvalid('premio')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                         
@@ -43,9 +45,9 @@
                         }
                     </div>
 
-                    <!-- TextArea de Descripcion de proyecto -->
+                    <!-- TextArea de Descripcion de sorteo -->
                     <div class="flex flex-col gap-2 h-full flex-1">
-                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">DESCRIPCIÓN DEL SORTEO</label>
+                        <label for="descripcion-sorteo" class="text-(--gray) font-family-inria-sans-bold text-sm">DESCRIPCIÓN DEL SORTEO</label>
                         <textarea placeholder="Descripción del sorteo" formControlName="descripcion"
                             [class.border-red-500]="isFieldInvalid('descripcion')"
                             class="h-full min-h-[150px] max-h-[200px] text-sm w-full focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)"></textarea>
@@ -60,8 +62,8 @@
 
                         <!-- NumberField de Cantidad de numeros -->
                         <div class="flex flex-col gap-2 w-full">
-                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">CANTIDAD DE NÚMEROS</label>
-                            <input type="number" placeholder="Ej. 100" formControlName="cantidadNumeros"
+                            <label for="cantidad-numeros" class="text-(--gray) font-family-inria-sans-bold text-sm">CANTIDAD DE NÚMEROS</label>
+                            <input id="cantidad-numeros" type="number" placeholder="Ej. 100" formControlName="cantidadNumeros"
                                 [class.border-red-500]="isFieldInvalid('cantidadNumeros')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                             
@@ -72,8 +74,8 @@
 
                         <!-- NumberField de Costo de numeros -->
                         <div class="flex flex-col gap-2 w-full">
-                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">COSTO POR NÚMERO (MXN)</label>
-                            <input type="number" placeholder="Ej. 50" formControlName="costo"
+                            <label for="costo-numero"class="text-(--gray) font-family-inria-sans-bold text-sm">COSTO POR NÚMERO (MXN)</label>
+                            <input id="costo-numero" type="number" placeholder="Ej. 50" formControlName="costo"
                                 [class.border-red-500]="isFieldInvalid('costo')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                             
@@ -82,18 +84,18 @@
                             }
                         </div>
                     </div>
-                </div>
+                </fieldset>
 
-                <div class="w-full flex flex-col gap-5">
+                <fieldset class="w-full flex flex-col gap-5">
                     
                     <!-- Imagen de sorteo -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">IMAGEN DEL SORTEO (OPCIONAL)</label>
+                        <label for="imagen-sorteo" class="text-(--gray) font-family-inria-sans-bold text-sm">IMAGEN DEL SORTEO (OPCIONAL)</label>
 
-                        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
+                        <input id="imagen-sorteo" type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
 
                         @if (!previewUrl()) {
-                            <div (click)="!isUploading() && fileInput.click()" 
+                            <button (click)="!isUploading() && fileInput.click()" 
                                  class="w-full min-h-[200px] border-2 border-dashed border-(--gray) hover:border-(--primary-color) rounded-md bg-(--dark) flex flex-col items-center justify-center cursor-pointer transition-all duration-200 group relative overflow-hidden">
 
                                 @if (isUploading()) {
@@ -105,7 +107,7 @@
                                     </svg>
                                     <span class="text-sm text-(--gray) group-hover:text-(--light)">Click para subir imagen</span>
                                 }
-                            </div>
+                            </button>
                         } 
 
                         @else {
@@ -127,8 +129,8 @@
                     <div class="w-full gap-5 flex">
                         <!-- Fecha de inicio de la venta -->
                         <div class="flex flex-col gap-2 w-full justify-between">
-                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">INICIO VENTA</label>
-                            <input type="date" formControlName="periodoInicioVenta"
+                            <label for="inicio-venta" class="text-(--gray) font-family-inria-sans-bold text-sm">INICIO VENTA</label>
+                            <input id="inicio-venta" type="date" formControlName="periodoInicioVenta"
                                 [class.border-red-500]="isFieldInvalid('periodoInicioVenta')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                                 @if (isFieldInvalid('periodoInicioVenta')) { <span class="text-red-500 text-xs">Requerido.</span> }
@@ -136,8 +138,8 @@
 
                         <!-- Fecha de fin de venta -->
                         <div class="flex flex-col gap-2 w-full justify-between">
-                            <label class="text-(--gray) font-family-inria-sans-bold text-sm">FIN VENTA</label>
-                            <input type="date" formControlName="periodoFinVenta"
+                            <label for="final-venta" class="text-(--gray) font-family-inria-sans-bold text-sm">FIN VENTA</label>
+                            <input id="final-venta" type="date" formControlName="periodoFinVenta"
                                 [class.border-red-500]="isFieldInvalid('periodoFinVenta')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                                 @if (isFieldInvalid('periodoFinVenta')) { <span class="text-red-500 text-xs">Requerido.</span> }
@@ -146,8 +148,8 @@
 
                     <!-- Fecha de sorteo -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE SORTEO</label>
-                        <input type="date" formControlName="fechaSorteo"
+                        <label for="fecha-sorteo" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE SORTEO</label>
+                        <input id="fecha-sorteo" type="date" formControlName="fechaSorteo"
                             [class.border-red-500]="isFieldInvalid('fechaSorteo')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                         @if (isFieldInvalid('fechaSorteo')) {
@@ -157,8 +159,8 @@
 
                     <!-- Tiempo limite de pago -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-(--gray) font-family-inria-sans-bold text-sm">TIEMPO LIMITE DEL PAGO (DÍAS)</label>
-                        <input type="number" placeholder="Ej. 2" formControlName="tiempoLimitePago"
+                        <label for="tiempo-limite-pago" class="text-(--gray) font-family-inria-sans-bold text-sm">TIEMPO LIMITE DEL PAGO (DÍAS)</label>
+                        <input id="tiempo-limite-pago" type="number" placeholder="Ej. 2" formControlName="tiempoLimitePago"
                             [class.border-red-500]="isFieldInvalid('tiempoLimitePago')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                         
@@ -166,7 +168,7 @@
                             <span class="text-red-500 text-xs ml-1">Mínimo 1 día.</span>
                         }
                     </div>
-                </div>
+                </fieldset>
             </div>
 
             <div class="flex items-center gap-2 mt-4">
@@ -191,6 +193,6 @@
                     }
                 </button>
             </div>
-        </div>
+        </section>
     </form>
 </app-sorteo-container>
