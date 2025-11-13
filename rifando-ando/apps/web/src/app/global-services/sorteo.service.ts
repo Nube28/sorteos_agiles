@@ -17,7 +17,7 @@ export class SorteoService {
     sorteo = signal<Sorteo | null>(null);
     readonly sorteo$ = this.sorteo.asReadonly();
 
-    crearSorteo(sorteo: Sorteo): Observable<Sorteo> {
+    crearSorteo(sorteo: Sorteo, nombreOrganizador: string): Observable<Sorteo> {
         // convertir strings a números antes de enviar
         const sorteoData = {
             ...sorteo,
@@ -25,12 +25,12 @@ export class SorteoService {
             // cantidad de numeros si lo ocupamos, tenemos que saber el limite
             cantidadNumeros: Number(sorteo.cantidadNumeros),
             tiempoLimitePago: Number(sorteo.tiempoLimitePago),
-            organizadorId: 1
+            nombreOrganizador: nombreOrganizador
         };
 
         // Vamos a implementar optimistic ui aqui
         return this.httpClient.post<Sorteo>(this.apiURL, sorteoData).pipe(
-            tap((response) => {}),
+            tap((response) => { }),
             catchError(error => {
                 console.error('Error al crear sorteo:', error);
                 return throwError(() => error);
@@ -63,4 +63,17 @@ export class SorteoService {
             })
         );
     }
+
+    getOrganizadorPorNombre(sorteoId: number): Observable<Sorteo> {
+        const url = `${this.apiURL}/${sorteoId}`;
+
+        return this.httpClient.get<Sorteo>(url).pipe(
+            tap(data => this.sorteo.set(data)),
+            catchError(error => {
+                console.error('Error al cargar sorteo:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
 }

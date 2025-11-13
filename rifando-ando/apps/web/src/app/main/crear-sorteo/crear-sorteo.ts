@@ -21,7 +21,7 @@ export class CrearSorteo {
   isUploading = signal(false);
   previewUrl = signal<string | null>(null);
 
-  private selectedFile: File | null = null; 
+  private selectedFile: File | null = null;
 
   constructor() {
     this.setupForm();
@@ -29,7 +29,7 @@ export class CrearSorteo {
 
   private setupForm() {
     this.crearSorteoForm = this.fb.group({
-      // organizador: [''],
+      organizador: ['', Validators.required],
       nombre: ['', Validators.required],
       premio: ['', Validators.required],
       descripcion: ['', Validators.required],
@@ -51,10 +51,10 @@ export class CrearSorteo {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    
+
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      this.selectedFile = file; 
+      this.selectedFile = file;
 
       const reader = new FileReader();
       reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
@@ -63,23 +63,23 @@ export class CrearSorteo {
       input.value = '';
     }
   }
-  
+
   removeImage() {
-      this.previewUrl.set(null);
-      this.selectedFile = null;
-      this.crearSorteoForm.patchValue({ urlImg: '' });
+    this.previewUrl.set(null);
+    this.selectedFile = null;
+    this.crearSorteoForm.patchValue({ urlImg: '' });
   }
 
   async onSubmit() {
     if (this.isUploading()) {
-      return; 
+      return;
     }
-    
+
     if (this.crearSorteoForm.invalid) {
       this.crearSorteoForm.markAllAsTouched();
       return;
     }
-    
+
     this.isUploading.set(true);
 
     let finalImageUrl = '';
@@ -94,15 +94,17 @@ export class CrearSorteo {
         console.error('Error subiendo imagen', err);
         this.isUploading.set(false); // Si falla la imagen, detenemos todo
         // Aquí podrías mostrar una alerta de error de imagen
-        return; 
+        return;
       }
     }
+    const { organizador, ...restoDelFormulario } = this.crearSorteoForm.value;
 
-    const sorteoData = { ...this.crearSorteoForm.value, urlImg: finalImageUrl };
+    const sorteoData = { ...restoDelFormulario, urlImg: finalImageUrl };
+    const nombreOrganizadorVariable = organizador;
 
     console.log('Datos a enviar a la API:', sorteoData);
 
-    this.sorteoService.crearSorteo(sorteoData).subscribe({
+    this.sorteoService.crearSorteo(sorteoData,nombreOrganizadorVariable).subscribe({
       next: (response) => {
         this.crearSorteoForm.reset();
         this.removeImage();

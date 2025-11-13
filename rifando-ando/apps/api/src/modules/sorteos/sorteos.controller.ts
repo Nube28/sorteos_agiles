@@ -12,8 +12,7 @@ export class SorteosController {
         // cuando metamos jwt plebes hay cambiar esto a:
         // createSorteo(@Body() createSorteoDto: CreateSorteoDto, @UserId() userId: number)
         // Por ahora usa organizadorId del body o usa un valor hardcodeado
-        const userId = createSorteoDto.organizadorId;
-        return this.sorteosService.crearSorteo(createSorteoDto, userId);
+        return this.sorteosService.crearSorteo(createSorteoDto);
     }
 
     @Get()

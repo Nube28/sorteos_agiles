@@ -43,9 +43,11 @@ export class CreateSorteoDto {
   @IsNumber()
   tiempoLimitePago: number;
 
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @IsPositive()
-  organizadorId?: number; // temporal hasta que le metamos JWT
+  //@IsOptional()
+  // @Type(() => Number)
+   //@IsNumber()
+   //@IsPositive()
+   //organizadorId?: number; // temporal hasta que le metamos JWT
+  @IsString()
+  nombreOrganizador: string;
 }

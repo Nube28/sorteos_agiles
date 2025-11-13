@@ -1,26 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { prisma } from '@rifando-ando/database';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { prisma, Rol } from '@rifando-ando/database';
 import { CreateSorteoDto, UpdateSorteoDto } from '@rifando-ando/dtos';
-
+import { OrganizadorService } from './organizador.service'; // Importa tu nuevo servicio
 @Injectable()
 export class SorteosService {
-    async crearSorteo(createSorteoDto: CreateSorteoDto, userId: number) {
+    constructor(
+        private organizadorService: OrganizadorService
+    ) { }
+    async crearSorteo(createSorteoDto: CreateSorteoDto) {
         try {
             const {
                 periodoInicioVenta,
                 periodoFinVenta,
                 fechaSorteo,
-                organizadorId,
+                nombreOrganizador,
                 cantidadNumeros,
                 ...restData
             } = createSorteoDto;
+
+            const organizador = await this.organizadorService.findOneByName(nombreOrganizador);
+
+            if (!organizador) {
+                throw new NotFoundException(`No se encontró un organizador con el usuario: ${nombreOrganizador}`);
+            }
             const totalNumeros = Number(cantidadNumeros);
             return await prisma.sorteo.create({
                 data: {
                     periodoInicioVenta: new Date(periodoInicioVenta),
                     periodoFinVenta: new Date(periodoFinVenta),
                     fechaSorteo: new Date(fechaSorteo),
-                    organizadorId: organizadorId || userId,
+                    organizador: {
+                        connect: { id: organizador.id }
+                    },
                     cantidadNumeros: totalNumeros,
                     ...restData,
                 },
@@ -46,7 +57,7 @@ export class SorteosService {
             },
         });
     }
-
+    
     async updateSorteo(id: number, updateSorteoDto: Partial<UpdateSorteoDto>, userId: number) {
         try {
             await this.getSorteoById(id);
