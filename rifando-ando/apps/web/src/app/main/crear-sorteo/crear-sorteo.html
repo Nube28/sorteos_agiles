@@ -156,22 +156,33 @@
                         <div class="flex flex-col gap-2 w-full justify-between">
                             <label for="inicio-venta" class="text-(--gray) font-family-inria-sans-bold text-sm">INICIO
                                 VENTA</label>
-                            <input id="inicio-venta" type="date" formControlName="periodoInicioVenta"
+
+                            <input id="inicio-venta" type="date" [min]="minDateStr" formControlName="periodoInicioVenta"
                                 [class.border-red-500]="isFieldInvalid('periodoInicioVenta')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                            @if (isFieldInvalid('periodoInicioVenta')) { <span
-                                class="text-red-500 text-xs">Requerido.</span> }
+
+                            @if (isFieldInvalid('periodoInicioVenta')) {
+                            <span class="text-red-500 text-xs">Fecha inválida o requerida.</span>
+                            }
                         </div>
 
                         <!-- Fecha de fin de venta -->
                         <div class="flex flex-col gap-2 w-full justify-between">
                             <label for="final-venta" class="text-(--gray) font-family-inria-sans-bold text-sm">FIN
                                 VENTA</label>
-                            <input id="final-venta" type="date" formControlName="periodoFinVenta"
-                                [class.border-red-500]="isFieldInvalid('periodoFinVenta')"
+                            <input id="final-venta" type="date"
+                                [min]="crearSorteoForm.get('periodoInicioVenta')?.value || minDateStr"
+                                formControlName="periodoFinVenta"
+                                [class.border-red-500]="isFieldInvalid('periodoFinVenta') || crearSorteoForm.hasError('fechasInvalidasVenta')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
-                            @if (isFieldInvalid('periodoFinVenta')) { <span
-                                class="text-red-500 text-xs">Requerido.</span> }
+
+                            @if (isFieldInvalid('periodoFinVenta')) {
+                            <span class="text-red-500 text-xs">Requerido.</span>
+                            }
+                            @if (crearSorteoForm.hasError('fechasInvalidasVenta') &&
+                            crearSorteoForm.get('periodoFinVenta')?.touched) {
+                            <span class="text-red-500 text-xs">El fin debe ser posterior al inicio.</span>
+                            }
                         </div>
                     </div>
 
@@ -179,11 +190,19 @@
                     <div class="flex flex-col gap-2">
                         <label for="fecha-sorteo" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE
                             SORTEO</label>
-                        <input id="fecha-sorteo" type="date" formControlName="fechaSorteo"
-                            [class.border-red-500]="isFieldInvalid('fechaSorteo')"
+
+                        <input id="fecha-sorteo" type="date"
+                            [min]="crearSorteoForm.get('periodoFinVenta')?.value || minDateStr"
+                            formControlName="fechaSorteo"
+                            [class.border-red-500]="isFieldInvalid('fechaSorteo') || crearSorteoForm.hasError('fechasInvalidasSorteo')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+
                         @if (isFieldInvalid('fechaSorteo')) {
-                        <span class="text-red-500 text-xs ml-1">Fecha requerida.</span>
+                        <span class="text-red-500 text-xs ml-1">Requerido.</span>
+                        }
+                        @if (crearSorteoForm.hasError('fechasInvalidasSorteo') &&
+                        crearSorteoForm.get('fechaSorteo')?.touched) {
+                        <span class="text-red-500 text-xs ml-1">El sorteo debe ser después de terminar la venta.</span>
                         }
                     </div>
 

@@ -1,9 +1,28 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { CloudinaryService } from '../../global-services/cloudinary.service';
 import { firstValueFrom } from 'rxjs';
+
+
+const ordenFechasValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const inicio = control.get('periodoInicioVenta')?.value;
+  const fin = control.get('periodoFinVenta')?.value;
+  const sorteo = control.get('fechaSorteo')?.value;
+
+  let errors: any = null;
+
+  if (inicio && fin && new Date(fin) < new Date(inicio)) {
+    errors = { ...errors, fechasInvalidasVenta: true };
+  }
+
+  if (fin && sorteo && new Date(sorteo) < new Date(fin)) {
+    errors = { ...errors, fechasInvalidasSorteo: true };
+  }
+
+  return errors;
+};
 
 @Component({
   selector: 'app-crear-sorteo',
@@ -20,6 +39,8 @@ export class CrearSorteo {
   showSuccessAlert = signal(false);
   isUploading = signal(false);
   previewUrl = signal<string | null>(null);
+
+  minDateStr = new Date().toLocaleDateString('en-CA');
 
   private selectedFile: File | null = null;
 
@@ -40,6 +61,8 @@ export class CrearSorteo {
       periodoFinVenta: ['', Validators.required],
       fechaSorteo: ['', Validators.required],
       tiempoLimitePago: ['', [Validators.required, Validators.min(1)]],
+    }, {
+      validators: ordenFechasValidator
     });
   }
 
@@ -104,7 +127,7 @@ export class CrearSorteo {
 
     console.log('Datos a enviar a la API:', sorteoData);
 
-    this.sorteoService.crearSorteo(sorteoData,nombreOrganizadorVariable).subscribe({
+    this.sorteoService.crearSorteo(sorteoData, nombreOrganizadorVariable).subscribe({
       next: (response) => {
         this.crearSorteoForm.reset();
         this.removeImage();
