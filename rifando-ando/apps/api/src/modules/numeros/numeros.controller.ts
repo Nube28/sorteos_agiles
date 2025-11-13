@@ -1,4 +1,4 @@
-import { CreateNumeroDto, UpdateNumeroDto } from '@rifando-ando/dtos';
+import { CreateNumeroDto, UpdateNumeroDto, ReservarCantidadDto } from '@rifando-ando/dtos';
 import { UserId } from '../../common/decorators/user.decorator';
 import { NumeroService } from './numeros.service';
 import { Controller, Post, Body, Get, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
@@ -31,5 +31,11 @@ export class NumeroController {
     @Delete(':id')
     deleteSorteo(@Param('id', ParseIntPipe) id: number) {
         return this.numeroService.deleteNumero(id);
+    }
+    @Post('reservar-cantidad')
+    reservarCantidad(@Body() dto: ReservarCantidadDto) {
+        //Aqui esta hardcordeado por que no tenemos la logica para sacar el id de los user que estan en la pagina aun
+        const userId = dto.clienteId || 1;
+        return this.numeroService.reservarNumerosAleatorios(dto, userId);
     }
 }

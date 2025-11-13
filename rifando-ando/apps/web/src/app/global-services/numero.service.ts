@@ -25,4 +25,24 @@ export class NumerosService {
             })
         );
     }
+    reservarCantidad(sorteoId: number, cantidad: number, clienteId: number): Observable<any> {
+        const url = `${this.apiURL}/reservar-cantidad`;
+        const body = {
+            sorteoId,
+            cantidad,
+            clienteId, // Opcional si el backend lo saca del token
+            fechaApartado: new Date().toISOString()
+        };
+
+        return this.httpClient.post(url, body).pipe(
+            tap(() => {
+                // Recargamos los números para que se actualice la UI (disponibles)
+                this.getNumeros(sorteoId).subscribe();
+            }),
+            catchError(error => {
+                console.error('Error al apartar números:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 }

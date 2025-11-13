@@ -18,7 +18,9 @@ export class DetallesSorteo {
   private activatedRoute = inject(ActivatedRoute)
   sorteoService = inject(SorteoService)
   private numerosService = inject(NumerosService)
-
+  showApartadoSuccess = signal(false);
+  showApartadoError = signal(false);
+  apartadoErrorMessage = signal('');
   sorteo = this.sorteoService.sorteo;
   numeros = this.numerosService.numeros;
 
@@ -48,8 +50,10 @@ export class DetallesSorteo {
     // cantidad numeros del sorteo menos numeros existentes (están apartados o pagados)
     return this.sorteo().cantidadNumeros - this.numeros().length;
   }
+
   cantidadAComprar = signal(1);
   // pendiente, se hace ya que se agregue el formulario de compra de numeros, i aint doing all that
+
   totalCalculado = computed(() => {
     if (!this.sorteo()) return 0;
     const costo = this.sorteo().costo;
@@ -60,12 +64,10 @@ export class DetallesSorteo {
   validarCantidad(input: HTMLInputElement) {
     let valor = parseInt(input.value);
     const max = this.numerosDisponibles;
-
     if (isNaN(valor)) {
       this.cantidadAComprar.set(0);
       return;
     }
-
     if (valor > max) {
       valor = max;
       input.value = max.toString();
@@ -73,11 +75,45 @@ export class DetallesSorteo {
       valor = 1;
       input.value = '1';
     }
-    
     this.cantidadAComprar.set(valor);
   }
-}
 
+  isSubmitting = signal<boolean>(false);
+  numerosReservadosExito = signal<number[]>([]);
+  apartarNumeros() {
+    const sorteoId = this.sorteo()?.id;
+    const cantidad = this.cantidadAComprar();
+    const clienteId = 1;
+
+    if (!sorteoId || cantidad <= 0) return;
+    this.showApartadoSuccess.set(false);
+    this.showApartadoError.set(false);
+    if (cantidad > this.numerosDisponibles) {
+      alert('No hay suficientes números disponibles');
+      return;
+    }
+    this.numerosService.reservarCantidad(sorteoId, cantidad, clienteId).subscribe({
+      next: (res) => {
+        this.numerosReservadosExito.set(res.numeros || []);
+        this.showApartadoSuccess.set(true);
+        this.cantidadAComprar.set(1);
+        this.isSubmitting.set(false);
+        setTimeout(() => {
+          this.showApartadoSuccess.set(false);
+        }, 5000);
+      },
+      error: (err) => {
+        const msg = err.error?.message || err.message || 'Error desconocido';
+        this.apartadoErrorMessage.set(msg);
+        this.showApartadoError.set(true);
+        this.isSubmitting.set(false);
+        setTimeout(() => {
+          this.showApartadoError.set(false);
+        }, 5000);
+      }
+    });
+  }
+}
 // Lo quité, esto solo setea nulo, no desuscribe, mejor takeUntilDestroy()
 // ngOnDestroy(): void {
 //   this.sorteoService.sorteo.set(null)

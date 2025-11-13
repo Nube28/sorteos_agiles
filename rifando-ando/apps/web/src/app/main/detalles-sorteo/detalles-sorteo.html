@@ -1,3 +1,24 @@
+@if (showApartadoSuccess()) {
+<div
+    class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-bounce duration-75 z-50 border border-green-400 max-w-[90vw] text-center">
+    <div class="font-(--font-family-inria-sans-bold) text-lg mb-1">¡Éxito!</div>
+    <p>
+        Se apartaron los siguientes números:
+        <span class="font-bold text-white">
+            {{ numerosReservadosExito().join(', ') }}
+        </span>
+    </p>
+
+</div>
+}
+
+@if (showApartadoError()) {
+<div
+    class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-red-600 text-white shadow-lg animate-bounce duration-75 z-50 border border-red-800">
+    <span class="font-bold">¡Error!</span> {{ apartadoErrorMessage() }}
+</div>
+}
+
 @if (sorteo()){
 <app-sorteo-container [title]="sorteo().nombre">
     <div class="m-auto w-full max-w-[1300px] flex flex-col gap-5 text-(--light) h-full">
@@ -142,9 +163,15 @@
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <button type="submit"
-                            class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 w-full rounded-md bg-(--primary-color) text-(--light)">Apartar
-                            Numero</button>
+                        <button (click)="apartarNumeros()" [disabled]="isSubmitting() || numerosDisponibles === 0"
+                            [class.opacity-50]="isSubmitting() || numerosDisponibles === 0"
+                            class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 w-full rounded-md bg-(--primary-color) text-(--light)">
+                            @if(isSubmitting()) {
+                            Procesando...
+                            } @else {
+                            Apartar Números
+                            }
+                        </button>
                     </div>
                 </div>
             </div>
