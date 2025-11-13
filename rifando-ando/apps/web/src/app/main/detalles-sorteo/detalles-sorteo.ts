@@ -48,15 +48,36 @@ export class DetallesSorteo {
     // cantidad numeros del sorteo menos numeros existentes (están apartados o pagados)
     return this.sorteo().cantidadNumeros - this.numeros().length;
   }
-
+  cantidadAComprar = signal(1);
   // pendiente, se hace ya que se agregue el formulario de compra de numeros, i aint doing all that
   totalCalculado = computed(() => {
     if (!this.sorteo()) return 0;
     const costo = this.sorteo().costo;
     const cantidadNumeros = this.sorteo().cantidadNumeros;
-    return costo * cantidadNumeros;
+    return costo * this.cantidadAComprar();
   });
+
+  validarCantidad(input: HTMLInputElement) {
+    let valor = parseInt(input.value);
+    const max = this.numerosDisponibles;
+
+    if (isNaN(valor)) {
+      this.cantidadAComprar.set(0);
+      return;
+    }
+
+    if (valor > max) {
+      valor = max;
+      input.value = max.toString();
+    } else if (valor < 1) {
+      valor = 1;
+      input.value = '1';
+    }
+    
+    this.cantidadAComprar.set(valor);
+  }
 }
+
 // Lo quité, esto solo setea nulo, no desuscribe, mejor takeUntilDestroy()
 // ngOnDestroy(): void {
 //   this.sorteoService.sorteo.set(null)
