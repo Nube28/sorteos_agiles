@@ -7,12 +7,13 @@
             <span>Rifando</span><span class="text-(--primary-color)">ando</span>
         </div>
 
+        @if (showMenuOptions()) {
         <!-- cambiar a segun la ruta, elija uno u otro, no manejar usando el servicio -->
         <ul class="flex items-center gap-[3vw] text-sm justify-center">
             <li (click)="onMenuClick('Ver Sorteos')"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                    'text-(--primary-color) underline': menuSelected === 'Ver Sorteos'
-                }"><a routerLink="./ver-sorteos">Ver
+                        'text-(--primary-color) underline': menuSelected === 'Ver Sorteos'
+                    }"><a routerLink="./ver-sorteos">Ver
                     Sorteos</a></li>
             <li (click)="onMenuClick('Mis Sorteos')"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
@@ -21,17 +22,29 @@
                     Sorteos</a></li>
             <li (click)="onMenuClick('Crear Sorteos')"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                    'text-(--primary-color) underline': menuSelected === 'Crear Sorteos'
+                        'text-(--primary-color) underline': menuSelected === 'Crear Sorteos'
                 }"><a routerLink="./crear-sorteo">Crear
                     Sorteos</a></li>
         </ul>
-
         <div class="flex items-center gap-3 text-sm justify-end cursor-pointer">
             <span class="text-nowrap">Jésus Tapía Maldónado</span>
             <div class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
                 <!-- user icon -->
             </div>
         </div>
+        } @else{
+        <div></div>
+        <div class="flex items-center gap-2 h-full justify-end">
+            <button
+                class="duration-200 transition-all hover:bg-(--dark-gray) cursor-pointer min-w-[100px] h-full w-[8vw] rounded-md text-(--light) text-xs">Registrarse</button>
+
+            <button type="submit"
+                class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer h-full min-w-[100px] w-[8vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md text-xs">
+                Iniciar Sesión
+            </button>
+        </div>
+        <!-- fill empty space of grid -->
+        }
     </header>
 
     <!-- botones fixed maybe to do -->

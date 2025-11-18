@@ -1,0 +1,77 @@
+<div class="w-full h-full text-white overflow-auto scrollbar-hide flex flex-col gap-[3vh] px-1">
+    <div class="rounded-4xl p-[2vw] flex flex-col justify-between h-full relative overflow-hidden mt-5 shadow-md">
+        <div class="absolute top-0 left-0 w-full h-full opacity-20 -z-1">
+            <img src="./assets/imgs/bg-landing.png" alt="" class="w-full">
+        </div>
+
+        <h1
+            class="font-family-inria-sans-bold text-center sm:text-start text-(--light) text-[clamp(2rem,2vw,3rem)] font-family-roboto-slab-bold mb-5">
+            ¿Qué camino estás<br>
+            dispuesto a tomar?
+        </h1>
+
+        <div class="flex flex-col gap-5">
+            <p class="font-family-inria-sans">
+                Únete a nuestra comunidad y no te pierdas la oportunidad de ganar <br>
+                increíbles premios. Registrarse es fácil y rápido. ¡Regístrate, juega y <br>
+                deja que la suerte esté de tu lado!
+            </p>
+
+            <button type="submit" routerLink="/main/ver-sorteos"
+                class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-2 min-w-[100px] w-[8vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md text-xs">
+                Explorar
+            </button>
+        </div>
+    </div>
+
+
+    <div class="flex gap-4">
+        <!-- Sorteos reales (máximo 3) -->
+        @for (sorteo of sorteos(); track sorteo.id) {
+        <div
+            class="cursor-pointer h-full bg-(--dark) flex-1 aspect-5/2 min-w-[200px] md:min-w-[400px] lg:min-w-[20vw] relative rounded-4xl p-[0.6vw] lg:p-[0.3vw] hover:scale-101 transition-transform max-w-full lg:max-w-1/3">
+
+            <div class="absolute top-3 right-3 sm:top-[2vw] sm:right-[2vw] lg:top-[1.5vw] lg:right-[1.5vw] text-xs px-3 py-1.5 rounded-full 
+                bg-(--primary-color)">
+                <span class="hidden sm:inline">
+                    Numeros restantes
+                </span>
+                <span class="">{{ sorteo.numerosDisponibles }} de {{ sorteo.numerosTotales }}
+                </span>
+            </div>
+
+            <!-- there is a bug in here, to resolve later -->
+            <div class="bg-(--dark-gray) w-full h-[70%] m-auto rounded-3xl overflow-hidden">
+                <!-- image goes in here -->
+                <img src="{{sorteo.urlImg}}" alt="">
+            </div>
+            <div class="p-5">
+                <h3
+                    class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] font-family-roboto-slab-bold">
+                    {{ sorteo.nombre }}
+                </h3>
+                <p class="text-sm text-(--gray) mt-1">
+                    Fecha sorteo: {{ sorteo.fecha }}
+                </p>
+            </div>
+
+        </div>
+        }
+
+        <!-- Fallbacks para completar hasta 3 -->
+        @for (item of fallbackArray(); track $index) {
+        <div
+            class="cursor-pointer bg-(--dark) flex-1 aspect-5/2 min-w-[200px] md:min-w-[400px] lg:min-w-[20vw] relative rounded-4xl p-[0.6vw] lg:p-[0.3vw] hover:scale-101 transition-transform max-w-full lg:max-w-1/3 animate-pulse">
+
+            <div class="bg-(--dark-gray) w-full h-full m-auto rounded-3xl"></div>
+
+            <div class="flex flex-col gap-2 p-5">
+                <div class="w-4/5 bg-(--dark-gray) h-10 rounded-md">
+                </div>
+                <div class="w-2/4 bg-(--dark-gray) h-5 rounded-md">
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>

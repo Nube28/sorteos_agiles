@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { InterfaceService } from '../global-services/interface.service';
 import { CommonModule } from '@angular/common';
 
@@ -11,6 +11,15 @@ import { CommonModule } from '@angular/common';
 })
 export class Main {
   interfaceService = inject(InterfaceService);
+
+  currentRoute = signal('');
+  showMenuOptions = computed(() => this.currentRoute() !== '/main/landing-page');
+
+  constructor(private router: Router) {
+    this.router.events.subscribe(() => {
+      this.currentRoute.set(this.router.url);
+    });
+  }
 
   updateMenuSelected(newMenu: string) {
     this.interfaceService.updateMenuSelected(newMenu);
