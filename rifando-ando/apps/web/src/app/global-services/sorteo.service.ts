@@ -30,7 +30,7 @@ export class SorteoService {
 
         // Vamos a implementar optimistic ui aqui
         return this.httpClient.post<Sorteo>(this.apiURL, sorteoData).pipe(
-            tap((response) => { }),
+            tap((sorteoCreado) => { this.sorteos.update(sorteosActuales => [...sorteosActuales, sorteoCreado]); }),
             catchError(error => {
                 console.error('Error al crear sorteo:', error);
                 return throwError(() => error);
@@ -76,4 +76,27 @@ export class SorteoService {
         );
     }
 
+    actualizarSorteo(sorteoId: number, datos: Partial<Sorteo>): Observable<Sorteo> {
+        const url = `${this.apiURL}/${sorteoId}`;
+
+        const sorteoData = {
+            ...datos,
+            costo: Number(datos.costo),
+            cantidadNumeros: Number(datos.cantidadNumeros),
+            tiempoLimitePago: Number(datos.tiempoLimitePago),
+        };
+
+        return this.httpClient.patch<Sorteo>(url, sorteoData).pipe(
+            tap(sorteoActualizado => {
+                this.sorteo.set(sorteoActualizado);
+                this.sorteos.update(lista =>
+                    lista.map(s => s.id === sorteoId ? sorteoActualizado : s)
+                );
+            }),
+            catchError(error => {
+                console.error('Error al actualizar sorteo:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 }

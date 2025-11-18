@@ -26,8 +26,9 @@ export class SorteosController {
     }
 
     @Patch(':id')
-    updateSorteo(@Param('id', ParseIntPipe) id: number, @Body() updateSorteoDto: UpdateSorteoDto, @UserId() userId: number) {
-        return this.sorteosService.updateSorteo(id, updateSorteoDto, userId);
+    updateSorteo(@Param('id', ParseIntPipe) id: number, @Body() updateSorteoDto: any, /*@UserId() userId: number*/) {
+        const userId_temporal = 1; // Por el momento ya que no tenemos configurado el jwt
+        return this.sorteosService.updateSorteo(id, updateSorteoDto, userId_temporal);
     }
 
     @Delete(':id')

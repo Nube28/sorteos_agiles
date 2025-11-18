@@ -22,6 +22,10 @@ export const appRoutes: Route[] = [
                 path: 'detalles-sorteo/:id',
                 loadComponent: () => import('./main/detalles-sorteo/detalles-sorteo').then((m) => m.DetallesSorteo)
             },
+              {
+                path: 'modificar-sorteo/:id',
+                loadComponent: () => import('./main/modificar-sorteo/modificar-sorteo').then((m) => m.ModificarSorteo)
+            },
             {
                 path: '**',
                 redirectTo: 'ver-sorteos'
