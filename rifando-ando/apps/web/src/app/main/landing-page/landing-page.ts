@@ -2,10 +2,11 @@ import { Component, computed, inject, OnInit } from '@angular/core';
 import { InterfaceService } from '../../global-services/interface.service';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { RouterLink } from '@angular/router';
+import { SorteoComponent } from '../../global-components/sorteo.component';
 
 @Component({
   selector: 'app-landing',
-  imports: [RouterLink],
+  imports: [RouterLink, SorteoComponent],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css',
 })

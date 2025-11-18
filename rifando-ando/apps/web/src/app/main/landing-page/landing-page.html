@@ -29,36 +29,7 @@
     <div class="hidden md:grid grid-cols-3 gap-4">
         <!-- Sorteos reales (máximo 3) -->
         @for (sorteo of sorteos(); track sorteo.id) {
-        <div
-            class="bg-(--dark) aspect-5/2 cursor-pointer relative rounded-4xl p-[0.6vw] lg:p-[0.3vw] hover:scale-101 transition-transform">
-            <div class="absolute top-3 right-3 sm:top-[2vw] sm:right-[2vw] lg:top-[1.5vw] lg:right-[1.5vw] text-xs px-3 py-1.5 rounded-full 
-            bg-(--primary-color)">
-                <span class="hidden sm:inline">
-                    Numeros restantes
-                </span>
-                <span class="">{{ sorteo.numerosDisponibles }} de {{ sorteo.numerosTotales }}
-                </span>
-            </div>
-
-            <!-- there is a bug in here, to resolve later -->
-            <div class="bg-(--dark-gray) w-full h-full rounded-3xl overflow-hidden">
-                <!-- image goes in here -->
-                <img src="{{sorteo.urlImg}}" alt="">
-            </div>
-
-            <div class="p-5">
-                <h3
-                    class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] font-family-roboto-slab-bold">
-                    {{ sorteo.nombre }}
-                </h3>
-                <p class="text-sm text-(--gray) mt-1">
-                    Fecha sorteo: {{ sorteo.fecha }}
-                </p>
-            </div>
-
-
-
-        </div>
+        <app-sorteo [sorteoReceiver]="sorteo"></app-sorteo>
         }
 
         <!-- Fallbacks para completar hasta 3 -->
