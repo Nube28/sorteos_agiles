@@ -1,14 +1,7 @@
-@if (showSuccessAlert()) {
-<div
-    class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-bounce duration-75 z-50">
-    <span class="font-(--font-family-inria-sans-bold)">¡Éxito!</span> Sorteo creado correctamente.
-</div>
-}
-
 <app-sorteo-container [title]="'Crear Sorteo'">
     <form [formGroup]="crearSorteoForm" (ngSubmit)="onSubmit()">
         <section class="flex flex-col gap-5 items-end">
-            <div class="w-full flex flex-col sm:flex-row gap-[2vw]">
+            <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-[2vw]">
 
                 <!-- Columna de la Izquierda -->
                 <fieldset class="w-full flex flex-col gap-5">
@@ -109,7 +102,7 @@
 
                         @if (!previewUrl()) {
                         <button type="button" (click)="!isUploading() && fileInput.click()"
-                            class="w-full flex-1 aspect-4/1 min-h-[200px] border border-dashed border-(--gray) hover:border-(--primary-color) rounded-md bg-(--dark) flex flex-col items-center justify-center cursor-pointer transition-colors duration-200 group relative overflow-hidden">
+                            class="w-full flex-1 aspect-2/1 xl:aspect-3/1 sm:min-h-[200px] border border-dashed border-(--gray) hover:border-(--primary-color) rounded-md bg-(--dark) flex flex-col items-center justify-center cursor-pointer transition-colors duration-200 group relative overflow-hidden">
 
                             @if (isUploading()) {
                             <div class="animate-spin rounded-full h-8 w-8 border border-(--primary-color)"></div>
@@ -130,7 +123,7 @@
                         } @else {
                         <!-- mexicanada con el max-h -->
                         <div
-                            class="relative w-full h-full aspect-4/1 min-h-[200px] justify-center items-center rounded-md overflow-hidden border border-(--primary-color) group">
+                            class="relative w-full flex-1 aspect-auto md:aspect-2/1 xl:aspect-3/1 sm:min-h-[200px] justify-center items-center rounded-md overflow-hidden border border-(--primary-color) group">
                             <img [src]="previewUrl()" class="w-full h-full object-cover object-center" alt="Preview">
 
                             <div

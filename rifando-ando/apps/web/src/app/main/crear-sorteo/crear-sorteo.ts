@@ -5,6 +5,7 @@ import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { CloudinaryService } from '../../global-services/cloudinary.service';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { InterfaceService } from '../../global-services/interface.service';
 
 
 const ordenFechasValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -36,9 +37,9 @@ export class CrearSorteo {
   private sorteoService = inject(SorteoService);
   private cloudinaryService = inject(CloudinaryService);
   private router = inject(Router);
+  private interfaceService = inject(InterfaceService);
 
   crearSorteoForm!: FormGroup;
-  showSuccessAlert = signal(false);
   isUploading = signal(false);
   previewUrl = signal<string | null>(null);
 
@@ -112,31 +113,27 @@ export class CrearSorteo {
     if (this.selectedFile) {
       try {
         // ya si quieres ponle emojis w
-        // 5. SUBIR A CLOUDINARY AHORA
         finalImageUrl = await firstValueFrom(this.cloudinaryService.uploadImage(this.selectedFile));
-        console.log('Imagen subida, URL:', finalImageUrl);
-
       } catch (err) {
         console.error('Error subiendo imagen', err);
-        this.isUploading.set(false); // Si falla la imagen, detenemos todo
+        this.isUploading.set(false);
+        // Si falla la imagen, detenemos todo
         // Aquí podrías mostrar una alerta de error de imagen
         return;
       }
     }
-    const { organizador, ...restoDelFormulario } = this.crearSorteoForm.value;
 
+    const { organizador, ...restoDelFormulario } = this.crearSorteoForm.value;
     const sorteoData = { ...restoDelFormulario, urlImg: finalImageUrl };
     const nombreOrganizadorVariable = organizador;
 
-    console.log('Datos a enviar a la API:', sorteoData);
-
     this.sorteoService.crearSorteo(sorteoData, nombreOrganizadorVariable).subscribe({
-      next: (response) => {
-        this.crearSorteoForm.reset();
-        this.removeImage();
-        this.showSuccessAlert.set(true);
+      next: (res) => {
+        this.limpiarFormulario();
+        this.interfaceService.setEvent('Sorteo Creado', 'El sorteo ha sido creado exitosamente.');
+        this.interfaceService.toggleAlert(true);
+        this.router.navigate(['/main/ver-sorteos']);
         this.isUploading.set(false);
-        setTimeout(() => this.showSuccessAlert.set(false), 3000);
       },
       error: (err) => {
         console.error(err);
@@ -145,9 +142,13 @@ export class CrearSorteo {
     });
   }
 
-  onCancelar(){
-    this.crearSorteoForm.reset();
-    this.removeImage();
+  onCancelar() {
+    this.limpiarFormulario();
     this.router.navigate(['/main/ver-sorteos']);
   };
+
+  limpiarFormulario() {
+    this.crearSorteoForm.reset();
+    this.removeImage();
+  }
 }

@@ -1,6 +1,7 @@
-<!-- en el main va a ir el componente del header, y dentro va a ir una condición, 
- si está dentro del crear-sorteo, van a aparecer los ver sorteo, crear sorteo, 
- etc, si no (en el caso de estar en la landing page), no lo mostraría -->
+<!-- @if (isEventActive) { -->
+<app-alert></app-alert>
+<!-- } -->
+
 <div class="w-screen h-screen p-[4vh] gap-5 flex flex-col">
     <header class="grid grid-cols-3 justify-between items-center text-(--light) w-full">
         <div class="font-family-inria-sans-bold text-lg">

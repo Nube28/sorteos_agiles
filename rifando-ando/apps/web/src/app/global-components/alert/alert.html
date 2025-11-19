@@ -1,0 +1,11 @@
+@if (isVisible()) {
+<div class="fixed top-[10vh] left-1/2 translate-x-[-50%] p-6 rounded-lg bg-(--primary-color) text-(--light) shadow-lg duration-75 z-50"
+    [class.animate-fade-in-up]="!isFadingOut()" [class.animate-fade-out-down]="isFadingOut()">
+    <div class="flex flex-col gap-2">
+        <h3 class="font-family-inria-sans-bold text-xl">{{ displayTitle() }}</h3>
+        <p class="text-md">
+            {{ displayMessage() }}
+        </p>
+    </div>
+</div>
+}

@@ -22,7 +22,7 @@
 @if (sorteo()){
 <app-sorteo-container [title]="sorteo().nombre">
     <div class="m-auto w-full max-w-[1300px] flex flex-col gap-5 text-(--light) h-full">
-        <div class="bg-(--dark) rounded-3xl p-5 w-full">
+        <div class="bg-(--dark) rounded-3xl p-10 w-full">
             <h3 class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] mb-3">
                 Descripción
             </h3>
@@ -37,14 +37,14 @@
                 <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-1 pt-1">
                     Premio: <br>
                 </h3>
-                <h3 class="font-family-inria-sans-bold text-[clamp(2rem,3vw,1.8rem)] text-center pb-5 pt-2">
+                <h3 class="font-family-inria-sans-bold text-[clamp(2rem,3vw,1.8rem)] text-center pb-5 pt-2 text-(--gray)">
                     {{ sorteo().premio }}
                 </h3>
 
                 @if (sorteo().urlImg) {
                 <img [src]="sorteo().urlImg" alt="Premio" class="bg-(--dark) rounded-2xl w-full h-full object-cover">
                 } @else {
-                <div class="bg-(--dark-gray) rounded-2xl flex items-center justify-center h-full">
+                <div class="bg-(--dark-gray) rounded-2xl flex items-center justify-center h-full min-h-[100px]">
                     <span class="text-(--gray)">(Imagen no disponible)</span>
                 </div>
                 }
@@ -146,17 +146,17 @@
 
                     <hr class="border-(--gray) w-full" />
 
-                    <div class="bg-(--dark-gray) p-3 rounded-xl flex items-center gap-3">
-                        <span class="p-2 bg-(--dark-gray) rounded-lg">
-                            <svg class="h-6 w-6 text-(--light)" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    <div class="bg-(--dark-gray) p-3 rounded-xl flex items-center flex-1">
+                        <span class="bg-(--dark-gray) rounded-lg">
+                            <svg class="h-20 w-20 text-(--light)" xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.82-1.106-2.17 0-2.99 1.104-.82 2.75-.82 3.854 0l.793.59" />
                             </svg>
                         </span>
                         <div>
-                            <span class="text-sm text-(--gray)">Total</span>
-                            <p class="text-(--light) font-bold">
+                            <span class="text-md text-(--gray)">Total</span>
+                            <p class="text-(--light) font-bold text-2xl">
                                 {{ totalCalculado() | currency:'MXN' }}
                             </p>
                         </div>
@@ -165,7 +165,7 @@
                     <div class="flex flex-col gap-2">
                         <button (click)="apartarNumeros()" [disabled]="isSubmitting() || numerosDisponibles === 0"
                             [class.opacity-50]="isSubmitting() || numerosDisponibles === 0"
-                            class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 w-full rounded-md bg-(--primary-color) text-(--light)">
+                            class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 w-full rounded-xl bg-(--primary-color) text-(--light)">
                             @if(isSubmitting()) {
                             Procesando...
                             } @else {

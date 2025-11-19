@@ -1,17 +1,3 @@
-@if (showSaveSuccess()) {
-<div
-    class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-(--primary-color) text-(--light) shadow-lg animate-bounce duration-75 z-50 border border-green-400 max-w-[90vw] text-center">
-    <div class="font-(--font-family-inria-sans-bold) text-lg mb-1">¡Éxito!</div>
-    <p>Se guardaron los cambios correctamente.</p>
-</div>
-}
-@if (showSaveError()) {
-<div
-    class="fixed top-[10vh] left-[50%] translate-x-[-50%] p-4 rounded-lg bg-red-600 text-white shadow-lg animate-bounce duration-75 z-50 border border-red-800">
-    <span class="font-bold">¡Error!</span> {{ saveErrorMessage() }}
-</div>
-}
-
 @if (sorteoParaEditar()){
 <app-sorteo-container [title]="'Modificar: ' + sorteoParaEditar().nombre">
 

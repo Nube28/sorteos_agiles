@@ -1,17 +1,15 @@
-import { Component, inject, signal, } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SorteoService } from '../../global-services/sorteo.service';
-import { switchMap, tap, firstValueFrom } from 'rxjs'; // Importa firstValueFrom
+import { switchMap, tap, firstValueFrom } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, DatePipe } from '@angular/common';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { Sorteo } from '@prisma/client';
-
-// --- Imports de CrearSorteo ---
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CloudinaryService } from '../../global-services/cloudinary.service';
+import { InterfaceService } from '../../global-services/interface.service';
 
-// --- Validador de CrearSorteo ---
 const ordenFechasValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const inicio = control.get('periodoInicioVenta')?.value;
   const fin = control.get('periodoFinVenta')?.value;
@@ -39,78 +37,64 @@ const ordenFechasValidator: ValidatorFn = (control: AbstractControl): Validation
 })
 export class ModificarSorteo {
   private activatedRoute = inject(ActivatedRoute);
-  private router = inject(Router);
   private sorteoService = inject(SorteoService);
   private datePipe = inject(DatePipe);
-
   private fb = inject(FormBuilder);
   private cloudinaryService = inject(CloudinaryService);
+  private interfaceService = inject(InterfaceService);
+  private router = inject(Router)
+
   modificarSorteoForm!: FormGroup;
   isUploading = signal(false);
-
   previewUrl = signal<string | null>(null);
   minDateStr = new Date().toLocaleDateString('en-CA');
   private selectedFile: File | null = null;
 
-
-  showSaveSuccess = signal(false);
-  showSaveError = signal(false);
-  saveErrorMessage = signal('');
-
   sorteoParaEditar = signal<Sorteo | null>(null);
-  isSubmitting = signal(false);
 
   constructor() {
     this.setupForm();
 
     this.activatedRoute.paramMap.pipe(
-      tap(() => {
-        this.sorteoService.sorteo.set(null);
-        this.modificarSorteoForm.reset();
-        this.previewUrl.set(null);
-        this.selectedFile = null;
-      }),
-      switchMap(params => {
-        const sorteoId = +params.get('id')!;
-        return this.sorteoService.getSorteoPorId(sorteoId);
-      }),
-      tap((sorteoCargado) => {
-        this.sorteoParaEditar.set(sorteoCargado);
-
-
-        const sorteoFormateado = {
-          ...sorteoCargado,
-          periodoInicioVenta: this.datePipe.transform(sorteoCargado.periodoInicioVenta, 'yyyy-MM-dd'),
-          periodoFinVenta: this.datePipe.transform(sorteoCargado.periodoFinVenta, 'yyyy-MM-dd'),
-          fechaSorteo: this.datePipe.transform(sorteoCargado.fechaSorteo, 'yyyy-MM-dd')
-        };
-
-        this.modificarSorteoForm.patchValue(sorteoFormateado);
-        this.previewUrl.set(sorteoCargado.urlImg);
-      }),
+      tap(() => this.resetearFormulario()),
+      switchMap(params => this.sorteoService.getSorteoPorId(+params.get('id')!)),
+      tap(sorteo => this.cargarSorteo(sorteo)),
       takeUntilDestroyed()
     ).subscribe();
   }
 
-
-
-
   private setupForm() {
-
     this.modificarSorteoForm = this.fb.group({
       nombre: ['', Validators.required],
       premio: ['', Validators.required],
       descripcion: ['', Validators.required],
       cantidadNumeros: ['', Validators.required],
       costo: ['', [Validators.required, Validators.min(0)]],
-      urlImg: [''], // Este campo se llenará programáticamente
-      periodoInicioVenta: ['',],
-      periodoFinVenta: ['',],
-      fechaSorteo: ['', ],
-      tiempoLimitePago: ['', [ Validators.min(1)]],
-    }, {
-      validators: ordenFechasValidator
+      urlImg: [''],
+      periodoInicioVenta: ['', Validators.required],
+      periodoFinVenta: ['', Validators.required],
+      fechaSorteo: ['', Validators.required],
+      tiempoLimitePago: ['', [Validators.required, Validators.min(1)]],
+    }, { validators: ordenFechasValidator });
+  }
+
+  private resetearFormulario() {
+    this.modificarSorteoForm.reset();
+    this.previewUrl.set(null);
+    this.selectedFile = null;
+  }
+
+  private cargarSorteo(sorteo: Sorteo) {
+    this.sorteoParaEditar.set(sorteo);
+
+    this.modificarSorteoForm.patchValue({
+      ...sorteo,
+      periodoInicioVenta: this.datePipe.transform(sorteo.periodoInicioVenta, 'yyyy-MM-dd'),
+      periodoFinVenta: this.datePipe.transform(sorteo.periodoFinVenta, 'yyyy-MM-dd'),
+      fechaSorteo: this.datePipe.transform(sorteo.fechaSorteo, 'yyyy-MM-dd')
     });
+
+    this.previewUrl.set(sorteo.urlImg);
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -120,13 +104,13 @@ export class ModificarSorteo {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      this.selectedFile = file;
+    if (input.files?.length) {
+      this.selectedFile = input.files[0];
 
       const reader = new FileReader();
       reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(this.selectedFile);
+
       input.value = '';
     }
   }
@@ -138,67 +122,45 @@ export class ModificarSorteo {
   }
 
   async guardarCambios() {
-    if (this.isUploading()) return;
-
     if (this.modificarSorteoForm.invalid) {
       this.modificarSorteoForm.markAllAsTouched();
       return;
     }
 
     this.isUploading.set(true);
-    this.showSaveError.set(false);
-    this.showSaveSuccess.set(false);
 
-    let finalImageUrl = this.previewUrl();
-
-    if (this.selectedFile) {
-      try {
+    try {
+      // Subir imagen si hay una nueva
+      let finalImageUrl = this.previewUrl() || '';
+      if (this.selectedFile) {
         finalImageUrl = await firstValueFrom(this.cloudinaryService.uploadImage(this.selectedFile));
-      } catch (err) {
-        console.error('Error subiendo imagen', err);
-        this.saveErrorMessage.set('Error al subir la nueva imagen.');
-        this.showSaveError.set(true);
-        this.isUploading.set(false);
-        return;
       }
-    } else if (!this.previewUrl()) {
-      finalImageUrl = '';
+
+      const datosActualizados = {
+        ...this.sorteoParaEditar()!,
+        ...this.modificarSorteoForm.value,
+        urlImg: finalImageUrl
+      };
+
+      this.sorteoService.actualizarSorteo(this.sorteoParaEditar()!.id, datosActualizados as Sorteo).subscribe({
+        next: (sorteoActualizado) => {
+          this.cargarSorteo(sorteoActualizado);
+          this.selectedFile = null;
+          this.isUploading.set(false);
+          this.interfaceService.setEvent('Sorteo Modificado', 'Los cambios han sido guardados exitosamente.');
+          this.interfaceService.toggleAlert(true);
+          this.router.navigate(['main/ver-sorteos']);
+        },
+        error: (err) => {
+          this.interfaceService.setEvent('Error al Modificar Sorteo', err.error?.message || 'Error al guardar');
+          this.interfaceService.toggleAlert(true);
+          this.isUploading.set(false);
+        }
+      });
+    } catch (err) {
+      this.interfaceService.setEvent('Error al Subir Imagen', 'Error al subir la imagen');
+      this.interfaceService.toggleAlert(true);
+      this.isUploading.set(false);
     }
-
-    const id = this.sorteoParaEditar()!.id;
-
-    const datosActualizados = {
-      ...this.sorteoParaEditar(),
-      ...this.modificarSorteoForm.value,
-      urlImg: finalImageUrl
-    };
-
-    this.sorteoService.actualizarSorteo(id, datosActualizados as Sorteo).subscribe({
-      next: (sorteoActualizado) => {
-        this.sorteoService.sorteo.set(sorteoActualizado);
-        this.sorteoParaEditar.set(structuredClone(sorteoActualizado));
-
-        const sorteoFormateado = {
-          ...sorteoActualizado,
-          periodoInicioVenta: this.datePipe.transform(sorteoActualizado.periodoInicioVenta, 'yyyy-MM-dd'),
-          periodoFinVenta: this.datePipe.transform(sorteoActualizado.periodoFinVenta, 'yyyy-MM-dd'),
-          fechaSorteo: this.datePipe.transform(sorteoActualizado.fechaSorteo, 'yyyy-MM-dd')
-        };
-        this.modificarSorteoForm.patchValue(sorteoFormateado);
-        this.previewUrl.set(sorteoActualizado.urlImg);
-        this.selectedFile = null;
-
-        this.isUploading.set(false);
-        this.showSaveSuccess.set(true);
-        setTimeout(() => this.showSaveSuccess.set(false), 5000);
-      },
-      error: (err) => {
-        const msg = err.error?.message || err.message || 'Error desconocido';
-        this.saveErrorMessage.set(msg);
-        this.showSaveError.set(true);
-        this.isUploading.set(false);
-        setTimeout(() => this.showSaveError.set(false), 5000);
-      }
-    });
   }
 }
