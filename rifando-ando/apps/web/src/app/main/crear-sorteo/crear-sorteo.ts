@@ -4,6 +4,7 @@ import { SorteoService } from '../../global-services/sorteo.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { CloudinaryService } from '../../global-services/cloudinary.service';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 const ordenFechasValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -34,6 +35,7 @@ export class CrearSorteo {
   private fb = inject(FormBuilder);
   private sorteoService = inject(SorteoService);
   private cloudinaryService = inject(CloudinaryService);
+  private router = inject(Router);
 
   crearSorteoForm!: FormGroup;
   showSuccessAlert = signal(false);
@@ -109,6 +111,7 @@ export class CrearSorteo {
 
     if (this.selectedFile) {
       try {
+        // ya si quieres ponle emojis w
         // 5. SUBIR A CLOUDINARY AHORA
         finalImageUrl = await firstValueFrom(this.cloudinaryService.uploadImage(this.selectedFile));
         console.log('Imagen subida, URL:', finalImageUrl);
@@ -141,4 +144,10 @@ export class CrearSorteo {
       }
     });
   }
+
+  onCancelar(){
+    this.crearSorteoForm.reset();
+    this.removeImage();
+    this.router.navigate(['/main/ver-sorteos']);
+  };
 }
