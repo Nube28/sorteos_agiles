@@ -2,7 +2,7 @@ import { UserId } from '../../common/decorators/user.decorator';
 import { NumeroService } from './numeros.service';
 import { NumerosSchedulerService } from './numeros-scheduler.service';
 import { Controller, Post, Body, Get, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
-import { CreateNumeroDto, ReservarCantidadDto, UpdateNumeroDto } from '../dtos';
+import { CreateNumeroDto, ReservarNumerosDto, UpdateNumeroDto } from '../dtos';
 
 @Controller('numeros')
 export class NumeroController {
@@ -35,10 +35,10 @@ export class NumeroController {
     }
 
     @Post('reservar-cantidad')
-    reservarCantidad(@Body() dto: ReservarCantidadDto) {
+    reservarCantidad(@Body() dto: ReservarNumerosDto) {
         //Aqui esta hardcordeado por que no tenemos la logica para sacar el id de los user que estan en la pagina aun
         const userId = dto.clienteId || 1;
-        return this.numeroService.reservarNumerosAleatorios(dto, userId);
+        return this.numeroService.reservarNumeros(dto, userId);
     }
 
     @Post('liberar-expirados')

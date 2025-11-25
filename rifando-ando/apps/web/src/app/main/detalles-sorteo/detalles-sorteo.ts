@@ -15,98 +15,127 @@ import { NumerosService } from '../../global-services/numero.service';
   styleUrl: './detalles-sorteo.css',
 })
 export class DetallesSorteo {
-  private activatedRoute = inject(ActivatedRoute)
-  sorteoService = inject(SorteoService)
-  private numerosService = inject(NumerosService)
+  private activatedRoute = inject(ActivatedRoute);
+  sorteoService = inject(SorteoService);
+  private numerosService = inject(NumerosService);
+
   showApartadoSuccess = signal(false);
   showApartadoError = signal(false);
   apartadoErrorMessage = signal('');
+ 
+  // Datos del servidor
   sorteo = this.sorteoService.sorteo;
-  numeros = this.numerosService.numeros;
+  numerosOcupadosData = this.numerosService.numeros; 
+
+  // Lógica de Selección
+  numerosSeleccionados = signal<number[]>([]);
+  isSubmitting = signal<boolean>(false);
+  numerosReservadosExito = signal<number[]>([]);
 
   constructor() {
     this.activatedRoute.paramMap.pipe(
       tap(() => {
+        // Limpiar estado al cambiar de sorteo
         this.sorteoService.sorteo.set(null);
-        this.numeros.set([]);
+        this.numerosOcupadosData.set([]);
+        this.numerosSeleccionados.set([]);
       }),
       switchMap(params => {
         const sorteoId = +params.get('id')!;
-        // Combina ambas llamadas
         return forkJoin({
           sorteo: this.sorteoService.getSorteoPorId(sorteoId),
           numeros: this.numerosService.getNumeros(sorteoId)
         });
       }),
-      tap(({ numeros }) => {
-        this.numeros.set(numeros);
+      tap(({ sorteo, numeros }) => {
+        console.log('Sorteo cargado:', sorteo);
+        console.log('Números ocupados:', numeros);
       }),
       takeUntilDestroyed()
     ).subscribe();
   }
 
-  get numerosDisponibles(): number {
-    if (!this.sorteo()) return 0;
-    // cantidad numeros del sorteo menos numeros existentes (están apartados o pagados)
-    return this.sorteo().cantidadNumeros - this.numeros().length;
-  }
-
-  cantidadAComprar = signal(1);
-  // pendiente, se hace ya que se agregue el formulario de compra de numeros, i aint doing all that
-
-  totalCalculado = computed(() => {
-    if (!this.sorteo()) return 0;
-    const costo = this.sorteo().costo;
-    const cantidadNumeros = this.sorteo().cantidadNumeros;
-    return costo * this.cantidadAComprar();
+  private setNumerosOcupados = computed(() => {
+    const ocupados = new Set<number>();
+    const numerosData = this.numerosOcupadosData();
+    
+    numerosData.forEach((obj: any) => {
+      if (obj.posicion !== null && obj.posicion !== undefined) {
+        ocupados.add(Number(obj.posicion));
+      }
+    });
+    
+    return ocupados;
   });
 
-  validarCantidad(input: HTMLInputElement) {
-    let valor = parseInt(input.value);
-    const max = this.numerosDisponibles;
-    if (isNaN(valor)) {
-      this.cantidadAComprar.set(0);
-      return;
-    }
-    if (valor > max) {
-      valor = max;
-      input.value = max.toString();
-    } else if (valor < 1) {
-      valor = 1;
-      input.value = '1';
-    }
-    this.cantidadAComprar.set(valor);
+  listaNumerosGenerada = computed(() => {
+    const total = this.sorteo()?.cantidadNumeros || 0;
+    return Array.from({ length: total }, (_, i) => i + 1);
+  });
+
+  totalCalculado = computed(() => {
+    const sorteoActual = this.sorteo();
+    if (!sorteoActual) return 0;
+    return sorteoActual.costo * this.numerosSeleccionados().length;
+  });
+
+  esNumeroOcupado(num: number): boolean {
+    return this.setNumerosOcupados().has(num);
   }
 
-  isSubmitting = signal<boolean>(false);
-  numerosReservadosExito = signal<number[]>([]);
-  apartarNumeros() {
-    const sorteoId = this.sorteo()?.id;
-    const cantidad = this.cantidadAComprar();
-    const clienteId = 1;
+  esNumeroSeleccionado(num: number): boolean {
+    return this.numerosSeleccionados().includes(num);
+  }
 
-    if (!sorteoId || cantidad <= 0) return;
+  toggleNumero(num: number) {
+    if (this.esNumeroOcupado(num)) return; 
+
+    this.numerosSeleccionados.update(current => {
+      if (current.includes(num)) {
+        return current.filter(n => n !== num); 
+      } else {
+        return [...current, num]; 
+      }
+    });
+  }
+
+  apartarNumeros() {
+    const sorteoActual = this.sorteo();
+    const seleccion = this.numerosSeleccionados();
+    const clienteId = 1; // ID hardcodeado o traído de tu Auth
+
+    if (!sorteoActual?.id || seleccion.length === 0) return;
+   
+    this.isSubmitting.set(true);
     this.showApartadoSuccess.set(false);
     this.showApartadoError.set(false);
-    if (cantidad > this.numerosDisponibles) {
-      alert('No hay suficientes números disponibles');
-      return;
-    }
-    this.numerosService.reservarCantidad(sorteoId, cantidad, clienteId).subscribe({
-      next: (res) => {
-        this.numerosReservadosExito.set(res.numeros || []);
+
+    this.numerosService.reservarNumeros(sorteoActual.id, seleccion, clienteId).subscribe({
+      next: (res: any) => {
+        const numerosReservados = res.numeros || seleccion;
+        this.numerosReservadosExito.set(numerosReservados);
         this.showApartadoSuccess.set(true);
-        this.cantidadAComprar.set(1);
+       
+        this.numerosSeleccionados.set([]);
+       
+        const nuevosOcupados = numerosReservados.map((n: number) => ({ 
+          posicion: n,
+          sorteoId: sorteoActual.id 
+        }));
+        this.numerosOcupadosData.update(prev => [...prev, ...nuevosOcupados]);
+
         this.isSubmitting.set(false);
+        
         setTimeout(() => {
           this.showApartadoSuccess.set(false);
         }, 5000);
       },
       error: (err) => {
-        const msg = err.error?.message || err.message || 'Error desconocido';
+        const msg = err.error?.message || err.message || 'Error desconocido al apartar números';
         this.apartadoErrorMessage.set(msg);
         this.showApartadoError.set(true);
         this.isSubmitting.set(false);
+        
         setTimeout(() => {
           this.showApartadoError.set(false);
         }, 5000);
@@ -114,7 +143,3 @@ export class DetallesSorteo {
     });
   }
 }
-// Lo quité, esto solo setea nulo, no desuscribe, mejor takeUntilDestroy()
-// ngOnDestroy(): void {
-//   this.sorteoService.sorteo.set(null)
-// }

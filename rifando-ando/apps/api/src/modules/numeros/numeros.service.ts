@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { prisma } from '@rifando-ando/database';
-import { CreateNumeroDto, ReservarCantidadDto, UpdateNumeroDto} from '../dtos';
+import { CreateNumeroDto, ReservarNumerosDto, UpdateNumeroDto} from '../dtos';
 
 @Injectable()
 export class NumeroService {
@@ -62,53 +62,52 @@ export class NumeroService {
             where: { id },
         });
     }
-    async reservarNumerosAleatorios(dto: ReservarCantidadDto, userId: number) {
-        const { sorteoId, cantidad, fechaApartado } = dto;
+    async reservarNumeros(dto: ReservarNumerosDto, userId: number) {
+        // Desestructuramos 'numeros' (array) en lugar de cantidad
+        const { sorteoId, numeros, fechaApartado } = dto;
 
-        // 1. Obtener información del sorteo para saber el límite
+        // 1. Obtener información del sorteo para validaciones
         const sorteo = await prisma.sorteo.findUnique({ where: { id: sorteoId } });
         if (!sorteo) throw new Error('Sorteo no encontrado');
 
-        // 2. Obtener los números que YA están ocupados
-        const numerosOcupados = await prisma.numero.findMany({
-            where: { sorteoId },
+        // 2. Validar que los números estén dentro del rango permitido (1 - cantidadNumeros)
+        const numerosFueraDeRango = numeros.filter(n => n < 1 || n > sorteo.cantidadNumeros);
+        if (numerosFueraDeRango.length > 0) {
+            throw new Error(`Los siguientes números no son válidos para este sorteo: ${numerosFueraDeRango.join(', ')}`);
+        }
+
+        // 3. Verificar concurrencia: ¿Alguno de los números solicitados YA está ocupado?
+        // Usamos el operador 'in' de Prisma para buscar coincidencias exactas
+        const ocupadosEncontrados = await prisma.numero.findMany({
+            where: {
+                sorteoId,
+                posicion: { in: numeros }
+            },
             select: { posicion: true }
         });
 
-        const setOcupados = new Set(numerosOcupados.map(n => n.posicion));
-
-        // 3. Calcular cuáles están libres (del 1 al cantidadNumeros)
-        const disponibles: number[] = [];
-        for (let i = 1; i <= sorteo.cantidadNumeros; i++) {
-            if (!setOcupados.has(i)) {
-                disponibles.push(i);
-            }
+        if (ocupadosEncontrados.length > 0) {
+            const listaOcupados = ocupadosEncontrados.map(n => n.posicion).join(', ');
+            throw new Error(`Lo sentimos, los siguientes números ya fueron ganados por otra persona: ${listaOcupados}`);
         }
 
-        if (disponibles.length < cantidad) {
-            throw new Error(`Solo quedan ${disponibles.length} números disponibles.`);
-        }
-
-        // 4. Seleccionar 'cantidad' números aleatorios de los disponibles
-        for (let i = disponibles.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [disponibles[i], disponibles[j]] = [disponibles[j], disponibles[i]];
-        }
-
-        const seleccionados = disponibles.slice(0, cantidad);
-
-        // 5. Guardar masivamente (Transacción para atomicidad)
+        // 4. Guardar masivamente los números seleccionados
         const fechaIso = new Date(fechaApartado).toISOString();
 
+        // Usamos createMany para eficiencia
         await prisma.numero.createMany({
-            data: seleccionados.map(pos => ({
+            data: numeros.map(pos => ({
                 posicion: pos,
                 fechaApartado: fechaIso,
                 sorteoId: sorteoId,
-                clienteId: userId
+                // Usamos el userId de la sesión, o el clienteId del DTO si es una operación administrativa
+                clienteId: dto.clienteId || userId 
             }))
         });
 
-        return { message: 'Números apartados con éxito', numeros: seleccionados };
+        return { 
+            message: 'Números apartados con éxito', 
+            numeros: numeros 
+        };
     }
 }
