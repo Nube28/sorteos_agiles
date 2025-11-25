@@ -1,8 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { Router } from '@angular/router';
-
-// what the helly
-import type { Sorteo } from '@prisma/client';
+import { ISorteo } from 'libs/shared';
 
 @Component({
   selector: 'app-sorteo',
@@ -13,7 +11,7 @@ import type { Sorteo } from '@prisma/client';
 export class SorteoComponent {
   private router = inject(Router);
 
-  @Input() sorteoReceiver!: Sorteo;
+  @Input() sorteoReceiver!: ISorteo;
 
   sorteo = computed(() => {
     if (!this.sorteoReceiver) return null;

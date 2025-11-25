@@ -3,3 +3,5 @@ export * from './sorteo/update-sorteo.dto';
 export * from './numero/create-numero.dto';
 export * from './numero/update-numero.dto';
 export * from './numero/reservar-cantidad.dto';
+export * from './sorteo/sorteo-response.dto';
+export * from './numero/numero-response.dto';

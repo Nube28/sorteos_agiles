@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { prisma, Rol } from '@rifando-ando/database';
-import { CreateSorteoDto, UpdateSorteoDto } from '@rifando-ando/dtos';
-import { OrganizadorService } from './organizador.service'; // Importa tu nuevo servicio
-import { error } from 'console';
+import { prisma } from '@rifando-ando/database';
+import { OrganizadorService } from './organizador.service';
+import { CreateSorteoDto } from '../dtos';
+
 @Injectable()
 export class SorteosService {
+
     constructor(
         private organizadorService: OrganizadorService
     ) { }
@@ -61,7 +62,6 @@ export class SorteosService {
 
     async updateSorteo(id: number, datosDelFrontend: any, userId: number) {
         try {
-            // --- Verificación de Permisos (Recomendado) ---
             const sorteoExistente = await prisma.sorteo.findUnique({
                 where: { id },
                 select: { organizadorId: true }
@@ -70,41 +70,30 @@ export class SorteosService {
             if (!sorteoExistente) {
                 throw new NotFoundException(`Sorteo con id ${id} no encontrado`);
             }
-           
 
-
-            // --- PASO 1: Limpiar el objeto ---
-            // Quitamos los campos que Prisma no acepta en 'data'
             const {
                 id: idDelBody,
                 organizador,
                 organizadorId,
                 numeros,
-                ...datosLimpios // El resto (nombre, costo, fechas en string) queda aquí
+                ...datosLimpios
             } = datosDelFrontend;
 
-
-            // --- PASO 2: Convertir los tipos ---
-            // Prisma necesita tipos 'Date' y 'Number', no 'string'
             const datosParaActualizar = {
-                ...datosLimpios, // Empezamos con los datos limpios
+                ...datosLimpios,
 
-                // Sobrescribimos los campos numéricos
                 costo: Number(datosLimpios.costo),
                 cantidadNumeros: Number(datosLimpios.cantidadNumeros),
                 tiempoLimitePago: Number(datosLimpios.tiempoLimitePago),
 
-                // Sobrescribimos los campos de fecha
                 periodoInicioVenta: new Date(datosLimpios.periodoInicioVenta),
                 periodoFinVenta: new Date(datosLimpios.periodoFinVenta),
                 fechaSorteo: new Date(datosLimpios.fechaSorteo)
             };
 
-
-            // --- PASO 3: Actualizar en Prisma ---
             return await prisma.sorteo.update({
                 where: { id: id },
-                data: datosParaActualizar // Pasamos el objeto limpio Y convertido
+                data: datosParaActualizar
             });
 
         } catch (error) {
@@ -118,4 +107,5 @@ export class SorteosService {
             where: { id },
         });
     }
+
 }

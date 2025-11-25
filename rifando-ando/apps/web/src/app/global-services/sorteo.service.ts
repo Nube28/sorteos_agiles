@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Sorteo } from '@prisma/client';
+import { ISorteo } from 'libs/shared';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
@@ -11,13 +11,14 @@ export class SorteoService {
     private apiURL = `http://localhost:3000/api/sorteos`;
     private httpClient = inject(HttpClient);
 
-    sorteos = signal<Sorteo[]>([]);
+    sorteos = signal<ISorteo[]>([]);
     readonly sorteos$ = this.sorteos.asReadonly();
 
-    sorteo = signal<Sorteo | null>(null);
+    sorteo = signal<ISorteo | null>(null);
+    sorteoData = signal<ISorteo | null>(null);
     readonly sorteo$ = this.sorteo.asReadonly();
 
-    crearSorteo(sorteo: Sorteo, nombreOrganizador: string): Observable<Sorteo> {
+    crearSorteo(sorteo: ISorteo, nombreOrganizador: string): Observable<ISorteo> {
         // convertir strings a números antes de enviar
         const sorteoData = {
             ...sorteo,
@@ -29,7 +30,7 @@ export class SorteoService {
         };
 
         // Vamos a implementar optimistic ui aqui
-        return this.httpClient.post<Sorteo>(this.apiURL, sorteoData).pipe(
+        return this.httpClient.post<ISorteo>(this.apiURL, sorteoData).pipe(
             tap((sorteoCreado) => { this.sorteos.update(sorteosActuales => [...sorteosActuales, sorteoCreado]); }),
             catchError(error => {
                 console.error('Error al crear sorteo:', error);
@@ -42,8 +43,8 @@ export class SorteoService {
     // Se debe de manejar en el componente, si tira error en el servicio
     // No había manera de que el commponente lo supiera + se puede implementar pantalla de carga
     // i think we should be using dtos in here, cuz, we souldn't be exposing the ids
-    getSorteos(): Observable<Sorteo[]> {
-        return this.httpClient.get<Sorteo[]>(this.apiURL).pipe(
+    getSorteos(): Observable<ISorteo[]> {
+        return this.httpClient.get<ISorteo[]>(this.apiURL).pipe(
             tap(data => this.sorteos.set(data)),
             catchError(error => {
                 console.error('Error al cargar sorteos:', error);
@@ -52,10 +53,10 @@ export class SorteoService {
         );
     }
 
-    getSorteoPorId(sorteoId: number): Observable<Sorteo> {
+    getSorteoPorId(sorteoId: number): Observable<ISorteo> {
         const url = `${this.apiURL}/${sorteoId}`;
 
-        return this.httpClient.get<Sorteo>(url).pipe(
+        return this.httpClient.get<ISorteo>(url).pipe(
             tap(data => this.sorteo.set(data)),
             catchError(error => {
                 console.error('Error al cargar sorteo:', error);
@@ -64,10 +65,10 @@ export class SorteoService {
         );
     }
 
-    getOrganizadorPorNombre(sorteoId: number): Observable<Sorteo> {
+    getOrganizadorPorNombre(sorteoId: number): Observable<ISorteo> {
         const url = `${this.apiURL}/${sorteoId}`;
 
-        return this.httpClient.get<Sorteo>(url).pipe(
+        return this.httpClient.get<ISorteo>(url).pipe(
             tap(data => this.sorteo.set(data)),
             catchError(error => {
                 console.error('Error al cargar sorteo:', error);
@@ -76,7 +77,7 @@ export class SorteoService {
         );
     }
 
-    actualizarSorteo(sorteoId: number, datos: Partial<Sorteo>): Observable<Sorteo> {
+    actualizarSorteo(sorteoId: number, datos: Partial<ISorteo>): Observable<ISorteo> {
         const url = `${this.apiURL}/${sorteoId}`;
 
         const sorteoData = {
@@ -86,7 +87,7 @@ export class SorteoService {
             tiempoLimitePago: Number(datos.tiempoLimitePago),
         };
 
-        return this.httpClient.patch<Sorteo>(url, sorteoData).pipe(
+        return this.httpClient.patch<ISorteo>(url, sorteoData).pipe(
             tap(sorteoActualizado => {
                 this.sorteo.set(sorteoActualizado);
                 this.sorteos.update(lista =>

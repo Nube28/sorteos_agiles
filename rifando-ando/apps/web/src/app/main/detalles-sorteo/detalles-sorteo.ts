@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { ActivatedRoute } from '@angular/router';
@@ -7,7 +7,7 @@ import { forkJoin, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NumerosService } from '../../global-services/numero.service';
-import { Numero } from '@prisma/client';
+
 @Component({
   selector: 'app-detalles-sorteo',
   imports: [SorteoContainer, CommonModule, FormsModule],

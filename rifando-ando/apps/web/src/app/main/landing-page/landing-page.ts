@@ -1,5 +1,4 @@
 import { Component, computed, inject, OnInit } from '@angular/core';
-import { InterfaceService } from '../../global-services/interface.service';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { RouterLink } from '@angular/router';
 import { SorteoComponent } from '../../global-components/sorteo/sorteo.component';
@@ -12,8 +11,6 @@ import { SorteoComponent } from '../../global-components/sorteo/sorteo.component
 })
 export class LandingPage implements OnInit {
   private sorteoService = inject(SorteoService);
-  private interfaceService = inject(InterfaceService);
-
   private rawSorteos = this.sorteoService.sorteos$;
 
   ngOnInit() {
@@ -25,7 +22,6 @@ export class LandingPage implements OnInit {
         console.error('Error al obtener los sorteos en VerSorteos:', err);
       }
     });
-    this.interfaceService.updateMenuSelected('Ver Sorteos');
   }
 
   sorteos = computed(() => {

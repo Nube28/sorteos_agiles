@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { prisma, Rol, } from '@rifando-ando/database';
+import { prisma } from '@rifando-ando/database';
 
 @Injectable()
 export class OrganizadorService {

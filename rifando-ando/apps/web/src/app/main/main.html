@@ -8,24 +8,20 @@
             <span>Rifando</span><span class="text-(--primary-color)">ando</span>
         </div>
 
-        @if (showMenuOptions()) {
-        <!-- cambiar a segun la ruta, elija uno u otro, no manejar usando el servicio -->
+        @if (showMenuOptions) {
         <ul class="flex items-center gap-[3vw] text-sm justify-center">
-            <li (click)="onMenuClick('Ver Sorteos')"
+            <li (click)="navigateTo('ver-sorteos')"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                        'text-(--primary-color) underline': menuSelected === 'Ver Sorteos'
-                    }"><a routerLink="./ver-sorteos">Ver
-                    Sorteos</a></li>
-            <li (click)="onMenuClick('Mis Sorteos')"
+                        'text-(--primary-color) underline': currentRouteValue === '/main/ver-sorteos'
+                    }">Ver Sorteos</li>
+            <li (click)="navigateTo('mis-sorteos')"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                    'text-(--primary-color) underline': menuSelected === 'Mis Sorteos'
-                }"><a routerLink="./ver-sorteos">Mis
-                    Sorteos</a></li>
-            <li (click)="onMenuClick('Crear Sorteos')"
+                    'text-(--primary-color) underline': currentRouteValue === '/main/mis-sorteos'
+                }">Mis Sorteos</li>
+            <li (click)="navigateTo('crear-sorteo')"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                        'text-(--primary-color) underline': menuSelected === 'Crear Sorteos'
-                }"><a routerLink="./crear-sorteo">Crear
-                    Sorteos</a></li>
+                        'text-(--primary-color) underline': currentRouteValue === '/main/crear-sorteo'
+                }">Crear Sorteos</li>
         </ul>
         <div class="flex items-center gap-3 text-sm justify-end cursor-pointer">
             <span class="text-nowrap">Jésus Tapía Maldónado</span>

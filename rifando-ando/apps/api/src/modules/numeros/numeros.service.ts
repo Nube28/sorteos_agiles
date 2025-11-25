@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { prisma } from '@rifando-ando/database';
-import { CreateNumeroDto, UpdateNumeroDto ,ReservarCantidadDto} from '@rifando-ando/dtos';
+import { CreateNumeroDto, ReservarCantidadDto, UpdateNumeroDto} from '../dtos';
 
 @Injectable()
 export class NumeroService {

@@ -1,0 +1,19 @@
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { INumero } from 'libs/shared';
+
+export class CreateNumeroDto implements INumero {
+    @IsNumber()
+    posicion!: number;
+
+    @IsDateString()
+    fechaApartado!: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    sorteoId!: number;
+
+    @IsOptional()
+    @IsNumber()
+    @IsPositive()
+    clienteId?: number;
+}

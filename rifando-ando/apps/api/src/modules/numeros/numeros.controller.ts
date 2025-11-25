@@ -1,8 +1,8 @@
-import { CreateNumeroDto, UpdateNumeroDto, ReservarCantidadDto } from '@rifando-ando/dtos';
 import { UserId } from '../../common/decorators/user.decorator';
 import { NumeroService } from './numeros.service';
 import { NumerosSchedulerService } from './numeros-scheduler.service';
 import { Controller, Post, Body, Get, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
+import { CreateNumeroDto, ReservarCantidadDto, UpdateNumeroDto } from '../dtos';
 
 @Controller('numeros')
 export class NumeroController {

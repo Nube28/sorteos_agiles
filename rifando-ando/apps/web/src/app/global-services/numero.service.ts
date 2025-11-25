@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Numero, Sorteo } from '@prisma/client';
+import { INumero } from 'libs/shared';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
@@ -11,13 +11,13 @@ export class NumerosService {
     private apiURL = `http://localhost:3000/api/numeros`;
     private httpClient = inject(HttpClient);
 
-    numeros = signal<Numero[]>([]);
-    readonly sorteos$ = this.numeros.asReadonly();
+    numeros = signal<INumero[]>([]);
+    readonly numeros$ = this.numeros.asReadonly();
 
-    getNumeros(sorteoId: Number): Observable<Numero[]> {
+    getNumeros(sorteoId: Number): Observable<INumero[]> {
         const url = `${this.apiURL}/${sorteoId}`;
 
-        return this.httpClient.get<Numero[]>(url).pipe(
+        return this.httpClient.get<INumero[]>(url).pipe(
             tap(data => this.numeros.set(data)),
             catchError(error => {
                 console.error('Error al cargar numeros:', error);
@@ -25,6 +25,7 @@ export class NumerosService {
             })
         );
     }
+
     reservarCantidad(sorteoId: number, cantidad: number, clienteId: number): Observable<any> {
         const url = `${this.apiURL}/reservar-cantidad`;
         const body = {

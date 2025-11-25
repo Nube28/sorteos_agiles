@@ -1,8 +1,7 @@
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { SorteoService } from '../../global-services/sorteo.service';
-import { InterfaceService } from '../../global-services/interface.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ver-sorteos',
@@ -12,7 +11,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class VerSorteos implements OnInit {
   private sorteoService = inject(SorteoService);
-  private interfaceService = inject(InterfaceService);
   private router = inject(Router)
 
   private rawSorteos = this.sorteoService.sorteos$;
@@ -26,7 +24,6 @@ export class VerSorteos implements OnInit {
         console.error('Error al obtener los sorteos en VerSorteos:', err);
       }
     });
-    this.interfaceService.updateMenuSelected('Ver Sorteos');
   }
 
   sorteos = computed(() => {

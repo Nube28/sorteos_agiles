@@ -20,7 +20,7 @@ export const appRoutes: Route[] = [
             },
             {
                 path: 'crear-sorteo',
-                loadComponent: () => import('./main/crear-sorteo/crear-sorteo').then((m) => m.CrearSorteo),
+                loadComponent: () => import('./main/formulario-sorteo/formulario-sorteo').then((m) => m.FormularioSorteo),
             },
             {
                 path: 'ver-sorteos',
@@ -32,7 +32,7 @@ export const appRoutes: Route[] = [
             },
             {
                 path: 'modificar-sorteo/:id',
-                loadComponent: () => import('./main/modificar-sorteo/modificar-sorteo').then((m) => m.ModificarSorteo)
+                loadComponent: () => import('./main/formulario-sorteo/formulario-sorteo').then((m) => m.FormularioSorteo)
             },
             {
                 path: '**',
