@@ -2,12 +2,13 @@ import { Component, computed, inject, OnInit } from '@angular/core';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { Router } from '@angular/router';
+import { SorteoComponent } from "../../global-components/sorteo/sorteo.component";
 
 @Component({
   selector: 'app-ver-sorteos',
   templateUrl: './ver-sorteos.html',
   styleUrl: './ver-sorteos.css',
-  imports: [SorteoContainer],
+  imports: [SorteoContainer, SorteoComponent],
 })
 export class VerSorteos implements OnInit {
   private sorteoService = inject(SorteoService);

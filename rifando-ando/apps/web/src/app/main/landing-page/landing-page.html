@@ -1,6 +1,6 @@
 <div class="w-full h-full text-white flex flex-col gap-[3vh] px-1">
     <div
-        class="rounded-4xl p-[2vw] flex h-full md:h-[70vh] flex-col justify-center md:justify-between relative overflow-hidden mt-5 shadow-md">
+        class="rounded-4xl p-[2vw] flex h-full flex-col justify-center md:justify-between relative overflow-hidden mt-5 shadow-md">
         <div class="absolute top-0 left-0 w-full h-full opacity-20 -z-1">
             <img src="./assets/imgs/bg-landing.png" alt="" class="w-full object-center object-cover h-full">
         </div>
@@ -25,27 +25,26 @@
         </div>
     </div>
 
-
-    <div class="hidden md:grid grid-cols-3 gap-4">
+    <div class="hidden md:grid grid-cols-3 gap-4 h-auto">
         <!-- Sorteos reales (máximo 3) -->
         @for (sorteo of sorteos(); track sorteo.id) {
-        <app-sorteo [sorteoReceiver]="sorteo"></app-sorteo>
+            <app-sorteo [sorteoReceiver]="sorteo"></app-sorteo>
         }
 
         <!-- Fallbacks para completar hasta 3 -->
         @for (item of fallbackArray(); track $index) {
-        <div
-            class="bg-(--dark) aspect-5/2 cursor-pointer relative rounded-4xl p-[0.6vw] lg:p-[0.3vw] hover:scale-101 transition-transform animate-pulse">
+            <div
+                class="bg-(--dark) aspect-5/2 cursor-pointer relative rounded-4xl p-[0.6vw] lg:p-[0.3vw] hover:scale-101 transition-transform animate-pulse">
 
-            <div class="bg-(--dark-gray) w-full h-full m-auto rounded-3xl"></div>
+                <div class="bg-(--dark-gray) w-full h-full m-auto rounded-3xl"></div>
 
-            <div class="flex flex-col gap-2 p-5">
-                <div class="w-4/5 bg-(--dark-gray) h-8 rounded-md">
-                </div>
-                <div class="w-2/4 bg-(--dark-gray) h-5 rounded-md">
+                <div class="flex flex-col gap-2 p-5">
+                    <div class="w-4/5 bg-(--dark-gray) h-8 rounded-md">
+                    </div>
+                    <div class="w-2/4 bg-(--dark-gray) h-5 rounded-md">
+                    </div>
                 </div>
             </div>
-        </div>
         }
     </div>
 </div>
