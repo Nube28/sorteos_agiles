@@ -1,5 +1,5 @@
 <div
-    class="bg-(--dark) aspect-5/2 cursor-pointer relative rounded-4xl p-[0.6vw] lg:p-[0.3vw] hover:scale-101 transition-transform">
+    class="bg-(--dark) flex-1 h-full cursor-pointer relative rounded-4xl p-[0.6vw] lg:p-[0.3vw] hover:scale-101 transition-transform">
     <div class="absolute top-3 right-3 sm:top-[2vw] sm:right-[2vw] lg:top-[1.5vw] lg:right-[1.5vw] text-xs px-3 py-1.5 rounded-full 
             bg-(--primary-color)">
         <span class="hidden sm:inline">
@@ -10,14 +10,14 @@
     </div>
 
     <!-- there is a bug in here, to resolve later -->
-    <div class="bg-(--dark-gray) w-full h-full rounded-3xl overflow-hidden flex justify-center items-center">
+    <div class="bg-(--dark-gray) w-full h-[20vh] rounded-3xl overflow-hidden flex justify-center items-center">
         <!-- image goes in here -->
         @if (sorteo().urlImg) {
-        <img src="{{sorteo().urlImg}}" alt="" draggable="false" class="w-full h-full object-cover object-center">
+        <img src="{{sorteo().urlImg}}" alt="" draggable="false" class="w-full h-[20vh] object-cover object-center">
         }
     </div>
 
-    <div class="p-5">
+    <div class="p-5 h-auto">
         <h3
             class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] font-family-roboto-slab-bold">
             {{ sorteo().nombre }}

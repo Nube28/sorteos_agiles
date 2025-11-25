@@ -1,10 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, computed, inject, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { ISorteo } from 'libs/shared';
 
 @Component({
   selector: 'app-sorteo',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './sorteo.component.html',
   styleUrl: './sorteo.component.css',
 })
