@@ -6,7 +6,8 @@
         <div class="columns-[400px] gap-4 w-full">
             @for (sorteo of sorteos(); track sorteo.id) {
             <div class="break-inside-avoid mb-4">
-                <app-sorteo [sorteoReceiver]="sorteo" class="w-full block"></app-sorteo>
+                <app-sorteo [sorteoReceiver]="sorteo" class="w-full block"
+                    (click)="verDetalles(sorteo.id)"></app-sorteo>
             </div>
             }
         </div>
