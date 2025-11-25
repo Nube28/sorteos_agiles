@@ -30,8 +30,14 @@
                         <input id="nombre-sorteo" type="text" placeholder="Nombre del sorteo" formControlName="nombre"
                             [class.border-red-500]="isFieldInvalid('nombre')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+
                         @if (isFieldInvalid('nombre')) {
+                        @if (sorteoForm.get('nombre')?.hasError('required')) {
                         <span class="text-red-500 text-xs ml-1">El nombre es requerido.</span>
+                        }
+                        @if (sorteoForm.get('nombre')?.hasError('maxlength')) {
+                        <span class="text-red-500 text-xs ml-1">El nombre es muy largo (máx 100 caracteres).</span>
+                        }
                         }
                     </div>
 
@@ -42,8 +48,15 @@
                         <input id="premio-sorteo" type="text" placeholder="Premio del sorteo" formControlName="premio"
                             [class.border-red-500]="isFieldInvalid('premio')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+
                         @if (isFieldInvalid('premio')) {
+                        @if (sorteoForm.get('premio')?.hasError('required')) {
                         <span class="text-red-500 text-xs ml-1">Debes especificar un premio.</span>
+                        }
+                        @if (sorteoForm.get('premio')?.hasError('maxlength')) {
+                        <span class="text-red-500 text-xs ml-1">El nombre del premio es muy largo (máx 100
+                            caracteres).</span>
+                        }
                         }
                     </div>
 
@@ -51,11 +64,17 @@
                     <div class="flex flex-col gap-2 h-full flex-1">
                         <label for="descripcion-sorteo"
                             class="text-(--gray) font-family-inria-sans-bold text-sm">DESCRIPCIÓN DEL SORTEO</label>
-                        <textarea id="descripcion-sorteo" placeholder="Descripción del sorteo" formControlName="descripcion"
-                            [class.border-red-500]="isFieldInvalid('descripcion')"
+                        <textarea id="descripcion-sorteo" placeholder="Descripción del sorteo"
+                            formControlName="descripcion" [class.border-red-500]="isFieldInvalid('descripcion')"
                             class="h-full min-h-[150px] max-h-full text-sm w-full focus:border-(--primary-color) border border-transparent transition-colors duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)"></textarea>
+
                         @if (isFieldInvalid('descripcion')) {
+                        @if (sorteoForm.get('descripcion')?.hasError('required')) {
                         <span class="text-red-500 text-xs ml-1">La descripción es obligatoria.</span>
+                        }
+                        @if (sorteoForm.get('descripcion')?.hasError('maxlength')) {
+                        <span class="text-red-500 text-xs ml-1">¡Mucho texto! Máximo 1000 caracteres.</span>
+                        }
                         }
                     </div>
 
@@ -68,8 +87,13 @@
                                 formControlName="cantidadNumeros"
                                 [class.border-red-500]="isFieldInvalid('cantidadNumeros')"
                                 class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+
                             @if (isFieldInvalid('cantidadNumeros')) {
+                            @if (sorteoForm.get('cantidadNumeros')?.hasError('pattern')) {
+                            <span class="text-red-500 text-xs ml-1">No se permiten decimales.</span>
+                            } @else {
                             <span class="text-red-500 text-xs ml-1">Requerido (mínimo 1).</span>
+                            }
                             }
                         </div>
 
@@ -143,8 +167,9 @@
                             <label for="inicio-venta" class="text-(--gray) font-family-inria-sans-bold text-sm">INICIO
                                 VENTA</label>
                             <input id="inicio-venta" type="date" [min]="minDateStr" formControlName="periodoInicioVenta"
+                                onclick="this.showPicker()" onkeydown="return false"
                                 [class.border-red-500]="isFieldInvalid('periodoInicioVenta')"
-                                class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                                class="cursor-pointer text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                             @if (isFieldInvalid('periodoInicioVenta')) {
                             <span class="text-red-500 text-xs">Fecha requerida.</span>
                             }
@@ -154,11 +179,11 @@
                         <div class="flex flex-col gap-2 w-full">
                             <label for="final-venta" class="text-(--gray) font-family-inria-sans-bold text-sm">FIN
                                 VENTA</label>
-                            <input id="final-venta" type="date"
+                            <input id="final-venta" type="date" onclick="this.showPicker()" onkeydown="return false"
                                 [min]="sorteoForm.get('periodoInicioVenta')?.value || minDateStr"
                                 formControlName="periodoFinVenta"
                                 [class.border-red-500]="isFieldInvalid('periodoFinVenta') || sorteoForm.hasError('fechasInvalidasVenta')"
-                                class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                                class="cursor-pointer text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                             @if (sorteoForm.hasError('fechasInvalidasVenta') &&
                             sorteoForm.get('periodoFinVenta')?.touched) {
                             <span class="text-red-500 text-xs">El fin debe ser posterior al inicio.</span>
@@ -172,10 +197,10 @@
                     <div class="flex flex-col gap-2">
                         <label for="fecha-sorteo" class="text-(--gray) font-family-inria-sans-bold text-sm">FECHA DE
                             SORTEO</label>
-                        <input id="fecha-sorteo" type="date"
+                        <input id="fecha-sorteo" type="date" onclick="this.showPicker()" onkeydown="return false"
                             [min]="sorteoForm.get('periodoFinVenta')?.value || minDateStr" formControlName="fechaSorteo"
                             [class.border-red-500]="isFieldInvalid('fechaSorteo') || sorteoForm.hasError('fechasInvalidasSorteo')"
-                            class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+                            class="cursor-pointer text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                         @if (sorteoForm.hasError('fechasInvalidasSorteo') &&
                         sorteoForm.get('fechaSorteo')?.touched) {
                         <span class="text-red-500 text-xs ml-1">El sorteo debe ser después de terminar la venta.</span>
@@ -192,13 +217,18 @@
                             formControlName="tiempoLimitePago"
                             [class.border-red-500]="isFieldInvalid('tiempoLimitePago')"
                             class="text-sm w-full focus:border-(--primary-color) border border-transparent transition-all duration-200 outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
+
                         @if (isFieldInvalid('tiempoLimitePago')) {
+                        @if (sorteoForm.get('tiempoLimitePago')?.hasError('pattern')) {
+                        <span class="text-red-500 text-xs ml-1">Solo días enteros (sin decimales).</span>
+                        } @else {
                         <span class="text-red-500 text-xs ml-1">Mínimo 1 día.</span>
+                        }
                         }
                     </div>
                 </fieldset>
             </div>
-            
+
             <div class="flex items-center gap-2 mt-4">
                 <!-- Botton cancelar -->
                 <button (click)="onCancelar()" type="button"

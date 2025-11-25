@@ -115,18 +115,40 @@ export class FormularioSorteo {
   }
 
   private setupForm() {
+    const soloEnteros = /^[0-9]+$/;
+
     this.sorteoForm = this.fb.group({
-      organizador: [''],  // No required en modo edición
-      nombre: ['', Validators.required],
-      premio: ['', Validators.required],
-      descripcion: ['', Validators.required],
-      cantidadNumeros: ['', [Validators.required, Validators.min(1)]],
-      costo: ['', [Validators.required, Validators.min(1)]],
+      organizador: [''],
+      nombre: ['', [
+        Validators.required,
+        Validators.maxLength(100)
+      ]],
+      premio: ['', [
+        Validators.required,
+        Validators.maxLength(100) // Agregamos el límite aquí
+      ]],
+      descripcion: ['', [
+        Validators.required,
+        Validators.maxLength(1000)
+      ]],
+      cantidadNumeros: ['', [
+        Validators.required,
+        Validators.min(1),
+        Validators.pattern(soloEnteros)
+      ]],
+      costo: ['', [
+        Validators.required,
+        Validators.min(1)
+      ]],
       urlImg: [''],
       periodoInicioVenta: ['', Validators.required],
       periodoFinVenta: ['', Validators.required],
       fechaSorteo: ['', Validators.required],
-      tiempoLimitePago: ['', [Validators.required, Validators.min(1)]],
+      tiempoLimitePago: ['', [
+        Validators.required,
+        Validators.min(1),
+        Validators.pattern(soloEnteros)
+      ]],
     }, { validators: ordenFechasValidator });
   }
 

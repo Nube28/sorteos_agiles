@@ -32,7 +32,7 @@
         </div>
 
         <div class="flex flex-col lg:grid lg:grid-cols-3 gap-5 text-(--light) h-full">
-            
+
             <!-- SECCIÓN IZQUIERDA: Info y Premio -->
             <div class="flex flex-col gap-5 col-span-2">
                 <!-- Premio -->
@@ -40,12 +40,14 @@
                     <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-1 pt-1">
                         Premio: <br>
                     </h3>
-                    <h3 class="font-family-inria-sans-bold text-[clamp(2rem,3vw,1.8rem)] text-center pb-5 pt-2 text-(--gray)">
+                    <h3
+                        class="font-family-inria-sans-bold text-[clamp(2rem,3vw,1.8rem)] text-center pb-5 pt-2 text-(--gray)">
                         {{ sorteo().premio }}
                     </h3>
 
                     @if (sorteo().urlImg) {
-                    <img [src]="sorteo().urlImg" alt="Premio" class="bg-(--dark) rounded-2xl w-full max-h-[400px] object-cover">
+                    <img [src]="sorteo().urlImg" alt="Premio"
+                        class="bg-(--dark) rounded-2xl w-full max-h-[400px] object-cover">
                     } @else {
                     <div class="bg-(--dark-gray) rounded-2xl flex items-center justify-center h-[200px]">
                         <span class="text-(--gray)">(Imagen no disponible)</span>
@@ -58,7 +60,7 @@
                     <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] mb-4">
                         Selecciona tus números
                     </h3>
-                    
+
                     <!-- Leyenda de colores -->
                     <div class="flex flex-wrap gap-4 mb-4 text-xs">
                         <div class="flex items-center gap-2">
@@ -76,35 +78,30 @@
                     </div>
 
                     <!-- Grid de números -->
-                    <div class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div
+                        class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                         @for (num of listaNumerosGenerada(); track num) {
-                            <button 
-                                (click)="toggleNumero(num)"
-                                [disabled]="esNumeroOcupado(num)"
-                                [class.bg-red-900]="esNumeroOcupado(num)"
-                                [class.text-red-200]="esNumeroOcupado(num)"
-                                [class.cursor-not-allowed]="esNumeroOcupado(num)"
-                                [class.opacity-50]="esNumeroOcupado(num)"
-                                
-                                [class.bg-(--primary-color)]="esNumeroSeleccionado(num)"
-                                [class.text-white]="esNumeroSeleccionado(num)"
-                                [class.border-transparent]="esNumeroSeleccionado(num)"
-                                
-                                [class.border-green-500]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
-                                [class.text-green-400]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
-                                [class.hover:bg-green-500/10]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
+                        <button (click)="toggleNumero(num)" [disabled]="esNumeroOcupado(num)"
+                            [class.bg-red-900]="esNumeroOcupado(num)" [class.text-red-200]="esNumeroOcupado(num)"
+                            [class.cursor-not-allowed]="esNumeroOcupado(num)" [class.opacity-50]="esNumeroOcupado(num)"
+                            [class.bg-(--primary-color)]="esNumeroSeleccionado(num)"
+                            [class.text-white]="esNumeroSeleccionado(num)"
+                            [class.border-transparent]="esNumeroSeleccionado(num)"
+                            [class.border-green-500]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
+                            [class.text-green-400]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
+                            [class.hover:bg-green-500/10]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
+                            class="border rounded-md py-2 px-1 text-sm font-bold transition-all duration-150 flex items-center justify-center aspect-square relative group">
 
-                                class="border rounded-md py-2 px-1 text-sm font-bold transition-all duration-150 flex items-center justify-center aspect-square relative group">
-                                
-                                {{ num }}
-                                
-                                <!-- Tooltip opcional si está ocupado -->
-                                @if(esNumeroOcupado(num)) {
-                                    <span class="absolute hidden group-hover:block bg-black text-xs p-1 rounded -top-8 z-10 whitespace-nowrap">
-                                        Ocupado
-                                    </span>
-                                }
-                            </button>
+                            {{ num }}
+
+                            <!-- Tooltip opcional si está ocupado -->
+                            @if(esNumeroOcupado(num)) {
+                            <span
+                                class="absolute hidden group-hover:block bg-black text-xs p-1 rounded -top-8 z-10 whitespace-nowrap">
+                                Ocupado
+                            </span>
+                            }
+                        </button>
                         }
                     </div>
                 </div>
@@ -113,7 +110,7 @@
 
             <!-- SECCIÓN DERECHA: Resumen y Compra -->
             <div class="flex flex-col gap-5">
-                
+
                 <!-- Fechas -->
                 <div class="bg-(--dark) rounded-3xl p-3 flex flex-col">
                     <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-5 pt-2">
@@ -123,13 +120,16 @@
                         <!-- Fecha Inicio -->
                         <div class="bg-(--dark-gray) p-3 rounded-xl flex items-center gap-3">
                             <span class="p-2 bg-(--dark-gray) rounded-lg">
-                                <svg class="h-5 w-5 text-(--light)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-18 0h18" />
+                                <svg class="h-5 w-5 text-(--light)" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-18 0h18" />
                                 </svg>
                             </span>
                             <div>
                                 <span class="text-xs text-(--gray)">Sorteo</span>
-                                <p class="text-(--light) text-sm font-bold">{{ sorteo().fechaSorteo | date: 'dd/MM/yyyy' }}</p>
+                                <p class="text-(--light) text-sm font-bold">{{ sorteo().fechaSorteo | date: 'dd/MM/yyyy'
+                                    }}</p>
                             </div>
                         </div>
                     </div>
@@ -149,27 +149,31 @@
 
                         <!-- Lista de números seleccionados (Mini resumen) -->
                         <div class="bg-(--dark-gray) p-3 rounded-xl flex flex-col gap-2 min-h-[80px]">
-                             <span class="text-xs text-(--gray) font-bold uppercase">Números seleccionados ({{numerosSeleccionados().length}})</span>
-                             @if (numerosSeleccionados().length > 0) {
-                                <div class="flex flex-wrap gap-1 max-h-[100px] overflow-y-auto custom-scrollbar">
-                                    @for (n of numerosSeleccionados(); track n) {
-                                        <span class="bg-(--primary-color) text-xs px-2 py-1 rounded-full text-white flex items-center gap-1">
-                                            {{n}} 
-                                            <button (click)="toggleNumero(n)" class="hover:text-red-200 ml-1">×</button>
-                                        </span>
-                                    }
-                                </div>
-                             } @else {
-                                 <span class="text-xs text-gray-500 italic">Selecciona números en la cuadrícula...</span>
-                             }
+                            <span class="text-xs text-(--gray) font-bold uppercase">Números seleccionados
+                                ({{numerosSeleccionados().length}})</span>
+                            @if (numerosSeleccionados().length > 0) {
+                            <div class="flex flex-wrap gap-1 max-h-[100px] overflow-y-auto custom-scrollbar">
+                                @for (n of numerosSeleccionados(); track n) {
+                                <span
+                                    class="bg-(--primary-color) text-xs px-2 py-1 rounded-full text-white flex items-center gap-1">
+                                    {{n}}
+                                    <button (click)="toggleNumero(n)" class="hover:text-red-200 ml-1">×</button>
+                                </span>
+                                }
+                            </div>
+                            } @else {
+                            <span class="text-xs text-gray-500 italic">Selecciona números en la cuadrícula...</span>
+                            }
                         </div>
 
                         <hr class="border-(--gray) w-full opacity-20" />
 
                         <div class="bg-(--dark-gray) p-3 rounded-xl flex items-center gap-3">
                             <span class="bg-(--dark-gray) rounded-lg p-1">
-                                <svg class="h-10 w-10 text-(--primary-color)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.82-1.106-2.17 0-2.99 1.104-.82 2.75-.82 3.854 0l.793.59" />
+                                <svg class="h-10 w-10 text-(--primary-color)" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.82-1.106-2.17 0-2.99 1.104-.82 2.75-.82 3.854 0l.793.59" />
                                 </svg>
                             </span>
                             <div>
@@ -180,15 +184,19 @@
                             </div>
                         </div>
 
-                        <button (click)="apartarNumeros()" 
+                        <button (click)="apartarNumeros()"
                             [disabled]="isSubmitting() || numerosSeleccionados().length === 0"
                             [class.opacity-50]="isSubmitting() || numerosSeleccionados().length === 0"
                             class="mt-4 duration-200 transition-all hover:bg-(--primary-hover) hover:scale-[1.02] cursor-pointer py-3 w-full rounded-xl bg-(--primary-color) text-(--light) font-bold shadow-lg shadow-(--primary-color)/20">
                             @if(isSubmitting()) {
-                                Procesando...
+                            Procesando...
                             } @else {
-                                Apartar {{ numerosSeleccionados().length }} número(s)
+                            Apartar {{ numerosSeleccionados().length }} número(s)
                             }
+                        </button>
+                        <button (click)="volver()"
+                            class="mt-4 duration-200 transition-all hover:bg-(--primary-hover) hover:scale-[1.02] cursor-pointer py-3 w-full rounded-xl bg-(--primary-color) text-(--light) font-bold shadow-lg shadow-(--primary-color)/20">
+                            volver
                         </button>
                     </div>
                 </div>
