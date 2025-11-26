@@ -1,6 +1,4 @@
 import { IsString, IsEnum, MinLength, IsNotEmpty } from 'class-validator';
-// Asegúrate de importar esto desde tu librería compartida
-// Si tu path alias es distinto, ajústalo (ej: @nx-monorepo/shared)
 import { RolUsuario } from 'libs/shared/usuario/usuario.interface';
 
 export class CreateUsuarioDto {
