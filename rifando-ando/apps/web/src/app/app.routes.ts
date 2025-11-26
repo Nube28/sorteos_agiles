@@ -25,12 +25,21 @@ export const appRoutes: Route[] = [
                 redirectTo: 'login',
                 pathMatch: 'full'
             },
+            {
+                path: '**',
+                redirectTo: 'login'
+            }
         ],
     },
     {
         path: 'main',
         loadComponent: () => import('./main/main').then((m) => m.Main),
         children: [
+            {
+                path: '',
+                redirectTo: 'landing-page',
+                pathMatch: 'full'
+            },
             {
                 path: 'landing-page',
                 loadComponent: () => import('./main/landing-page/landing-page').then((m) => m.LandingPage),
@@ -47,11 +56,6 @@ export const appRoutes: Route[] = [
                 canActivate: [authGuard],
             },
             {
-                path: 'ver-sorteos',
-                loadComponent: () => import('./main/ver-sorteos/ver-sorteos').then((m) => m.VerSorteos),
-                canActivate: [authGuard],
-            },
-            {
                 path: 'detalles-sorteo/:id',
                 loadComponent: () => import('./main/detalles-sorteo/detalles-sorteo').then((m) => m.DetallesSorteo),
                 canActivate: [authGuard],
@@ -61,9 +65,14 @@ export const appRoutes: Route[] = [
                 loadComponent: () => import('./main/formulario-sorteo/formulario-sorteo').then((m) => m.FormularioSorteo),
                 canActivate: [authGuard],
             },
+            {
+                path: '**',
+                redirectTo: 'ver-sorteos'
+            }
         ]
-    }, {
+    },
+    {
         path: '**',
-        redirectTo: 'landing-page',
+        redirectTo: 'main/landing-page',
     }
 ];
