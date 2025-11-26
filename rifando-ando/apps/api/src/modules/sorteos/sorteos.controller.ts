@@ -1,7 +1,7 @@
 import { UserId } from '../../common/decorators/user.decorator';
 import { CreateSorteoDto, UpdateSorteoDto } from '../dtos';
 import { SorteosService } from './sorteos.service';
-import { Controller, Post, Body, Get, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, ParseUUIDPipe } from '@nestjs/common';
 
 @Controller('sorteos')
 export class SorteosController {
@@ -21,18 +21,18 @@ export class SorteosController {
     }
 
     @Get(':id')
-    getSorteoById(@Param('id', ParseIntPipe) id: number) {
+    getSorteoById(@Param('id', ParseUUIDPipe) id: string) {
         return this.sorteosService.getSorteoById(id);
     }
 
     @Patch(':id')
-    updateSorteo(@Param('id', ParseIntPipe) id: number, @Body() updateSorteoDto: UpdateSorteoDto, /*@UserId() userId: number*/) {
-        const userId_temporal = 1; // Por el momento ya que no tenemos configurado el jwt
+    updateSorteo(@Param('id', ParseUUIDPipe) id: string, @Body() updateSorteoDto: UpdateSorteoDto, /*@UserId() userId: number*/) {
+        const userId_temporal = '1'; // Por el momento ya que no tenemos configurado el jwt
         return this.sorteosService.updateSorteo(id, updateSorteoDto, userId_temporal);
     }
 
     @Delete(':id')
-    deleteSorteo(@Param('id', ParseIntPipe) id: number, @UserId() userId: number){
+    deleteSorteo(@Param('id', ParseUUIDPipe) id: string, @UserId() userId: string) {
         return this.sorteosService.deleteSorteo(id, userId);
     }
 }

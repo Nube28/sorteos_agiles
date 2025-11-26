@@ -10,10 +10,8 @@ import { ISorteo } from 'libs/shared';
   styleUrl: './sorteo.component.css',
 })
 export class SorteoComponent {
-  private router = inject(Router);
-
   @Input() sorteoReceiver!: ISorteo;
-
+  
   sorteo = computed(() => {
     if (!this.sorteoReceiver) return null;
 
@@ -25,8 +23,4 @@ export class SorteoComponent {
       numerosTotales: this.sorteoReceiver.cantidadNumeros || 0
     };
   });
-
-  verDetalles(sorteoId: Number) {
-    this.router.navigate(['/main/detalles-sorteo', sorteoId]);
-  }
 }

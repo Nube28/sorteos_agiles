@@ -1,0 +1,34 @@
+<section class="flex flex-col gap-[3vh]">
+  <header class="flex flex-col gap-2">
+    <h1 class="text-(--light) text-[clamp(2rem,2vw,3rem)] font-family-inria-sans-bold">
+      {{ title }}
+    </h1>
+    <p class="text-(--gray) text-md">
+      {{ text }}
+      <a class="text-(--primary-color) hover:underline hover:underline-offset-4 hover:text-(--primary-hover)"
+        [routerLink]="['/' + link]">
+        {{ textLink }}
+      </a>
+    </p>
+  </header>
+
+  <hr class="text-(--gray)" />
+
+  <div *ngIf="errorMessage" class="bg-red-500/10 border border-red-500 text-red-500 rounded-md px-4 py-3 text-sm">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="flex flex-col gap-[3vh]">
+    <ng-content></ng-content>
+
+    <button type="submit" [disabled]="isLoading || formGroup.invalid || formGroup.pristine"
+      [class]="'shadow-[0_6px_6px_var(--shadow)] transition-all duration-200 py-4 rounded-md font-family-inria-sans-bold text-(--light) text-sm ' + 
+               ((isLoading || formGroup.invalid || formGroup.pristine) ? 'bg-gray-600 cursor-not-allowed' : 'bg-(--primary-color) cursor-pointer hover:bg-(--primary-hover)')">
+      @if (!isLoading) {
+      <span>{{ buttonText }}</span>
+      } @else if (isLoading) {
+      Loading...
+      }
+    </button>
+  </form>
+</section>

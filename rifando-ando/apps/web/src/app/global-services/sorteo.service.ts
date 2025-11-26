@@ -53,7 +53,7 @@ export class SorteoService {
         );
     }
 
-    getSorteoPorId(sorteoId: number): Observable<ISorteo> {
+    getSorteoPorId(sorteoId: string): Observable<ISorteo> {
         const url = `${this.apiURL}/${sorteoId}`;
 
         return this.httpClient.get<ISorteo>(url).pipe(
@@ -65,7 +65,7 @@ export class SorteoService {
         );
     }
 
-    getOrganizadorPorNombre(sorteoId: number): Observable<ISorteo> {
+    getOrganizadorPorNombre(sorteoId: string): Observable<ISorteo> {
         const url = `${this.apiURL}/${sorteoId}`;
 
         return this.httpClient.get<ISorteo>(url).pipe(
@@ -77,7 +77,7 @@ export class SorteoService {
         );
     }
 
-    actualizarSorteo(sorteoId: number, datos: Partial<ISorteo>): Observable<ISorteo> {
+    actualizarSorteo(sorteoId: string, datos: Partial<ISorteo>): Observable<ISorteo> {
         const url = `${this.apiURL}/${sorteoId}`;
 
         const sorteoData = {

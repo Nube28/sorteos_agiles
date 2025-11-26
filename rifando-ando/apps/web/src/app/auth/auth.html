@@ -1,1 +1,15 @@
-<p>auth works!</p>
+<div class="w-screen h-screen p-[4vh] gap-20 flex">
+  <main class="flex flex-col gap-[1vw] w-full">
+    <nav class="cursor-pointer w-fit items-center text-(--light) text-lg font-family-inria-sans-bold"
+      routerLink="/main/landing-page">
+      <span>Rifando</span><span class="text-(--primary-color)">ando</span>
+    </nav>
+    <div class="flex flex-col justify-center flex-1">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+  <div class="hidden md:block absolute left-1/2 w-px m-auto h-screen bg-(--gray) top-0"></div>
+  <aside class="hidden md:block w-full">
+    <!-- example text -->
+  </aside>
+</div>

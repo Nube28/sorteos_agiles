@@ -8,17 +8,17 @@ datasource db {
 }
 
 model Numero {
-  id            Int      @id @default(autoincrement())
+  id            String      @id @default(uuid())
   posicion      Int
   fechaApartado DateTime
 
-  sorteoId Int
+  sorteoId String
   sorteo   Sorteo @relation(fields: [sorteoId], references: [id])
 
-  clienteId Int?
+  clienteId String?
   cliente   Cliente? @relation(fields: [clienteId], references: [id])
 
-  pagosId Int?
+  pagosId String?
   Pagos   Pagos? @relation(fields: [pagosId], references: [id])
 
   // Cada posición en un sorteo debe ser única
@@ -26,7 +26,7 @@ model Numero {
 }
 
 model Sorteo {
-  id                 Int      @id @default(autoincrement())
+  id                 String      @id @default(uuid())
   nombre             String
   urlImg             String?
   descripcion        String
@@ -38,14 +38,15 @@ model Sorteo {
   fechaSorteo        DateTime
   tiempoLimitePago   Int
 
-  organizadorId Int
+  organizadorId String
   organizador   Organizador @relation(fields: [organizadorId], references: [id])
   Numero        Numero[]
 }
 
 model Usuario {
-  id            Int    @id @default(autoincrement())
+  id            String    @id @default(uuid())
   nombre        String
+  // cambiar de opcional a obligatorio 
   contrasenia   String
   nombreUsuario String @unique
   apellidos     String
@@ -61,18 +62,18 @@ enum Rol {
 }
 
 model Organizador {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
-  usuarioId Int     @unique
+  usuarioId String     @unique
   user      Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   sorteos Sorteo[]
 }
 
 model Cliente {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
-  usuarioId Int     @unique
+  usuarioId String     @unique
   usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   numeros Numero[]
@@ -80,9 +81,9 @@ model Cliente {
 }
 
 model Pagos {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
-  usuarioId Int
+  usuarioId String
   usuario   Cliente @relation(fields: [usuarioId], references: [id])
 
   urlComprobante String

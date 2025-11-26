@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { prisma } from '@rifando-ando/database';
 import { CreateNumeroDto, ReservarNumerosDto, UpdateNumeroDto} from '../dtos';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class NumeroService {
-    async crearNumero(createNumeroDto: CreateNumeroDto, userId: number) {
+    constructor(private prisma: PrismaService) {}
+
+    async crearNumero(createNumeroDto: CreateNumeroDto, userId: string) {
         try {
             const {
                 fechaApartado,
@@ -12,11 +14,12 @@ export class NumeroService {
             } = createNumeroDto;
 
             // Recibe strings, los convierte al necesario por prisma
-            return await prisma.numero.create({
+            return await this.prisma.numero.create({
                 data: {
                     ...restData,
                     fechaApartado: new Date(fechaApartado).toISOString(),
-                    clienteId: userId
+                    clienteId: userId,
+                    sorteoId: String(restData.sorteoId)
                 },
             });
         } catch (error) {
@@ -24,8 +27,8 @@ export class NumeroService {
         }
     }
 
-    async getNumeros(sorteoId: number) {
-        return await prisma.numero.findMany({
+    async getNumeros(sorteoId: string) {
+        return await this.prisma.numero.findMany({
             where: {
                 sorteoId: sorteoId,
             },
@@ -36,8 +39,8 @@ export class NumeroService {
         });
     }
 
-    async getNumeroById(id: number) {
-        return await prisma.numero.findUnique({
+    async getNumeroById(id: string) {
+        return await this.prisma.numero.findUnique({
             where: { id },
             include: {
                 cliente: true,
@@ -46,10 +49,10 @@ export class NumeroService {
         });
     }
 
-    async updateNumero(id: number, UpdateNumeroDto: Partial<UpdateNumeroDto>,) {
+    async updateNumero(id: string, UpdateNumeroDto: Partial<UpdateNumeroDto>,) {
         try {
             await this.getNumeroById(id);
-            return await prisma.numero.update({
+            return await this.prisma.numero.update({
                 where: { id }, data: { ...UpdateNumeroDto },
             });
         } catch (error) {
@@ -57,17 +60,17 @@ export class NumeroService {
         }
     }
 
-    async deleteNumero(id: number,) {
-        return await prisma.numero.delete({
+    async deleteNumero(id: string) {
+        return await this.prisma.numero.delete({
             where: { id },
         });
     }
-    async reservarNumeros(dto: ReservarNumerosDto, userId: number) {
+    async reservarNumeros(dto: ReservarNumerosDto, userId: string) {
         // Desestructuramos 'numeros' (array) en lugar de cantidad
         const { sorteoId, numeros, fechaApartado } = dto;
 
         // 1. Obtener información del sorteo para validaciones
-        const sorteo = await prisma.sorteo.findUnique({ where: { id: sorteoId } });
+        const sorteo = await this.prisma.sorteo.findUnique({ where: { id: String(sorteoId) } });
         if (!sorteo) throw new Error('Sorteo no encontrado');
 
         // 2. Validar que los números estén dentro del rango permitido (1 - cantidadNumeros)
@@ -78,9 +81,9 @@ export class NumeroService {
 
         // 3. Verificar concurrencia: ¿Alguno de los números solicitados YA está ocupado?
         // Usamos el operador 'in' de Prisma para buscar coincidencias exactas
-        const ocupadosEncontrados = await prisma.numero.findMany({
+        const ocupadosEncontrados = await this.prisma.numero.findMany({
             where: {
-                sorteoId,
+                sorteoId: String(sorteoId),
                 posicion: { in: numeros }
             },
             select: { posicion: true }
@@ -95,13 +98,13 @@ export class NumeroService {
         const fechaIso = new Date(fechaApartado).toISOString();
 
         // Usamos createMany para eficiencia
-        await prisma.numero.createMany({
+        await this.prisma.numero.createMany({
             data: numeros.map(pos => ({
                 posicion: pos,
                 fechaApartado: fechaIso,
-                sorteoId: sorteoId,
+                sorteoId: String(sorteoId),
                 // Usamos el userId de la sesión, o el clienteId del DTO si es una operación administrativa
-                clienteId: dto.clienteId || userId 
+                clienteId: String(dto.clienteId || userId)
             }))
         });
 

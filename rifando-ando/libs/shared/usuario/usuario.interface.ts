@@ -2,12 +2,12 @@ export enum RolUsuario {
   ORGANIZADOR = 'ORGANIZADOR',
   CLIENTE = 'CLIENTE',
 }
-export interface Usuario {
-  id: number;
+export interface IUsuario {
+  id: string;
   nombre: string;
   apellidos: string;
   nombreUsuario: string;
   rol: RolUsuario;
-  organizadordId?: number;
-  clienteId?: number;
+  organizadorId?: string;
+  clienteId?: string;
 }

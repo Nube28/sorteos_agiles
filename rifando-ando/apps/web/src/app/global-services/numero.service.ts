@@ -14,7 +14,7 @@ export class NumerosService {
     numeros = signal<INumero[]>([]);
     readonly numeros$ = this.numeros.asReadonly();
 
-    getNumeros(sorteoId: Number): Observable<INumero[]> {
+    getNumeros(sorteoId: string): Observable<INumero[]> {
         const url = `${this.apiURL}/${sorteoId}`;
 
         return this.httpClient.get<INumero[]>(url).pipe(
@@ -26,7 +26,7 @@ export class NumerosService {
         );
     }
 
-    reservarNumeros(sorteoId: number, numeros: number[], clienteId: number): Observable<any> {
+    reservarNumeros(sorteoId: string, numeros: number[], clienteId: string): Observable<any> {
         const url = `${this.apiURL}/reservar-cantidad`; 
         
         const body = {

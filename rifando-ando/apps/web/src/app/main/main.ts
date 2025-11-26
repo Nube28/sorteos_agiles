@@ -1,17 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { InterfaceService } from '../global-services/interface.service';
 import { CommonModule } from '@angular/common';
 import { Alert } from "../global-components/alert/alert";
+import { AuthService } from '../global-services/auth.service';
 
 @Component({
   selector: 'app-main',
-  imports: [RouterOutlet, CommonModule, Alert],
+  imports: [RouterOutlet, RouterLink, CommonModule, Alert],
   templateUrl: './main.html',
   styleUrl: './main.css',
 })
 export class Main {
   private interfaceService = inject(InterfaceService);
+  private authService = inject(AuthService);
 
   currentRoute = signal('');
 
@@ -28,6 +30,10 @@ export class Main {
     });
   }
 
+  logout(): void {
+    this.authService.logout();
+  }
+
   get isEventActive() {
     return this.interfaceService.isEventActive();
   }
@@ -39,5 +45,9 @@ export class Main {
   get showMenuOptions(): boolean {
     const route = this.currentRoute();
     return route !== '/main/landing-page';
+  }
+
+  get usuario() {
+    return this.authService.getCurrentUser();
   }
 }

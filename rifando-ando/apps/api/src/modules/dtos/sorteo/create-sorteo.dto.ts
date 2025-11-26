@@ -13,6 +13,8 @@ export class CreateSorteoDto implements ISorteo {
   descripcion!: string;
 
   @IsString()
+  @MinLength(3)
+  @MaxLength(100)
   nombre!: string;
 
   @IsString()

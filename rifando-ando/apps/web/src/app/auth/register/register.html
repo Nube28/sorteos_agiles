@@ -1,0 +1,64 @@
+<app-auth-section [title]="'Registrarse'" [text]="`¿Ya tienes una cuenta?`" [textLink]="'Iniciar sesión'" [link]="'auth/login'"
+  [formGroup]="registerForm" [onSubmit]="onSubmit" [buttonText]="'Registrarse'" [isLoading]="isLoading"
+  [errorMessage]="errorMessage">
+  <!-- First Name & Last Name -->
+  <div class="flex gap-[3vh]">
+    <div class="w-full">
+      <input type="text" formControlName="nombre" placeholder="Nombre"
+        class="w-full focus:border-(--secondary-color) border border-transparent transition-all duration-200 outline-none shadow-[0_6px_6px_var(--shadow)] bg-(--dark) placeholder:text-(--gray) text-(--gray) rounded-md px-5 py-4 text-sm"
+        [class.border-red-500]="hasError('nombre')" />
+      @if (hasError('nombre')) {
+      <p class="text-red-500 text-xs mt-1">
+        {{ getErrorMessage('nombre') }}
+      </p>
+      }
+    </div>
+
+    <div class="w-full">
+      <input type="text" formControlName="apellidos" placeholder="Apellidos"
+        class="w-full focus:border-(--secondary-color) border border-transparent transition-all duration-200 outline-none shadow-[0_6px_6px_var(--shadow)] bg-(--dark) placeholder:text-(--gray) text-(--gray) rounded-md px-5 py-4 text-sm"
+        [class.border-red-500]="hasError('apellidos')" />
+      @if (hasError('apellidos')) {
+      <p class="text-red-500 text-xs mt-1">
+        {{ getErrorMessage('apellidos') }}
+      </p>
+      }
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div>
+    <input type="text" formControlName="nombreUsuario" placeholder="Introduce tu nombre de usuario"
+      class="w-full focus:border-(--secondary-color) border border-transparent transition-all duration-200 outline-none shadow-[0_6px_6px_var(--shadow)] bg-(--dark) placeholder:text-(--gray) text-(--gray) rounded-md px-5 py-4 text-sm"
+      [class.border-red-500]="hasError('nombreUsuario')" />
+    @if (hasError('nombreUsuario')) {
+    <p class="text-red-500 text-xs mt-1">
+      {{ getErrorMessage('nombreUsuario') }}
+    </p>
+    }
+  </div>
+
+  <!-- Password -->
+  <div>
+    <input type="password" formControlName="contrasenia" placeholder="Introduce tu contraseña"
+      class="w-full focus:border-(--secondary-color) border border-transparent transition-all duration-200 outline-none shadow-[0_6px_6px_var(--shadow)] bg-(--dark) placeholder:text-(--gray) text-(--gray) rounded-md px-5 py-4 text-sm"
+      [class.border-red-500]="hasError('contrasenia')" />
+    @if (hasError('contrasenia')) {
+    <p class="text-red-500 text-xs mt-1">
+      {{ getErrorMessage('contrasenia') }}
+    </p>
+    }
+  </div>
+
+  <!-- Confirm Password -->
+  <div>
+    <input type="password" formControlName="confirmarContrasenia" placeholder="Confirma tu contraseña"
+      class="w-full focus:border-(--secondary-color) border border-transparent transition-all duration-200 outline-none shadow-[0_6px_6px_var(--shadow)] bg-(--dark) placeholder:text-(--gray) text-(--gray) rounded-md px-5 py-4 text-sm"
+      [class.border-red-500]="hasError('confirmarContrasenia')" />
+    @if (hasError('confirmarContrasenia')) {
+    <p class="text-red-500 text-xs mt-1">
+      {{ getErrorMessage('confirmarContrasenia') }}
+    </p>
+    }
+  </div>
+</app-auth-section>

@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { prisma } from '@rifando-ando/database';
 import { OrganizadorService } from './organizador.service';
 import { CreateSorteoDto } from '../dtos';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class SorteosService {
-
     constructor(
+        private prisma: PrismaService,
         private organizadorService: OrganizadorService
     ) { }
     async crearSorteo(createSorteoDto: CreateSorteoDto) {
@@ -26,7 +26,7 @@ export class SorteosService {
                 throw new NotFoundException(`No se encontró un organizador con el usuario: ${nombreOrganizador}`);
             }
             const totalNumeros = Number(cantidadNumeros);
-            return await prisma.sorteo.create({
+            return await this.prisma.sorteo.create({
                 data: {
                     periodoInicioVenta: new Date(periodoInicioVenta),
                     periodoFinVenta: new Date(periodoFinVenta),
@@ -44,15 +44,15 @@ export class SorteosService {
     }
 
     async getSorteos() {
-        return await prisma.sorteo.findMany({
+        return await this.prisma.sorteo.findMany({
             include: {
                 organizador: true,
             },
         });
     }
 
-    async getSorteoById(id: number) {
-        return await prisma.sorteo.findUnique({
+    async getSorteoById(id: string) {
+        return await this.prisma.sorteo.findUnique({
             where: { id },
             include: {
                 organizador: true,
@@ -60,9 +60,9 @@ export class SorteosService {
         });
     }
 
-    async updateSorteo(id: number, datosDelFrontend: any, userId: number) {
+    async updateSorteo(id: string, datosDelFrontend: any, userId: string) {
         try {
-            const sorteoExistente = await prisma.sorteo.findUnique({
+            const sorteoExistente = await this.prisma.sorteo.findUnique({
                 where: { id },
                 select: { organizadorId: true }
             });
@@ -91,7 +91,7 @@ export class SorteosService {
                 fechaSorteo: new Date(datosLimpios.fechaSorteo)
             };
 
-            return await prisma.sorteo.update({
+            return await this.prisma.sorteo.update({
                 where: { id: id },
                 data: datosParaActualizar
             });
@@ -102,8 +102,8 @@ export class SorteosService {
         }
     }
 
-    async deleteSorteo(id: number, userId: number) {
-        return await prisma.sorteo.delete({
+    async deleteSorteo(id: string, userId: string) {
+        return await this.prisma.sorteo.delete({
             where: { id },
         });
     }

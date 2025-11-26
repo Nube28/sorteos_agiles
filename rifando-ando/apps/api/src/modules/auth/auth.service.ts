@@ -1,57 +1,69 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UsuariosService } from '../usuarios/usuarios.service';
-import { CreateUsuarioDto } from '../dtos/usuario/create-usuario.dto';
-import { LoginDto } from '../dtos/auth/login.dto';
+import { RolUsuario } from 'libs/shared';
+import { RegisterDto } from './dto/register.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Rol } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usuariosService: UsuariosService,
-    private jwtService: JwtService,
-  ) {}
+    private prisma: PrismaService,
+    private usuarios: UsuariosService,
+    private jwt: JwtService,
+  ) { }
 
+  async register(registerDto: RegisterDto) {
+    const { nombreUsuario, contrasenia, nombre, apellidos, rol } = registerDto;
 
-  async register(createUsuarioDto: CreateUsuarioDto) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(createUsuarioDto.contrasenia, salt);
-
-    const usuarioParaGuardar = {
-      ...createUsuarioDto,
-      contrasenia: hashedPassword,
-    };
-
-    const nuevoUsuario = await this.usuariosService.create(usuarioParaGuardar);
-
-    const { contrasenia, ...resultado } = nuevoUsuario;
-    
-    return resultado;
-  }
-
-  
-  async login(loginDto: LoginDto) {
-    const { nombreUsuario, contrasenia } = loginDto;
-
-    const usuario = await this.usuariosService.findOneByUsername(nombreUsuario);
-
-    if (!usuario || !(await bcrypt.compare(contrasenia, usuario.contrasenia))) {
-      throw new UnauthorizedException('Credenciales incorrectas');
+    // Verificar si existe
+    const existingUser = await this.usuarios.findByNombreUsuario(nombreUsuario);
+    if (existingUser) {
+      throw new ConflictException('El nombre de usuario ya está en uso');
     }
 
-    const payload = { 
-      sub: usuario.id,        
-      username: usuario.nombreUsuario, 
-      rol: usuario.rol 
-    };
+    // Hashear contraseña
+    const hashedPassword = await bcrypt.hash(contrasenia, 10);
 
-    return {
-      access_token: this.jwtService.sign(payload),
-      usuario: {
-        id: usuario.id,
-        nombre: usuario.nombre,
-        rol: usuario.rol
-      }
-    };
+    // Crear usuario (ahora también crea Cliente/Organizador)
+    const usuario = await this.usuarios.create(
+      nombreUsuario,
+      hashedPassword,
+      nombre,
+      apellidos,
+      rol || Rol.CLIENTE
+    );
+
+    // Retornar sin contraseña
+    return this.usuarios.toSafeUser(usuario);
+  }
+
+  async validateUser(nombreUsuario: string, password: string) {
+    const user = await this.usuarios.findByNombreUsuario(nombreUsuario);
+
+    if (!user) return null;
+
+    const match = await bcrypt.compare(password, user.contrasenia);
+
+    if (!match) return null;
+
+    return user;
+  }
+
+  async login(nombreUsuario: string, password: string) {
+    const user = await this.validateUser(nombreUsuario, password);
+
+    if (!user) {
+      throw new UnauthorizedException('Credenciales inválidas');
+
+    }
+
+    const payload = { sub: user.id, nombreUsuario: user.nombreUsuario };
+    const token = await this.jwt.signAsync(payload);
+    const expiresIn = Number(process.env.JWT_EXPIRES_IN ?? 86400);
+
+    return { accessToken: token, expiresIn };
   }
 }

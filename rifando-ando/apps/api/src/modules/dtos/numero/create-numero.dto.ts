@@ -8,12 +8,9 @@ export class CreateNumeroDto implements INumero {
     @IsDateString()
     fechaApartado!: string;
 
-    @IsNumber()
     @IsNotEmpty()
-    sorteoId!: number;
+    sorteoId!: string;
 
     @IsOptional()
-    @IsNumber()
-    @IsPositive()
-    clienteId?: number;
+    clienteId?: string;
 }

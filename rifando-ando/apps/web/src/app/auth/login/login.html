@@ -1,0 +1,23 @@
+<app-auth-section [title]="'Iniciar Sesión'" [text]="`¿No tienes una cuenta?`" [textLink]="'Registrarse'"
+  [link]="'auth/register'" [formGroup]="loginForm" [onSubmit]="onSubmit" [buttonText]="'Iniciar Sesión'"
+  [isLoading]="isLoading" [errorMessage]="errorMessage">
+  <!-- Email -->
+  <div>
+    <input type="text" formControlName="nombreUsuario" placeholder="Introduce tu nombre de usuario"
+      class="w-full focus:border-(--secondary-color) border border-transparent transition-all duration-200 outline-none shadow-[0_6px_6px_var(--shadow)] bg-(--dark) placeholder:text-(--gray) text-(--gray) rounded-md px-5 py-4 text-sm"
+      [class.border-red-500]="hasError('nombreUsuario')" />
+    <p *ngIf="hasError('nombreUsuario')" class="text-red-500 text-xs mt-1">
+      {{ getErrorMessage('nombreUsuario') }}
+    </p>
+  </div>
+
+  <!-- Password -->
+  <div>
+    <input type="password" formControlName="contrasenia" placeholder="Introduce tu contraseña"
+      class="w-full focus:border-(--secondary-color) border border-transparent transition-all duration-200 outline-none shadow-[0_6px_6px_var(--shadow)] bg-(--dark) placeholder:text-(--gray) text-(--gray) rounded-md px-5 py-4 text-sm"
+      [class.border-red-500]="hasError('contrasenia')" />
+    <p *ngIf="hasError('contrasenia')" class="text-red-500 text-xs mt-1">
+      {{ getErrorMessage('contrasenia') }}
+    </p>
+  </div>
+</app-auth-section>

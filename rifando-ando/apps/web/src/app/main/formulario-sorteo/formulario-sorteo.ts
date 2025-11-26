@@ -100,7 +100,7 @@ export class FormularioSorteo {
       switchMap(params => {
         const id = params.get('id');
         if (id) {
-          return this.sorteoService.getSorteoPorId(+id);
+          return this.sorteoService.getSorteoPorId(id);
         }
         return [];
       }),
@@ -249,9 +249,6 @@ export class FormularioSorteo {
           fechaSorteo: restoDelFormulario.fechaSorteo,
           tiempoLimitePago: Number(restoDelFormulario.tiempoLimitePago),
         };
-
-        console.log('🔍 Datos que se enviarán al backend:', datosActualizados);
-        console.log('🔍 Sorteo original:', this.sorteoParaEditar());
 
         this.sorteoService.actualizarSorteo(this.sorteoParaEditar()!.id, datosActualizados).subscribe({
           next: (sorteoActualizado) => {

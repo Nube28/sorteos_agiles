@@ -1,87 +1,75 @@
-import { Injectable, NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
-import { prisma } from '@rifando-ando/database'; // Tu importación personalizada
-import { CreateUsuarioDto } from '../dtos/usuario/create-usuario.dto';
-import { RolUsuario } from 'libs/shared/usuario/usuario.interface';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Usuario, Rol } from '@prisma/client';
+
+export type SafeUser = {
+    id: string;
+    nombreUsuario: string;
+    nombre: string;
+    apellidos: string;
+    rol: Rol;
+    clienteId?: string;
+    organizadorId?: string;
+};
 
 @Injectable()
 export class UsuariosService {
+    constructor(private prisma: PrismaService) { }
 
+    async findByNombreUsuario(nombreUsuario: string): Promise<Usuario | null> {
+        return this.prisma.usuario.findUnique({ where: { nombreUsuario } });
+    }
 
-    async create(createUsuarioDto: CreateUsuarioDto) {
-        try {
-            const { rol, ...userData } = createUsuarioDto;
-            const existeUsuario = await prisma.usuario.findUnique({
-                where: { nombreUsuario: userData.nombreUsuario }
+    async findById(id: string): Promise<Usuario | null> {
+        return this.prisma.usuario.findUnique({ where: { id } });
+    }
+
+    async create(
+        nombreUsuario: string,
+        passwordHash: string,
+        nombre: string,
+        apellidos: string,
+        rol: Rol
+    ): Promise<Usuario> {
+        return await this.prisma.$transaction(async (tx) => {
+            const usuario = await tx.usuario.create({
+                data: {
+                    nombreUsuario,
+                    contrasenia: passwordHash,
+                    nombre,
+                    apellidos,
+                    rol,
+                },
             });
 
-            if (existeUsuario) {
-                throw new ConflictException(`El nombre de usuario '${userData.nombreUsuario}' ya está en uso.`);
-            }
-
-            return await prisma.$transaction(async (tx) => {
-
-           
-                const nuevoUsuario = await tx.usuario.create({
+            // crea cliente u organizador según el rol
+            if (rol === Rol.CLIENTE) {
+                await tx.cliente.create({
                     data: {
-                        ...userData,
-                        rol: rol, 
-                    },
+                        usuarioId: usuario.id
+                    }
                 });
-
-                if (rol === RolUsuario.CLIENTE) {
-                    await tx.cliente.create({
-                        data: {
-                            usuarioId: nuevoUsuario.id,
-                        },
-                    });
-                } else if (rol === RolUsuario.ORGANIZADOR) {
-                    await tx.organizador.create({
-                        data: {
-                            usuarioId: nuevoUsuario.id,
-                        },
-                    });
-                }
-
-                return nuevoUsuario;
-            });
-
-        } catch (error) {
-            if (error instanceof ConflictException) throw error;
-
-            if (error.code === 'P2002') {
-                throw new ConflictException('El nombre de usuario ya existe.');
+            } else if (rol === Rol.ORGANIZADOR) {
+                await tx.organizador.create({
+                    data: {
+                        usuarioId: usuario.id
+                    }
+                });
             }
 
-            console.error("Error en createUsuario:", error);
-            throw new InternalServerErrorException(`Error al crear usuario: ${error.message}`);
-        }
-    }
-
-
-    async findOneByUsername(nombreUsuario: string) {
-        return await prisma.usuario.findUnique({
-            where: { nombreUsuario },
-            // Incluimos los datos de los roles por si los necesitas en el token luego
-            include: {
-                Cliente: true,
-                Organizador: true
-            }
+            return usuario;
         });
     }
 
-    async findOneById(id: number) {
-        const usuario = await prisma.usuario.findUnique({
-            where: { id },
-            include: {
-                Cliente: true,
-                Organizador: true
-            }
-        });
-
-        if (!usuario) {
-            throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
-        }
-
-        return usuario;
+    toSafeUser(user: Usuario & { Cliente?: any; Organizador?: any }): SafeUser {
+        return {
+            id: user.id,
+            nombreUsuario: user.nombreUsuario,
+            nombre: user.nombre,
+            apellidos: user.apellidos,
+            rol: user.rol,
+            clienteId: user.Cliente?.id,
+            organizadorId: user.Organizador?.id,
+        };
     }
 }

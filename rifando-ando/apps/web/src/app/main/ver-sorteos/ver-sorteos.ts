@@ -38,7 +38,7 @@ export class VerSorteos implements OnInit {
   }
   );
 
-  verDetalles(sorteoId: Number) {
+  verDetalles(sorteoId: string) {
     this.router.navigate(['/main/detalles-sorteo', sorteoId]);
   }
 }

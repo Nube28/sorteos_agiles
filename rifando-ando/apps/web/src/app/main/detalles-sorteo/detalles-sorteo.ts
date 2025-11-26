@@ -7,6 +7,7 @@ import { forkJoin, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NumerosService } from '../../global-services/numero.service';
+import { AuthService } from '../../global-services/auth.service';
 
 @Component({
   selector: 'app-detalles-sorteo',
@@ -16,9 +17,10 @@ import { NumerosService } from '../../global-services/numero.service';
 })
 export class DetallesSorteo {
   private activatedRoute = inject(ActivatedRoute);
-  sorteoService = inject(SorteoService);
   private numerosService = inject(NumerosService);
   private router = inject(Router);
+  private authService = inject(AuthService);
+  private sorteoService = inject(SorteoService);
 
   showApartadoSuccess = signal(false);
   showApartadoError = signal(false);
@@ -42,7 +44,7 @@ export class DetallesSorteo {
         this.numerosSeleccionados.set([]);
       }),
       switchMap(params => {
-        const sorteoId = +params.get('id')!;
+        const sorteoId = params.get('id')!;
         return forkJoin({
           sorteo: this.sorteoService.getSorteoPorId(sorteoId),
           numeros: this.numerosService.getNumeros(sorteoId)
@@ -102,11 +104,11 @@ export class DetallesSorteo {
   volver() {
     this.router.navigate(['/main/ver-sorteos']);
   }
-  
+
   apartarNumeros() {
     const sorteoActual = this.sorteo();
     const seleccion = this.numerosSeleccionados();
-    const clienteId = 1; // ID hardcodeado o traído de tu Auth
+    const clienteId = this.authService.getCurrentUser()?.clienteId; // ID hardcodeado o traído de tu Auth
 
     if (!sorteoActual?.id || seleccion.length === 0) return;
 
