@@ -148,7 +148,7 @@
                         </div>
 
                         <!-- Lista de números seleccionados (Mini resumen) -->
-                        <div class="bg-(--dark-gray) p-3 rounded-xl flex flex-col gap-2 min-h-[80px]">
+                        <div class="bg-(--dark-gray) p-3 rounded-xl flex flex-col gap-2 min-h-20">
                             <span class="text-xs text-(--gray) font-bold uppercase">Números seleccionados
                                 ({{numerosSeleccionados().length}})</span>
                             @if (numerosSeleccionados().length > 0) {
@@ -178,7 +178,7 @@
                             </span>
                             <div>
                                 <span class="text-sm text-(--gray)">Total a Pagar</span>
-                                <p class="text-(--light) font-bold text-2xl text-(--primary-color)">
+                                <p class="text-(--light) font-bold text-2xl">
                                     {{ totalCalculado() | currency:'MXN' }}
                                 </p>
                             </div>

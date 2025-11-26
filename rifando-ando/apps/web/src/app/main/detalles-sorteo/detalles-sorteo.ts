@@ -102,6 +102,7 @@ export class DetallesSorteo {
   volver() {
     this.router.navigate(['/main/ver-sorteos']);
   }
+  
   apartarNumeros() {
     const sorteoActual = this.sorteo();
     const seleccion = this.numerosSeleccionados();

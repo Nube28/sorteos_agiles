@@ -5,3 +5,5 @@ export * from './numero/update-numero.dto';
 export * from './numero/reservar-cantidad.dto';
 export * from './sorteo/sorteo-response.dto';
 export * from './numero/numero-response.dto';
+export * from './auth/login.dto';
+export * from './usuario/create-usuario.dto';
