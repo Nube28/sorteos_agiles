@@ -10,8 +10,14 @@ export class InterfaceService {
   messageEvent = signal('');
   eventCounter = signal(0);
 
+  loading = signal<boolean>(false);
+
   toggleAlert(show: boolean) {
     this.isEventActive.set(show);
+  }
+
+  setLoading(isLoading: boolean) {
+    this.loading.set(isLoading);
   }
 
   setEvent(title: string, message: string) {

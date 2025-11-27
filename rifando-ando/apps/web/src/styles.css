@@ -21,13 +21,14 @@
 :root {
     --primary-color: #377970;
     --secondary-color: #1F1F1F;
-
-
+    --third-color: #70B9BA;
+    
     --primary-hover: #26534D;
+    --third-hover: #53898a;
 
-    --dark: #2F2F2F;
     --dark-gray: #3C3C3C;
     --gray: #979797;
+    --dark: #2F2F2F;
 
     --light: #FFFFFF;
 }

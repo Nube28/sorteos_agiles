@@ -3,16 +3,26 @@ import { prisma } from '@rifando-ando/database';
 
 @Injectable()
 export class OrganizadorService {
-
-    async findOneByName(nombreUsuario: string) {
+    async findOneByUserId(userId: string) {
         return await prisma.organizador.findFirst({
             where: {
                 user: {
-                    nombreUsuario: nombreUsuario,
-                    rol: 'ORGANIZADOR',
+                    id: userId,
                 },
             },
-            include: { user: true }, 
+            include: { user: true },
         });
     }
 }
+
+    // async findOneByName(nombreUsuario: string) {
+    //     return await prisma.organizador.findFirst({
+    //         where: {
+    //             user: {
+    //                 nombreUsuario: nombreUsuario,
+    //                 rol: 'ORGANIZADOR',
+    //             },
+    //         },
+    //         include: { user: true }, 
+    //     });
+    // }

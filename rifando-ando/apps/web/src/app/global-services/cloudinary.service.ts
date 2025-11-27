@@ -8,17 +8,17 @@ import { environment } from '../../environments/environment.development';
 })
 export class CloudinaryService {
   private http = inject(HttpClient);
-  
-  private cloudName = environment.cloudinary.cloudName; 
+
+  private cloudName = environment.cloudinary.cloudName;
   private uploadPreset = environment.cloudinary.uploadPreset;
 
   uploadImage(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', this.uploadPreset);
-    
+
     return this.http.post<any>(
-      `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`, 
+      `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`,
       formData
     ).pipe(
       map(response => response.secure_url)

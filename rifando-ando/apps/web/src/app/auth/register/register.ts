@@ -4,6 +4,7 @@ import { Component, inject } from "@angular/core";
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthService } from "../../global-services/auth.service";
+import { InterfaceService } from "../../global-services/interface.service";
 
 @Component({
   selector: 'app-signup',
@@ -15,11 +16,11 @@ import { AuthService } from "../../global-services/auth.service";
 export class Register {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService)
+  private interfaceService = inject(InterfaceService)
   private router = inject(Router)
 
   registerForm: FormGroup;
   errorMessage: string = '';
-  isLoading: boolean = false;
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -33,7 +34,6 @@ export class Register {
       updateOn: 'change'
     });
   }
-
 
   private passwordMatchValidator(control: AbstractControl) {
     const contrasenia = control.get('contrasenia');
@@ -59,7 +59,7 @@ export class Register {
       return;
     }
 
-    this.isLoading = true;
+    this.interfaceService.setLoading(true);
 
     const { nombre, apellidos, nombreUsuario, contrasenia } = this.registerForm.value;
 
@@ -70,11 +70,13 @@ export class Register {
         // Auto-login después del registro
         this.authService.login(nombreUsuario, contrasenia).subscribe({
           next: () => {
-            this.isLoading = false;
+            this.interfaceService.setLoading(false);
+            this.interfaceService.setEvent('Registro exitoso', `Bienvenido de nuevo ${this.authService.getCurrentUser()?.nombre}`);
+            this.interfaceService.toggleAlert(true);
             this.router.navigate(['/main/ver-sorteos']);
           },
           error: (loginError) => {
-            this.isLoading = false;
+            this.interfaceService.setLoading(false);
             this.errorMessage = 'Registro exitoso pero el inicio de sesión falló. Por favor, inicie sesión manualmente.';
 
             setTimeout(() => {
@@ -86,7 +88,7 @@ export class Register {
         });
       },
       error: (error) => {
-        this.isLoading = false;
+        this.interfaceService.setLoading(false);
 
         if (error.status === 0) {
           this.errorMessage = 'No se puede conectar al servidor. Por favor, verifique que el backend esté en funcionamiento.';

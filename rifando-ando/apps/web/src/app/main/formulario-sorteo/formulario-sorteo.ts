@@ -9,6 +9,7 @@ import { CloudinaryService } from '../../global-services/cloudinary.service';
 import { InterfaceService } from '../../global-services/interface.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { ISorteo } from 'libs/shared';
+import { AuthService } from '../../global-services/auth.service';
 
 const ordenFechasValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const inicio = control.get('periodoInicioVenta')?.value;
@@ -28,24 +29,6 @@ const ordenFechasValidator: ValidatorFn = (control: AbstractControl): Validation
   return errors;
 };
 
-// Validador personalizado para fecha mínima (hoy) - SOLO para edición
-const fechaMinimaValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  if (!control.value) {
-    return null;
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const selectedDate = new Date(control.value);
-  selectedDate.setHours(0, 0, 0, 0);
-
-  if (selectedDate < today) {
-    return { fechaPasada: true };
-  }
-
-  return null;
-};
-
 @Component({
   selector: 'app-formulario-sorteo',
   imports: [CommonModule, ReactiveFormsModule, SorteoContainer],
@@ -61,9 +44,9 @@ export class FormularioSorteo {
   private cloudinaryService = inject(CloudinaryService);
   private interfaceService = inject(InterfaceService);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   sorteoForm!: FormGroup;
-  isUploading = signal(false);
   previewUrl = signal<string | null>(null);
   minDateStr = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
   todayDate = new Date().toISOString().split('T')[0]; // Para valor por defecto
@@ -73,7 +56,6 @@ export class FormularioSorteo {
   // Signals para modo edición
   isEditMode = signal(false);
   sorteoParaEditar = signal<ISorteo | null>(null);
-  isLoading = signal(false);
 
   constructor() {
     this.setupForm();
@@ -82,36 +64,39 @@ export class FormularioSorteo {
 
   private checkEditMode() {
     this.activatedRoute.paramMap.pipe(
-      tap(() => {
-        const id = this.activatedRoute.snapshot.paramMap.get('id');
+      switchMap(params => {
+        const id = params.get('id');
         this.isEditMode.set(!!id);
 
         if (!id) {
-          this.isLoading.set(false);
-          // En modo creación, establecer fecha de inicio por defecto
+          // Modo creación
           this.sorteoForm.patchValue({
             periodoInicioVenta: this.todayDate
           });
-        } else {
-          this.isLoading.set(true);
-          this.resetearFormulario();
+          return [null]; // Observable que emite null
         }
-      }),
-      switchMap(params => {
-        const id = params.get('id');
-        if (id) {
-          return this.sorteoService.getSorteoPorId(id);
-        }
-        return [];
-      }),
-      tap(sorteo => {
-        if (sorteo) {
-          this.cargarSorteo(sorteo as ISorteo);
-          this.isLoading.set(false);
-        }
+
+        // Modo edición
+        this.interfaceService.setLoading(true);
+        this.resetearFormulario();
+        return this.sorteoService.getSorteoPorId(id);
       }),
       takeUntilDestroyed()
-    ).subscribe();
+    ).subscribe({
+      next: (sorteo) => {
+        if (sorteo) {
+          this.cargarSorteo(sorteo as ISorteo);
+        }
+        this.interfaceService.setLoading(false);
+      },
+      error: (err) => {
+        console.error('Error al cargar sorteo:', err);
+        this.interfaceService.setLoading(false);
+        this.interfaceService.setEvent('Error', 'No se pudo cargar el sorteo');
+        this.interfaceService.toggleAlert(true);
+        this.router.navigate(['/main/ver-sorteos']);
+      }
+    });
   }
 
   private setupForm() {
@@ -166,7 +151,7 @@ export class FormularioSorteo {
     this.sorteoForm.get('organizador')?.updateValueAndValidity();
 
     this.sorteoForm.patchValue({
-      organizador: sorteo.nombreOrganizador || '',
+      organizador: this.authService.getCurrentUser().nombreUsuario || '',
       nombre: sorteo.nombre,
       premio: sorteo.premio,
       descripcion: sorteo.descripcion,
@@ -215,7 +200,7 @@ export class FormularioSorteo {
   }
 
   async onSubmit() {
-    if (this.isUploading()) {
+    if (this.interfaceService.loading()) {
       return;
     }
 
@@ -224,7 +209,7 @@ export class FormularioSorteo {
       return;
     }
 
-    this.isUploading.set(true);
+    this.interfaceService.setLoading(true);
 
     try {
       // Subir imagen si hay una nueva
@@ -235,19 +220,19 @@ export class FormularioSorteo {
 
       if (this.isEditMode()) {
         // Modo edición - SOLO enviar los campos que pueden actualizarse
-        const { organizador, ...restoDelFormulario } = this.sorteoForm.value;
+        const formValues = this.sorteoForm.value;
 
         const datosActualizados = {
-          nombre: restoDelFormulario.nombre,
-          premio: restoDelFormulario.premio,
-          descripcion: restoDelFormulario.descripcion,
-          cantidadNumeros: Number(restoDelFormulario.cantidadNumeros),
-          costo: Number(restoDelFormulario.costo),
+          nombre: formValues.nombre,
+          premio: formValues.premio,
+          descripcion: formValues.descripcion,
+          cantidadNumeros: Number(formValues.cantidadNumeros),
+          costo: Number(formValues.costo),
           urlImg: finalImageUrl,
-          periodoInicioVenta: restoDelFormulario.periodoInicioVenta,
-          periodoFinVenta: restoDelFormulario.periodoFinVenta,
-          fechaSorteo: restoDelFormulario.fechaSorteo,
-          tiempoLimitePago: Number(restoDelFormulario.tiempoLimitePago),
+          periodoInicioVenta: formValues.periodoInicioVenta,
+          periodoFinVenta: formValues.periodoFinVenta,
+          fechaSorteo: formValues.fechaSorteo,
+          tiempoLimitePago: Number(formValues.tiempoLimitePago),
         };
 
         this.sorteoService.actualizarSorteo(this.sorteoParaEditar()!.id, datosActualizados).subscribe({
@@ -255,13 +240,13 @@ export class FormularioSorteo {
             this.interfaceService.setEvent('Sorteo Modificado', 'Los cambios han sido guardados exitosamente.');
             this.interfaceService.toggleAlert(true);
             this.router.navigate(['main/ver-sorteos']);
-            this.isUploading.set(false);
+            this.interfaceService.setLoading(false);
           },
           error: (err) => {
             console.error('Error al modificar:', err);
             this.interfaceService.setEvent('Error al Modificar Sorteo', err.error?.message || 'Error al guardar');
             this.interfaceService.toggleAlert(true);
-            this.isUploading.set(false);
+            this.interfaceService.setLoading(false);
           }
         });
       } else {
@@ -270,25 +255,24 @@ export class FormularioSorteo {
         const sorteoData = {
           ...restoDelFormulario,
           urlImg: finalImageUrl,
-          nombreOrganizador: organizador,
           cantidadNumeros: Number(restoDelFormulario.cantidadNumeros),
           costo: Number(restoDelFormulario.costo),
           tiempoLimitePago: Number(restoDelFormulario.tiempoLimitePago),
         };
 
-        this.sorteoService.crearSorteo(sorteoData, organizador).subscribe({
+        this.sorteoService.crearSorteo(sorteoData).subscribe({
           next: (res) => {
             this.limpiarFormulario();
             this.interfaceService.setEvent('Sorteo Creado', 'El sorteo ha sido creado exitosamente.');
             this.interfaceService.toggleAlert(true);
             this.router.navigate(['/main/ver-sorteos']);
-            this.isUploading.set(false);
+            this.interfaceService.setLoading(false);
           },
           error: (err) => {
             console.error('Error al crear:', err);
             this.interfaceService.setEvent('Error al Crear Sorteo', err.error?.message || 'Error al crear');
             this.interfaceService.toggleAlert(true);
-            this.isUploading.set(false);
+            this.interfaceService.setLoading(false);
           }
         });
       }
@@ -296,7 +280,7 @@ export class FormularioSorteo {
       console.error('Error al subir imagen:', err);
       this.interfaceService.setEvent('Error al Subir Imagen', 'Error al subir la imagen');
       this.interfaceService.toggleAlert(true);
-      this.isUploading.set(false);
+      this.interfaceService.setLoading(false);
     }
   }
 
@@ -321,5 +305,14 @@ export class FormularioSorteo {
       return `Modificar Sorteo: ${this.sorteoParaEditar()!.nombre}`;
     }
     return 'Crear Sorteo';
+  }
+
+  get loading(): boolean {
+    return this.interfaceService.loading();
+  }
+
+  get currentNombre(): string | undefined {
+    const user = this.authService.getCurrentUser();
+    return user?.nombre + ' ' + user?.apellidos;
   }
 }

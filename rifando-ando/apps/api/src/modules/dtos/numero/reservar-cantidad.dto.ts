@@ -13,6 +13,6 @@ export class ReservarNumerosDto {
     @IsDateString()
     fechaApartado!: string;
 
-    // cambiar, está harcodeado
+    // cambiar, está harcodeado con el opcional
     clienteId?: string;
 }

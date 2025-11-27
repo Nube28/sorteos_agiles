@@ -1,18 +1,17 @@
+import { AuthGuard } from '@nestjs/passport';
 import { UserId } from '../../common/decorators/user.decorator';
 import { CreateSorteoDto, UpdateSorteoDto } from '../dtos';
 import { SorteosService } from './sorteos.service';
-import { Controller, Post, Body, Get, Param, Patch, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 
 @Controller('sorteos')
 export class SorteosController {
     constructor(private readonly sorteosService: SorteosService) { }
 
     @Post()
-    createSorteo(@Body() createSorteoDto: CreateSorteoDto) {
-        // cuando metamos jwt plebes hay cambiar esto a:
-        // createSorteo(@Body() createSorteoDto: CreateSorteoDto, @UserId() userId: number)
-        // Por ahora usa organizadorId del body o usa un valor hardcodeado
-        return this.sorteosService.crearSorteo(createSorteoDto);
+    @UseGuards(AuthGuard('jwt'))
+    createSorteo(@Body() createSorteoDto: CreateSorteoDto, @UserId() userId: string) {
+        return this.sorteosService.crearSorteo(createSorteoDto, userId);
     }
 
     @Get()
@@ -21,17 +20,19 @@ export class SorteosController {
     }
 
     @Get(':id')
-    getSorteoById(@Param('id', ParseUUIDPipe) id: string) {
-        return this.sorteosService.getSorteoById(id);
+    @UseGuards(AuthGuard('jwt'))
+    getSorteoById(@Param('id', ParseUUIDPipe) id: string, @UserId() userId: string) {
+        return this.sorteosService.getSorteoById(id, userId);
     }
 
     @Patch(':id')
-    updateSorteo(@Param('id', ParseUUIDPipe) id: string, @Body() updateSorteoDto: UpdateSorteoDto, /*@UserId() userId: number*/) {
-        const userId_temporal = '1'; // Por el momento ya que no tenemos configurado el jwt
-        return this.sorteosService.updateSorteo(id, updateSorteoDto, userId_temporal);
+    @UseGuards(AuthGuard('jwt'))
+    updateSorteo(@Param('id', ParseUUIDPipe) id: string, @Body() updateSorteoDto: UpdateSorteoDto, @UserId() userId: string) {
+        return this.sorteosService.updateSorteo(id, updateSorteoDto, userId);
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard('jwt'))
     deleteSorteo(@Param('id', ParseUUIDPipe) id: string, @UserId() userId: string) {
         return this.sorteosService.deleteSorteo(id, userId);
     }

@@ -50,7 +50,7 @@ export class CreateSorteoDto implements ISorteo {
   @IsNumber()
   tiempoLimitePago!: number;
 
-  @IsOptional()
-  @IsString()
-  nombreOrganizador: string;
+  // @IsOptional()
+  // @IsString()
+  // nombreOrganizador: string;
 }

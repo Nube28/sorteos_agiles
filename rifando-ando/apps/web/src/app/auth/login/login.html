@@ -1,6 +1,6 @@
 <app-auth-section [title]="'Iniciar Sesión'" [text]="`¿No tienes una cuenta?`" [textLink]="'Registrarse'"
   [link]="'auth/register'" [formGroup]="loginForm" [onSubmit]="onSubmit" [buttonText]="'Iniciar Sesión'"
-  [isLoading]="isLoading" [errorMessage]="errorMessage">
+  [errorMessage]="errorMessage">
   <!-- Email -->
   <div>
     <input type="text" formControlName="nombreUsuario" placeholder="Introduce tu nombre de usuario"

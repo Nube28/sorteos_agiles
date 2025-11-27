@@ -22,6 +22,7 @@ export class DetallesSorteo {
   private authService = inject(AuthService);
   private sorteoService = inject(SorteoService);
 
+  // Alerts
   showApartadoSuccess = signal(false);
   showApartadoError = signal(false);
   apartadoErrorMessage = signal('');
@@ -30,7 +31,7 @@ export class DetallesSorteo {
   sorteo = this.sorteoService.sorteo;
   numerosOcupadosData = this.numerosService.numeros;
 
-  // Lógica de Selección
+  // Lógica de selección
   numerosSeleccionados = signal<number[]>([]);
   isSubmitting = signal<boolean>(false);
   numerosReservadosExito = signal<number[]>([]);
@@ -38,9 +39,9 @@ export class DetallesSorteo {
   constructor() {
     this.activatedRoute.paramMap.pipe(
       tap(() => {
-        // Limpiar estado al cambiar de sorteo
+        // Reset recuerdando buenas prácticas
         this.sorteoService.sorteo.set(null);
-        this.numerosOcupadosData.set([]);
+        this.numerosService.numeros.set([]);
         this.numerosSeleccionados.set([]);
       }),
       switchMap(params => {
@@ -58,49 +59,41 @@ export class DetallesSorteo {
     ).subscribe();
   }
 
-  private setNumerosOcupados = computed(() => {
-    const ocupados = new Set<number>();
-    const numerosData = this.numerosOcupadosData();
-
-    numerosData.forEach((obj: any) => {
-      if (obj.posicion !== null && obj.posicion !== undefined) {
-        ocupados.add(Number(obj.posicion));
-      }
-    });
-
-    return ocupados;
+  readonly numerosOcupados = computed(() => {
+    return new Set(
+      this.numerosOcupadosData().map(n => Number(n.posicion))
+    );
   });
 
-  listaNumerosGenerada = computed(() => {
+  readonly listaNumerosGenerada = computed(() => {
     const total = this.sorteo()?.cantidadNumeros || 0;
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
-  totalCalculado = computed(() => {
-    const sorteoActual = this.sorteo();
-    if (!sorteoActual) return 0;
-    return sorteoActual.costo * this.numerosSeleccionados().length;
+  readonly totalCalculado = computed(() => {
+    const sorteo = this.sorteo();
+    if (!sorteo) return 0;
+    return sorteo.costo * this.numerosSeleccionados().length;
   });
 
-  esNumeroOcupado(num: number): boolean {
-    return this.setNumerosOcupados().has(num);
+  esNumeroOcupado(num: number) {
+    return this.numerosOcupados().has(num);
   }
 
-  esNumeroSeleccionado(num: number): boolean {
+  esNumeroSeleccionado(num: number) {
     return this.numerosSeleccionados().includes(num);
   }
 
   toggleNumero(num: number) {
     if (this.esNumeroOcupado(num)) return;
 
-    this.numerosSeleccionados.update(current => {
-      if (current.includes(num)) {
-        return current.filter(n => n !== num);
-      } else {
-        return [...current, num];
-      }
-    });
+    this.numerosSeleccionados.update(current =>
+      current.includes(num)
+        ? current.filter(n => n !== num)
+        : [...current, num]
+    );
   }
+
   volver() {
     this.router.navigate(['/main/ver-sorteos']);
   }
@@ -108,27 +101,35 @@ export class DetallesSorteo {
   apartarNumeros() {
     const sorteoActual = this.sorteo();
     const seleccion = this.numerosSeleccionados();
-    const clienteId = this.authService.getCurrentUser()?.clienteId; // ID hardcodeado o traído de tu Auth
+    const clienteId = this.authService.getCurrentUser()?.clienteId;
 
-    if (!sorteoActual?.id || seleccion.length === 0) return;
+    if (!sorteoActual?.id || seleccion.length === 0 || !clienteId) {
+      this.apartadoErrorMessage.set("No se pudo procesar la reserva.");
+      this.showApartadoError.set(true);
+      return;
+    }
 
     this.isSubmitting.set(true);
     this.showApartadoSuccess.set(false);
     this.showApartadoError.set(false);
 
-    this.numerosService.reservarNumeros(sorteoActual.id, seleccion, clienteId).subscribe({
+    this.numerosService.reservarNumeros(sorteoActual.id, seleccion).subscribe({
       next: (res: any) => {
-        const numerosReservados = res.numeros || seleccion;
-        this.numerosReservadosExito.set(numerosReservados);
+        const reservados = res.numeros || seleccion;
+
+        this.numerosReservadosExito.set(reservados);
         this.showApartadoSuccess.set(true);
 
+        // limpiar selección
         this.numerosSeleccionados.set([]);
 
-        const nuevosOcupados = numerosReservados.map((n: number) => ({
+        // actualizar ocupados en la UI
+        const nuevos = reservados.map((n: number) => ({
           posicion: n,
           sorteoId: sorteoActual.id
         }));
-        this.numerosOcupadosData.update(prev => [...prev, ...nuevosOcupados]);
+
+        this.numerosOcupadosData.update(prev => [...prev, ...nuevos]);
 
         this.isSubmitting.set(false);
 
@@ -136,8 +137,9 @@ export class DetallesSorteo {
           this.showApartadoSuccess.set(false);
         }, 5000);
       },
-      error: (err) => {
-        const msg = err.error?.message || err.message || 'Error desconocido al apartar números';
+
+      error: err => {
+        const msg = err.error?.message || 'Error desconocido al apartar números';
         this.apartadoErrorMessage.set(msg);
         this.showApartadoError.set(true);
         this.isSubmitting.set(false);

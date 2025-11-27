@@ -21,7 +21,6 @@ export class Login {
 
   loginForm: FormGroup;
   errorMessage: string = '';
-  isLoading: boolean = false;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -73,18 +72,18 @@ export class Login {
       return;
     }
 
-    this.isLoading = true;
+    this.interfaceService.setLoading(true);
     const { nombreUsuario, contrasenia } = this.loginForm.value;
 
     this.authService.login(nombreUsuario, contrasenia).subscribe({
       next: () => {
-        this.isLoading = false;
-        this.interfaceService.setEvent('Inicio de sesión exitoso', 'Bienvenido de nuevo!');
+        this.interfaceService.setLoading(false);
+        this.interfaceService.setEvent('Inicio de sesión exitoso', `Bienvenido de nuevo ${this.authService.getCurrentUser()?.nombre}`);
         this.interfaceService.toggleAlert(true);
         this.router.navigate(['/main/ver-sorteos']);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.interfaceService.setLoading(false);
 
         if (error.status === 0) {
           this.errorMessage = 'No se puede conectar al servidor. Por favor, verifica que el backend esté en funcionamiento.';
@@ -99,7 +98,7 @@ export class Login {
         console.error('Login error:', error);
       },
       complete: () => {
-        this.isLoading = false;
+        this.interfaceService.setLoading(false);
       }
     });
   }

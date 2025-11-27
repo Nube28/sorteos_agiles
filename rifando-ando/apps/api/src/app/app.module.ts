@@ -9,7 +9,12 @@ import { LoggerMiddleware } from '../logger-middleware';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [SorteosModule, NumerosModule,AuthModule,UsuariosModule, ScheduleModule.forRoot(),],
+  imports: [
+    SorteosModule,
+    NumerosModule,
+    AuthModule,
+    UsuariosModule,
+    ScheduleModule.forRoot(),],
   controllers: [AppController],
   providers: [AppService],
 })

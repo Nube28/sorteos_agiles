@@ -1,4 +1,4 @@
-@if (isLoading()) {
+@if (loading) {
 <div class="text-(--light) text-center p-10">Cargando datos del sorteo...</div>
 } @else {
 <app-sorteo-container [title]="titulo">
@@ -14,7 +14,7 @@
                     <div class="flex flex-col gap-2">
                         <label for="organizador"
                             class="text-(--gray) font-family-inria-sans-bold text-sm">ORGANIZADOR</label>
-                        <input id="organizador" type="text" placeholder="Jesus Tapia Maldonado"
+                        <input id="organizador" type="text" placeholder="{{ currentNombre }}" readonly
                             formControlName="organizador" [class.border-red-500]="isFieldInvalid('organizador')"
                             class="text-sm w-full border border-transparent outline-none py-3 px-5 rounded-md bg-(--dark) text-(--gray)" />
                         @if (isFieldInvalid('organizador')) {
@@ -122,9 +122,9 @@
                             accept="image/*" hidden>
 
                         @if (!previewUrl()) {
-                        <button type="button" (click)="!isUploading() && fileInput.click()"
+                        <button type="button" (click)="!loading && fileInput.click()"
                             class="w-full flex-1 aspect-2/1 xl:aspect-3/1 sm:min-h-[200px] border border-dashed border-(--gray) hover:border-(--primary-color) rounded-md bg-(--dark) flex flex-col items-center justify-center cursor-pointer transition-colors duration-200 group relative overflow-hidden">
-                            @if (isUploading()) {
+                            @if (loading) {
                             <div class="animate-spin rounded-full h-8 w-8 border border-(--primary-color)"></div>
                             <span class="text-xs text-(--gray) mt-2">Subiendo...</span>
                             } @else {
@@ -237,11 +237,11 @@
                 </button>
 
                 <!-- Botton de submit -->
-                <button type="submit" [disabled]="sorteoForm.invalid || isUploading()"
-                    [class.opacity-50]="sorteoForm.invalid || isUploading()"
-                    [class.cursor-not-allowed]="sorteoForm.invalid || isUploading()"
+                <button type="submit" [disabled]="sorteoForm.invalid || loading"
+                    [class.opacity-50]="sorteoForm.invalid || loading"
+                    [class.cursor-not-allowed]="sorteoForm.invalid || loading"
                     class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer py-3 min-w-[100px] w-[10vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md">
-                    @if (isUploading()) {
+                    @if (loading) {
                     {{ isEditMode() ? 'Guardando...' : 'Subiendo imagen...' }}
                     } @else {
                     {{ isEditMode() ? 'Guardar Cambios' : 'Crear Sorteo' }}

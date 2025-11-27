@@ -21,7 +21,13 @@ export class UsuariosService {
     }
 
     async findById(id: string): Promise<Usuario | null> {
-        return this.prisma.usuario.findUnique({ where: { id } });
+        return this.prisma.usuario.findUnique({
+            where: { id },
+            include: {
+                Cliente: true,
+                Organizador: true,
+            }
+        });
     }
 
     async create(

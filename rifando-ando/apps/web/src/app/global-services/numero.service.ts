@@ -7,7 +7,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
     providedIn: 'root',
 })
 export class NumerosService {
-    // esto debería ser variable de entorno
+
     private apiURL = `http://localhost:3000/api/numeros`;
     private httpClient = inject(HttpClient);
 
@@ -15,7 +15,7 @@ export class NumerosService {
     readonly numeros$ = this.numeros.asReadonly();
 
     getNumeros(sorteoId: string): Observable<INumero[]> {
-        const url = `${this.apiURL}/${sorteoId}`;
+        const url = `${this.apiURL}/sorteo/${sorteoId}/`;
 
         return this.httpClient.get<INumero[]>(url).pipe(
             tap(data => this.numeros.set(data)),
@@ -26,17 +26,16 @@ export class NumerosService {
         );
     }
 
-    reservarNumeros(sorteoId: string, numeros: number[], clienteId: string): Observable<any> {
-        const url = `${this.apiURL}/reservar-cantidad`; 
-        
+    reservarNumeros(sorteoId: string, numeros: number[]): Observable<any> {
+        const url = `${this.apiURL}/reservar-cantidad`;
+
         const body = {
             sorteoId,
             numeros,
-            clienteId, 
-            fechaApartado: new Date().toISOString() 
+            fechaApartado: new Date().toISOString()
         };
 
-        return this.httpClient.post(url, body).pipe(
+        return this.httpClient.post<any>(url, body).pipe(
             tap(() => {
                 this.getNumeros(sorteoId).subscribe();
             }),

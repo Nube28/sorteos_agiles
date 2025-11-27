@@ -18,15 +18,13 @@ export class SorteoService {
     sorteoData = signal<ISorteo | null>(null);
     readonly sorteo$ = this.sorteo.asReadonly();
 
-    crearSorteo(sorteo: ISorteo, nombreOrganizador: string): Observable<ISorteo> {
+    crearSorteo(sorteo: ISorteo): Observable<ISorteo> {
         // convertir strings a números antes de enviar
         const sorteoData = {
             ...sorteo,
             costo: Number(sorteo.costo),
-            // cantidad de numeros si lo ocupamos, tenemos que saber el limite
             cantidadNumeros: Number(sorteo.cantidadNumeros),
             tiempoLimitePago: Number(sorteo.tiempoLimitePago),
-            nombreOrganizador: nombreOrganizador
         };
 
         // Vamos a implementar optimistic ui aqui

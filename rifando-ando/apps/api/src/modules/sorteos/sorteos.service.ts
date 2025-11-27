@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { OrganizadorService } from './organizador.service';
 import { CreateSorteoDto } from '../dtos';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -9,103 +9,98 @@ export class SorteosService {
         private prisma: PrismaService,
         private organizadorService: OrganizadorService
     ) { }
-    async crearSorteo(createSorteoDto: CreateSorteoDto) {
-        try {
-            const {
-                periodoInicioVenta,
-                periodoFinVenta,
-                fechaSorteo,
-                nombreOrganizador,
-                cantidadNumeros,
-                ...restData
-            } = createSorteoDto;
 
-            const organizador = await this.organizadorService.findOneByName(nombreOrganizador);
+    async crearSorteo(createSorteoDto: CreateSorteoDto, userId: string) {
+        const {
+            periodoInicioVenta,
+            periodoFinVenta,
+            fechaSorteo,
+            cantidadNumeros,
+            ...restData
+        } = createSorteoDto;
 
-            if (!organizador) {
-                throw new NotFoundException(`No se encontró un organizador con el usuario: ${nombreOrganizador}`);
-            }
-            const totalNumeros = Number(cantidadNumeros);
-            return await this.prisma.sorteo.create({
-                data: {
-                    periodoInicioVenta: new Date(periodoInicioVenta),
-                    periodoFinVenta: new Date(periodoFinVenta),
-                    fechaSorteo: new Date(fechaSorteo),
-                    organizador: {
-                        connect: { id: organizador.id }
-                    },
-                    cantidadNumeros: totalNumeros,
-                    ...restData,
-                },
-            });
-        } catch (error) {
-            throw new Error(`Error al crear sorteo: ${error.message}`);
+        // Buscar organizador por userId, no por nombre
+        const organizador = await this.organizadorService.findOneByUserId(userId);
+
+        if (!organizador) {
+            throw new NotFoundException(`No se encontró un organizador asociado a este usuario.`);
         }
+
+        const totalNumeros = Number(cantidadNumeros);
+
+        return this.prisma.sorteo.create({
+            data: {
+                periodoInicioVenta: new Date(periodoInicioVenta),
+                periodoFinVenta: new Date(periodoFinVenta),
+                fechaSorteo: new Date(fechaSorteo),
+                organizador: {
+                    connect: { id: organizador.id }
+                },
+                cantidadNumeros: totalNumeros,
+                ...restData,
+            },
+        });
     }
+
 
     async getSorteos() {
-        return await this.prisma.sorteo.findMany({
-            include: {
-                organizador: true,
-            },
+        return this.prisma.sorteo.findMany({
+            include: { organizador: true },
         });
     }
 
-    async getSorteoById(id: string) {
-        return await this.prisma.sorteo.findUnique({
+    async getSorteoById(id: string, userId: string) {
+        const sorteo = await this.prisma.sorteo.findUnique({
             where: { id },
-            include: {
-                organizador: true,
-            },
+            include: { organizador: true },
         });
+
+        if (!sorteo) throw new NotFoundException(`Sorteo con id ${id} no encontrado`);
+
+        return sorteo;
     }
 
     async updateSorteo(id: string, datosDelFrontend: any, userId: string) {
-        try {
-            const sorteoExistente = await this.prisma.sorteo.findUnique({
-                where: { id },
-                select: { organizadorId: true }
-            });
-
-            if (!sorteoExistente) {
-                throw new NotFoundException(`Sorteo con id ${id} no encontrado`);
-            }
-
-            const {
-                id: idDelBody,
-                organizador,
-                organizadorId,
-                numeros,
-                ...datosLimpios
-            } = datosDelFrontend;
-
-            const datosParaActualizar = {
-                ...datosLimpios,
-
-                costo: Number(datosLimpios.costo),
-                cantidadNumeros: Number(datosLimpios.cantidadNumeros),
-                tiempoLimitePago: Number(datosLimpios.tiempoLimitePago),
-
-                periodoInicioVenta: new Date(datosLimpios.periodoInicioVenta),
-                periodoFinVenta: new Date(datosLimpios.periodoFinVenta),
-                fechaSorteo: new Date(datosLimpios.fechaSorteo)
-            };
-
-            return await this.prisma.sorteo.update({
-                where: { id: id },
-                data: datosParaActualizar
-            });
-
-        } catch (error) {
-            console.error("Error en updateSorteo:", error.message);
-            throw new Error(`Error al actualizar sorteo: ${error.message}`);
-        }
-    }
-
-    async deleteSorteo(id: string, userId: string) {
-        return await this.prisma.sorteo.delete({
+        const sorteoExistente = await this.prisma.sorteo.findUnique({
             where: { id },
+            select: { organizadorId: true }
+        });
+
+        if (!sorteoExistente) throw new NotFoundException(`Sorteo con id ${id} no encontrado`);
+
+        const {
+            id: idDelBody,
+            organizador,
+            organizadorId,
+            numeros,
+            ...datosLimpios
+        } = datosDelFrontend;
+
+        const datosParaActualizar = {
+            ...datosLimpios,
+            costo: Number(datosLimpios.costo),
+            cantidadNumeros: Number(datosLimpios.cantidadNumeros),
+            tiempoLimitePago: Number(datosLimpios.tiempoLimitePago),
+            periodoInicioVenta: new Date(datosLimpios.periodoInicioVenta),
+            periodoFinVenta: new Date(datosLimpios.periodoFinVenta),
+            fechaSorteo: new Date(datosLimpios.fechaSorteo),
+        };
+
+        return this.prisma.sorteo.update({
+            where: { id },
+            data: datosParaActualizar
         });
     }
 
+    async deleteSorteo(id: string, userId: string) {
+        const sorteo = await this.prisma.sorteo.findUnique({
+            where: { id },
+            select: { organizadorId: true }
+        });
+
+        if (!sorteo) throw new NotFoundException(`Sorteo con id ${id} no encontrado`);
+        if (sorteo.organizadorId !== userId) throw new ForbiddenException('No tienes permisos para eliminar este sorteo');
+
+        return this.prisma.sorteo.delete({ where: { id } });
+    }
 }
