@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NumerosService } from '../../global-services/numero.service';
 import { AuthService } from '../../global-services/auth.service';
+import { InterfaceService } from '../../global-services/interface.service';
 
 @Component({
   selector: 'app-detalles-sorteo',
@@ -20,12 +21,8 @@ export class DetallesSorteo {
   private numerosService = inject(NumerosService);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private interfaceService = inject(InterfaceService);
   private sorteoService = inject(SorteoService);
-
-  // Alerts
-  showApartadoSuccess = signal(false);
-  showApartadoError = signal(false);
-  apartadoErrorMessage = signal('');
 
   // Datos del servidor
   sorteo = this.sorteoService.sorteo;
@@ -33,7 +30,6 @@ export class DetallesSorteo {
 
   // Lógica de selección
   numerosSeleccionados = signal<number[]>([]);
-  isSubmitting = signal<boolean>(false);
   numerosReservadosExito = signal<number[]>([]);
 
   constructor() {
@@ -104,21 +100,17 @@ export class DetallesSorteo {
     const clienteId = this.authService.getCurrentUser()?.clienteId;
 
     if (!sorteoActual?.id || seleccion.length === 0 || !clienteId) {
-      this.apartadoErrorMessage.set("No se pudo procesar la reserva.");
-      this.showApartadoError.set(true);
+      this.interfaceService.setEvent('Error', 'No se pudo procesar la reserva.');
+      this.interfaceService.toggleAlert(true);
       return;
     }
-
-    this.isSubmitting.set(true);
-    this.showApartadoSuccess.set(false);
-    this.showApartadoError.set(false);
 
     this.numerosService.reservarNumeros(sorteoActual.id, seleccion).subscribe({
       next: (res: any) => {
         const reservados = res.numeros || seleccion;
 
-        this.numerosReservadosExito.set(reservados);
-        this.showApartadoSuccess.set(true);
+        this.interfaceService.setEvent('Números apartados correctamente', `Los número(s) ${reservados.join(', ')} han sido apartados con éxito.`);
+        this.interfaceService.toggleAlert(true);
 
         // limpiar selección
         this.numerosSeleccionados.set([]);
@@ -130,24 +122,17 @@ export class DetallesSorteo {
         }));
 
         this.numerosOcupadosData.update(prev => [...prev, ...nuevos]);
-
-        this.isSubmitting.set(false);
-
-        setTimeout(() => {
-          this.showApartadoSuccess.set(false);
-        }, 5000);
       },
 
       error: err => {
         const msg = err.error?.message || 'Error desconocido al apartar números';
-        this.apartadoErrorMessage.set(msg);
-        this.showApartadoError.set(true);
-        this.isSubmitting.set(false);
-
-        setTimeout(() => {
-          this.showApartadoError.set(false);
-        }, 5000);
+        this.interfaceService.setEvent('Error', msg);
+        this.interfaceService.toggleAlert(true);
       }
     });
+  }
+
+  get isLoading() {
+    return this.interfaceService.loading();
   }
 }
