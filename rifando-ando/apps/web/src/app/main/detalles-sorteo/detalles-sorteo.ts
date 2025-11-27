@@ -99,8 +99,12 @@ export class DetallesSorteo {
     const seleccion = this.numerosSeleccionados();
     const clienteId = this.authService.getCurrentUser()?.clienteId;
 
-    if (!sorteoActual?.id || seleccion.length === 0 || !clienteId) {
+    if (!sorteoActual?.id || seleccion.length === 0) {
       this.interfaceService.setEvent('Error', 'No se pudo procesar la reserva.');
+      this.interfaceService.toggleAlert(true);
+      return;
+    }else if(!clienteId){
+      this.interfaceService.setEvent('Error', 'Solo los cliente pueden apartar números.');
       this.interfaceService.toggleAlert(true);
       return;
     }

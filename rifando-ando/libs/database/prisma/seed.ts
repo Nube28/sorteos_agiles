@@ -13,7 +13,7 @@ async function main() {
       nombre: 'Admin',
       apellidos: 'Sistema',
       nombreUsuario: 'admin',
-      contrasenia: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', // "password"
+      contrasenia: '$2b$12$hgJwmX9rK.ALK71FHtGiUur5P7hO1MTiZccDPYarz6Pme2tCdszXO', // "La contraseña es adminadmin nomas que aqui ya esta hasheada"
       rol: 'ORGANIZADOR',
     },
   });
