@@ -103,7 +103,9 @@ export class DetallesSorteo {
       this.interfaceService.setEvent('Error', 'No se pudo procesar la reserva.');
       this.interfaceService.toggleAlert(true);
       return;
-    }else if(!clienteId){
+    }
+    
+    if(!clienteId){
       this.interfaceService.setEvent('Error', 'Solo los cliente pueden apartar números.');
       this.interfaceService.toggleAlert(true);
       return;
