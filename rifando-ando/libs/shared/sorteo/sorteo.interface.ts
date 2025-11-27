@@ -10,6 +10,6 @@ export interface ISorteo {
     cantidadNumeros: number;
     fechaSorteo: string;
     tiempoLimitePago: number;
-    // organizadorId: string;
+    organizadorId: string;
     // nombreOrganizador: string;
 }

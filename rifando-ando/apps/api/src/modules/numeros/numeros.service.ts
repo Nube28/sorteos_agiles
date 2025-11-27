@@ -67,16 +67,14 @@ export class NumeroService {
     }
 
     async reservarNumeros(dto: ReservarNumerosDto, userId: string) {
-        console.log("🎯 UserId recibido en el controller:", userId);
         const { sorteoId, numeros, fechaApartado } = dto;
 
-        // 1. Obtener sorteo
         const sorteo = await this.prisma.sorteo.findUnique({
             where: { id: sorteoId }
         });
         if (!sorteo) throw new Error('Sorteo no encontrado');
 
-        // 2. Validar rango de números
+        // Validar rango de números
         const fueraDeRango = numeros.filter(n => n < 1 || n > sorteo.cantidadNumeros);
         if (fueraDeRango.length > 0) {
             throw new Error(
@@ -84,7 +82,7 @@ export class NumeroService {
             );
         }
 
-        // 3. Obtener el cliente asociado al usuario autenticado
+        // Obtener el cliente asociado al usuario autenticado
         const cliente = await this.prisma.cliente.findUnique({
             where: { usuarioId: userId }
         });
@@ -93,7 +91,7 @@ export class NumeroService {
             throw new Error('No existe un cliente asociado a este usuario');
         }
 
-        // 4. Verificar concurrencia
+        // Verificar concurrencia
         const ocupados = await this.prisma.numero.findMany({
             where: {
                 sorteoId,
@@ -107,13 +105,13 @@ export class NumeroService {
             throw new Error(`Los siguientes números ya están ocupados: ${lista}`);
         }
 
-        // 5. Crear masivamente los números
+        // Crear masivamente los números
         await this.prisma.numero.createMany({
             data: numeros.map(pos => ({
                 posicion: pos,
                 fechaApartado: new Date(fechaApartado),
                 sorteoId,
-                clienteId: cliente.id  // << 🔥 CORRECTO
+                clienteId: cliente.id
             }))
         });
 

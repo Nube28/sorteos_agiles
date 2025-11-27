@@ -11,20 +11,28 @@
         @if (showMenuOptions) {
         <ul class="flex items-center gap-[3vw] text-sm justify-center col-span-4">
             <li (click)="navigateTo('ver-sorteos')"
-                class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                        'text-(--primary-color) underline': currentRouteValue === '/main/ver-sorteos'
-                    }">Ver Sorteos</li>
-            <li (click)="navigateTo('mis-sorteos')"
-                class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                    'text-(--primary-color) underline': currentRouteValue === '/main/mis-sorteos'
-                }">Mis Sorteos</li>
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                [ngClass]="{'text-(--primary-color) underline': isActive('/main/ver-sorteos')}">
+                Ver Sorteos
+            </li>
+
+            @if (usuario.rol === 'ORGANIZADOR') {
+            <li (click)="navigateTo('ver-sorteos', { filter: 'mis-sorteos' })"
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                [ngClass]="{'text-(--primary-color) underline': isActive('/main/ver-sorteos', 'mis-sorteos')}">
+                Mis Sorteos
+            </li>
+
             <li (click)="navigateTo('crear-sorteo')"
-                class="cursor-pointer hover:underline underline-offset-4 text-nowrap" [ngClass]="{
-                        'text-(--primary-color) underline': currentRouteValue === '/main/crear-sorteo'
-                }">Crear Sorteos</li>
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                [ngClass]="{'text-(--primary-color) underline': isActive('/main/crear-sorteo')}">
+                Crear Sorteos
+            </li>
+            }
             <li (click)="logout()" class="cursor-pointer hover:underline underline-offset-4 text-nowrap">Cerrar Sesión
             </li>
         </ul>
+
         <div class="flex items-center gap-3 text-sm justify-end cursor-pointer col-span-2">
             <span class="text-nowrap">{{ usuario.nombre }} {{ usuario.apellidos }}</span>
             <div class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
@@ -43,11 +51,9 @@
                 Iniciar Sesión
             </button>
         </div>
-        <!-- fill empty space of grid -->
         }
     </header>
 
-    <!-- botones fixed maybe to do -->
     <main class="flex-1 overflow-auto px-1 scrollbar-hide">
         <router-outlet></router-outlet>
     </main>

@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { authGuard, publicGuard } from './guards/auth.guard';
+import { RolUsuario } from 'libs/shared';
 
 export const appRoutes: Route[] = [
     {
@@ -49,21 +50,25 @@ export const appRoutes: Route[] = [
                 path: 'ver-sorteos',
                 loadComponent: () => import('./main/ver-sorteos/ver-sorteos').then((m) => m.VerSorteos),
                 canActivate: [authGuard],
+                data: { rolesPermitidos: [RolUsuario.CLIENTE, RolUsuario.ORGANIZADOR] }
             },
             {
                 path: 'crear-sorteo',
                 loadComponent: () => import('./main/formulario-sorteo/formulario-sorteo').then((m) => m.FormularioSorteo),
                 canActivate: [authGuard],
+                data: { rolesPermitidos: [RolUsuario.ORGANIZADOR] }
             },
             {
                 path: 'detalles-sorteo/:id',
                 loadComponent: () => import('./main/detalles-sorteo/detalles-sorteo').then((m) => m.DetallesSorteo),
                 canActivate: [authGuard],
+                data: { rolesPermitidos: [RolUsuario.CLIENTE, RolUsuario.ORGANIZADOR] }
             },
             {
                 path: 'modificar-sorteo/:id',
                 loadComponent: () => import('./main/formulario-sorteo/formulario-sorteo').then((m) => m.FormularioSorteo),
                 canActivate: [authGuard],
+                data: { rolesPermitidos: [RolUsuario.ORGANIZADOR] }
             },
             {
                 path: '**',

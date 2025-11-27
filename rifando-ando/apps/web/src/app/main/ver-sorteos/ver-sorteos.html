@@ -1,13 +1,13 @@
 <app-sorteo-container [title]="'Ver Sorteos'">
-    <div class="text-(--light) flex flex-wrap gap-6 justify-center lg:justify-start">
+    <div class="text-(--light) flex flex-wrap gap-6">
 
         @if (sorteos().length > 0) {
 
+        <!-- en x resolucion queda un espacio donde si hay 5 en total, se dividen 3 y 2 -->
         <div class="columns-[400px] gap-4 w-full">
             @for (sorteo of sorteos(); track sorteo.id) {
             <div class="break-inside-avoid mb-4">
-                <app-sorteo [sorteoReceiver]="sorteo" class="w-full block"
-                    (click)="verDetalles(sorteo.id)"></app-sorteo>
+                <app-sorteo [sorteoReceiver]="sorteo" class="w-full" (click)="verDetalles(sorteo.id)"></app-sorteo>
             </div>
             }
         </div>

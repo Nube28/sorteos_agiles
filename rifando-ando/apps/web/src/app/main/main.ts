@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { InterfaceService } from '../global-services/interface.service';
 import { CommonModule } from '@angular/common';
 import { Alert } from "../global-components/alert/alert";
@@ -14,12 +14,21 @@ import { AuthService } from '../global-services/auth.service';
 export class Main {
   private interfaceService = inject(InterfaceService);
   private authService = inject(AuthService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   currentRoute = signal('');
+  currentFilter = signal<string | null>(null);
 
-  constructor(private router: Router) {
+  constructor() {
+    // Setear la ruta actual y el filtro al iniciar y al cambiar de ruta
     this.router.events.subscribe(() => {
-      this.currentRoute.set(this.router.url);
+      this.currentRoute.set(this.router.url.split('?')[0]);
+    });
+
+    // Seetear el filtro al iniciar y al cambiar de parámetros
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.currentFilter.set(params['filter'] || null);
     });
   }
 
@@ -49,5 +58,12 @@ export class Main {
 
   get usuario() {
     return this.authService.getCurrentUser();
+  }
+
+  isActive(routePath: string, filter?: string): boolean {
+    if (filter) {
+      return this.currentRoute() === routePath && this.currentFilter() === filter;
+    }
+    return this.currentRoute() === routePath && !this.currentFilter();
   }
 }
