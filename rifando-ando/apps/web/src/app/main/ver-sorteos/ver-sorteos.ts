@@ -55,5 +55,9 @@ export class VerSorteos implements OnInit {
   verDetalles(sorteoId: string) {
     this.router.navigate(['/main/detalles-sorteo', sorteoId]);
   }
+
+  get titulo() {
+    return this.filter() === 'mis-sorteos' ? 'Mis Sorteos' : 'Ver Sorteos';
+  }
 }
 
