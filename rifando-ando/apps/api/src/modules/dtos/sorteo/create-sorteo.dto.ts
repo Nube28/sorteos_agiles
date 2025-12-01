@@ -5,6 +5,10 @@ import { ISorteo } from 'libs/shared/sorteo/sorteo.interface';
 export class CreateSorteoDto implements ISorteo {
   @IsOptional()
   @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
   urlImg?: string;
 
   @IsString()
@@ -49,6 +53,9 @@ export class CreateSorteoDto implements ISorteo {
   @Type(() => Number)
   @IsNumber()
   tiempoLimitePago!: number;
+
+  @IsString()
+  organizadorId: string;
 
   // @IsOptional()
   // @IsString()

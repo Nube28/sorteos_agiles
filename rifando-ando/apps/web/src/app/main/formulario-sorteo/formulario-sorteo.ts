@@ -10,6 +10,8 @@ import { InterfaceService } from '../../global-services/interface.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { ISorteo } from 'libs/shared';
 import { AuthService } from '../../global-services/auth.service';
+import { LucideAngularModule } from "lucide-angular";
+import { IconService } from '../../global-services/icon.service';
 
 const ordenFechasValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const inicio = control.get('periodoInicioVenta')?.value;
@@ -31,7 +33,7 @@ const ordenFechasValidator: ValidatorFn = (control: AbstractControl): Validation
 
 @Component({
   selector: 'app-formulario-sorteo',
-  imports: [CommonModule, ReactiveFormsModule, SorteoContainer],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   providers: [DatePipe],
   templateUrl: './formulario-sorteo.html',
   styleUrl: './formulario-sorteo.css',
@@ -45,6 +47,7 @@ export class FormularioSorteo {
   private interfaceService = inject(InterfaceService);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private iconService = inject(IconService);
 
   sorteoForm!: FormGroup;
   previewUrl = signal<string | null>(null);
@@ -110,7 +113,7 @@ export class FormularioSorteo {
       ]],
       premio: ['', [
         Validators.required,
-        Validators.maxLength(100) // Agregamos el límite aquí
+        Validators.maxLength(100)
       ]],
       descripcion: ['', [
         Validators.required,
@@ -258,6 +261,7 @@ export class FormularioSorteo {
           cantidadNumeros: Number(restoDelFormulario.cantidadNumeros),
           costo: Number(restoDelFormulario.costo),
           tiempoLimitePago: Number(restoDelFormulario.tiempoLimitePago),
+          organizadorId: this.authService.getCurrentUser().organizadorId,
         };
 
         this.sorteoService.crearSorteo(sorteoData).subscribe({
@@ -314,5 +318,9 @@ export class FormularioSorteo {
   get currentNombre(): string | undefined {
     const user = this.authService.getCurrentUser();
     return user?.nombre + ' ' + user?.apellidos;
+  }
+
+  getIcon(iconName: string) {
+    return this.iconService.iconsMap[iconName];
   }
 }

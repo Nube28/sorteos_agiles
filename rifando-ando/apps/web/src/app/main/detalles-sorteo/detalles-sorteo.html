@@ -1,188 +1,211 @@
 @if (sorteo()) {
-<app-sorteo-container [title]="sorteo().nombre">
-    <div class="m-auto w-full max-w-[1300px] flex flex-col gap-5 text-(--light) h-full">
-        <!-- Descripción del sorteo -->
-        <div class="bg-(--dark) rounded-3xl p-10 w-full">
-            <h3 class="font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.5rem)] mb-3">
-                Descripción
-            </h3>
-            <p class="text-sm text-(--gray) leading-relaxed">
-                {{ sorteo().descripcion }}
-            </p>
-        </div>
+<div class="flex justify-between items-center">
+    <h1
+        class="font-family-inria-sans-bold text-center sm:text-start text-(--light) text-[clamp(2rem,2vw,3rem)] font-family-roboto-slab-bold mb-5">
+        {{ sorteo().nombre }}</h1>
+    <ul class="text-(--light) flex gap-3">
+        <li
+            class="hover:bg-(--primary-color) cursor-pointer bg-(--dark) py-2 px-4 rounded-md shadow-[0_6px_6px_var(--shadow)] aspect-square sm:aspect-auto flex items-center justify-center">
+            <a href="/main/ver-sorteos" class="flex items-center gap-1">
+                <span class="hidden sm:inline">
+                    Regresar
+                </span>
+                <lucide-icon [img]="getIcon('chevronLeft')" [color]="'var(--light)'" [strokeWidth]="'2'" [size]="'22'">
+                </lucide-icon>
+            </a>
+        </li>
+        @if (esOrganizador) {
+        <li
+            class="hover:bg-(--primary-color) cursor-pointer bg-(--dark) py-2 px-5 sm:px-4 rounded-md shadow-[0_6px_6px_var(--shadow)] aspect-square sm:aspect-auto flex items-center justify-center">
+            <a href="/main/modificar-sorteo/{{ sorteo().id }}" class="flex items-center gap-1">
+                <span class="hidden sm:inline">
+                    Modificar
+                </span>
+                <lucide-icon [img]="getIcon('pencilLine')" [color]="'var(--light)'" [strokeWidth]="'2'" [size]="'16'">
+                </lucide-icon>
+            </a>
+        </li>
+        }
+    </ul>
+</div>
 
-        <div class="flex flex-col lg:grid lg:grid-cols-3 gap-5 text-(--light) h-full">
-            <div class="flex flex-col gap-5 col-span-2">
-                <!-- Premio -->
-                <div class="bg-(--dark) rounded-3xl p-3 flex flex-col">
-                    <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-1 pt-1">
-                        Premio:
-                    </h3>
+<hr class="py-5 text-zinc-200">
 
-                    <h3
-                        class="font-family-inria-sans-bold text-[clamp(2rem,3vw,1.8rem)] text-center pb-5 pt-2 text-(--gray)">
-                        {{ sorteo().premio }}
-                    </h3>
+<div class="m-auto w-full flex flex-col gap-5 text-(--light) h-full">
+    <div class="flex flex-col md:flex-row gap-5 text-(--light) h-full">
+        <div class="flex flex-col gap-5 w-full md:w-[70%]">
+            <!-- Premio -->
+            <div class="bg-(--dark) rounded-3xl p-3 flex flex-col shadow-[0_6px_6px_var(--shadow)]">
+                <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-1 pt-1">
+                    Premio:
+                </h3>
 
-                    @if (sorteo().urlImg) {
-                    <img [src]="sorteo().urlImg" alt="Imagen del premio"
-                        class="bg-(--dark) rounded-2xl w-full max-h-[400px] object-cover" />
-                    } @else {
-                    <div class="bg-(--dark-gray) rounded-2xl flex items-center justify-center h-[200px]">
-                        <span class="text-(--gray)">(Imagen no disponible)</span>
+                <h3
+                    class="font-family-inria-sans-bold text-[clamp(2rem,3vw,1.8rem)] text-center pb-5 pt-2 text-(--gray)">
+                    {{ sorteo().premio }}
+                </h3>
+
+                @if (sorteo().urlImg) {
+                <img [src]="sorteo().urlImg" alt="Imagen del premio"
+                    class="bg-(--dark) rounded-2xl w-full max-h-[400px] object-cover" />
+                } @else {
+                <div class="bg-(--dark-gray) rounded-2xl flex items-center justify-center h-[200px]">
+                    <span class="text-(--gray)">(Imagen no disponible)</span>
+                </div>
+                }
+            </div>
+
+            <!-- Selección de Números (La Grilla) -->
+            <div class="bg-(--dark) rounded-3xl p-5 shadow-[0_6px_6px_var(--shadow)]">
+                <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] mb-4">
+                    Selecciona tus números
+                </h3>
+
+                <!-- Leyenda de colores -->
+                <div class="flex flex-wrap gap-4 mb-4 text-xs">
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded border border-green-500"></div>
+                        <span class="text-(--gray)">Disponible</span>
                     </div>
-                    }
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded bg-(--primary-color)"></div>
+                        <span class="text-(--gray)">Seleccionado</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded bg-red-600/50"></div>
+                        <span class="text-(--gray)">Ocupado</span>
+                    </div>
                 </div>
 
-                <!-- Selección de Números (La Grilla) -->
-                <div class="bg-(--dark) rounded-3xl p-5">
-                    <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] mb-4">
-                        Selecciona tus números
-                    </h3>
+                <!-- Grid de números -->
+                <div
+                    class=" scrollbar-hide flex flex-wrap gap-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar shadow-[0_6px_6px_var(--shadow)]">
+                    @for (num of listaNumerosGenerada(); track num) {
+                    <button type="button" (click)="toggleNumero(num)" [disabled]="esNumeroOcupado(num)"
+                        [class.bg-red-900]="esNumeroOcupado(num)" [class.text-red-200]="esNumeroOcupado(num)"
+                        [class.cursor-not-allowed]="esNumeroOcupado(num)" [class.opacity-50]="esNumeroOcupado(num)"
+                        [class.bg-(--primary-color)]="esNumeroSeleccionado(num)"
+                        [class.text-white]="esNumeroSeleccionado(num)"
+                        [class.border-transparent]="esNumeroSeleccionado(num)"
+                        [class.border-green-500]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
+                        [class.text-green-400]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
+                        [class.hover:bg-(--primary-hover)]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
+                        class="w-[3vw] min-w-10 cursor-pointer border rounded-md text-sm font-bold transition-color duration-150 flex items-center justify-center aspect-square relative group"
+                        aria-pressed="{{ esNumeroSeleccionado(num) }}">
+                        {{ num }}
 
-                    <!-- Leyenda de colores -->
-                    <div class="flex flex-wrap gap-4 mb-4 text-xs">
-                        <div class="flex items-center gap-2">
-                            <div class="w-4 h-4 rounded border border-green-500"></div>
-                            <span class="text-(--gray)">Disponible</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-4 h-4 rounded bg-(--primary-color)"></div>
-                            <span class="text-(--gray)">Seleccionado</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-4 h-4 rounded bg-red-600/50"></div>
-                            <span class="text-(--gray)">Ocupado</span>
-                        </div>
-                    </div>
-
-                    <!-- Grid de números -->
-                    <div
-                        class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                        @for (num of listaNumerosGenerada(); track num) {
-                        <button type="button" (click)="toggleNumero(num)" [disabled]="esNumeroOcupado(num)"
-                            [class.bg-red-900]="esNumeroOcupado(num)" [class.text-red-200]="esNumeroOcupado(num)"
-                            [class.cursor-not-allowed]="esNumeroOcupado(num)" [class.opacity-50]="esNumeroOcupado(num)"
-                            [class.bg-(--primary-color)]="esNumeroSeleccionado(num)"
-                            [class.text-white]="esNumeroSeleccionado(num)"
-                            [class.border-transparent]="esNumeroSeleccionado(num)"
-                            [class.border-green-500]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
-                            [class.text-green-400]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
-                            [class.hover:bg-(--primary-hover)]="!esNumeroOcupado(num) && !esNumeroSeleccionado(num)"
-                            class="cursor-pointer border rounded-md py-2 px-1 text-sm font-bold transition-all duration-150 flex items-center justify-center aspect-square relative group"
-                            aria-pressed="{{ esNumeroSeleccionado(num) }}">
-                            {{ num }}
-
-                            <!-- Tooltip opcional si está ocupado -->
-                            @if (esNumeroOcupado(num)) {
-                            <span
-                                class="absolute hidden group-hover:block bg-black text-xs p-1 rounded -top-8 z-10 whitespace-nowrap">
-                                Ocupado
-                            </span>
-                            }
-                        </button>
+                        <!-- Tooltip opcional si está ocupado -->
+                        @if (esNumeroOcupado(num)) {
+                        <span
+                            class="absolute hidden group-hover:block bg-black text-xs p-1 rounded -top-8 z-10 whitespace-nowrap">
+                            Ocupado
+                        </span>
                         }
+                    </button>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-5 w-full md:w-[30%] min-w-[300px]">
+            <!-- Descripción del sorteo -->
+            <div class="bg-(--dark) rounded-3xl p-10 w-full shadow-[0_6px_6px_var(--shadow)]">
+                <h3 class="text-center font-family-inria-sans-bold text-(--light) text-[clamp(1rem,2vw,1.2rem)] mb-3">
+                    Descripción
+                </h3>
+                <p class="text-sm text-(--gray) leading-relaxed">
+                    {{ sorteo().descripcion }}
+                </p>
+            </div>
+
+            <!-- Fechas -->
+            <div class="bg-(--dark) rounded-3xl p-3 flex flex-col shadow-[0_6px_6px_var(--shadow)]">
+                <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-5 pt-2">
+                    Fechas importantes
+                </h3>
+                <div class="flex flex-col gap-3">
+                    <!-- Fecha Inicio -->
+                    <div class="bg-(--dark-gray) py-8 px-6 rounded-xl flex items-center gap-3">
+                        <span class="p-2 bg-(--dark-gray) rounded-lg">
+                            <lucide-icon [img]="getIcon('calendar')" [color]="'var(--gray)'" [strokeWidth]="'2'"
+                                [size]="'28'">
+                            </lucide-icon>
+                        </span>
+                        <div>
+                            <span class="text-sm text-(--gray)">Sorteo</span>
+                            <p class="text-(--light) font-bold text-2xl">{{ sorteo().fechaSorteo | date: 'dd/MM/yyyy'
+                                }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flex flex-col gap-5">
-                <!-- Fechas -->
-                <div class="bg-(--dark) rounded-3xl p-3 flex flex-col">
-                    <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-5 pt-2">
-                        Fechas importantes
-                    </h3>
-                    <div class="flex flex-col gap-3">
-                        <!-- Fecha Inicio -->
-                        <div class="bg-(--dark-gray) p-3 rounded-xl flex items-center gap-3">
-                            <span class="p-2 bg-(--dark-gray) rounded-lg">
-                                <svg class="h-5 w-5 text-(--light)" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                    stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-18 0h18" />
-                                </svg>
-                            </span>
-                            <div>
-                                <span class="text-xs text-(--gray)">Sorteo</span>
-                                <p class="text-(--light) text-sm font-bold">{{ sorteo().fechaSorteo | date: 'dd/MM/yyyy'
-                                    }}</p>
-                            </div>
-                        </div>
+            <!-- Resumen de Compra -->
+            <div class="bg-(--dark) rounded-3xl p-4 flex flex-col h-auto sticky top-5 shadow-[0_6px_6px_var(--shadow)]">
+                <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-5 pt-2">
+                    Resumen
+                </h3>
+
+                <div class="flex flex-col gap-3 flex-1">
+                    <div class="bg-(--dark-gray) p-3 rounded-xl flex justify-between items-center">
+                        <span class="text-sm text-(--gray)">Costo c/u</span>
+                        <p class="text-(--light) font-bold">{{ sorteo().costo | currency:'MXN' }}</p>
                     </div>
-                </div>
 
-                <!-- Resumen de Compra -->
-                <div class="bg-(--dark) rounded-3xl p-4 flex flex-col h-full sticky top-5">
-                    <h3 class="font-family-inria-sans-bold text-[clamp(1rem,2vw,1.2rem)] text-center pb-5 pt-2">
-                        Resumen
-                    </h3>
+                    <!-- Lista de números seleccionados (Mini resumen) -->
+                    <div class="bg-(--dark-gray) p-3 rounded-xl flex flex-col gap-2 min-h-20">
+                        <span class="text-xs text-(--gray) font-bold uppercase">
+                            Números seleccionados ({{ numerosSeleccionados().length }})
+                        </span>
 
-                    <div class="flex flex-col gap-3 flex-1">
-                        <div class="bg-(--dark-gray) p-3 rounded-xl flex justify-between items-center">
-                            <span class="text-sm text-(--gray)">Costo c/u</span>
-                            <p class="text-(--light) font-bold">{{ sorteo().costo | currency:'MXN' }}</p>
-                        </div>
-
-                        <!-- Lista de números seleccionados (Mini resumen) -->
-                        <div class="bg-(--dark-gray) p-3 rounded-xl flex flex-col gap-2 min-h-20">
-                            <span class="text-xs text-(--gray) font-bold uppercase">
-                                Números seleccionados ({{ numerosSeleccionados().length }})
+                        @if (numerosSeleccionados().length > 0) {
+                        <div class="flex flex-wrap gap-1 max-h-[100px] overflow-y-auto custom-scrollbar">
+                            @for (n of numerosSeleccionados(); track n) {
+                            <span (click)="toggleNumero(n)"
+                                class="cursor-pointer bg-(--primary-color) text-xs px-3 py-1 rounded-full text-white flex items-center gap-1">
+                                {{ n }} &times;
                             </span>
-
-                            @if (numerosSeleccionados().length > 0) {
-                            <div class="flex flex-wrap gap-1 max-h-[100px] overflow-y-auto custom-scrollbar">
-                                @for (n of numerosSeleccionados(); track n) {
-                                <span (click)="toggleNumero(n)"
-                                    class="cursor-pointer bg-(--primary-color) text-xs px-3 py-1 rounded-full text-white flex items-center gap-1">
-                                    {{ n }} &times;
-                                </span>
-                                }
-                            </div>
-                            } @else {
-                            <span class="text-xs text-gray-500 italic">Selecciona números en la cuadrícula...</span>
                             }
                         </div>
+                        } @else {
+                        <span class="text-xs text-gray-500 italic">Selecciona números en la cuadrícula...</span>
+                        }
+                    </div>
 
-                        <hr class="border-(--gray) w-full opacity-20" />
+                    <hr class="border-(--gray) w-full opacity-20" />
 
-                        <div class="bg-(--dark-gray) p-3 rounded-xl flex items-center gap-3">
-                            <span class="bg-(--dark-gray) rounded-lg p-1">
-                                <svg class="h-10 w-10 text-(--primary-color)" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                    aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.82-1.106-2.17 0-2.99 1.104-.82 2.75-.82 3.854 0l.793.59" />
-                                </svg>
-                            </span>
-                            <div>
-                                <span class="text-sm text-(--gray)">Total a Pagar</span>
-                                <p class="text-(--light) font-bold text-2xl">{{ totalCalculado() | currency:'MXN' }}</p>
-                            </div>
+                    <div class="bg-(--dark-gray) py-8 px-6 rounded-xl flex items-center gap-5">
+                        <lucide-icon [img]="getIcon('walletMinimal')" [color]="'var(--gray)'" [strokeWidth]="'2'"
+                            [size]="'28'">
+                        </lucide-icon>
+                        <div>
+                            <span class="text-sm text-(--gray)">Total a Pagar</span>
+                            <p class="text-(--light) font-bold text-2xl">{{ totalCalculado() | currency:'MXN' }}</p>
                         </div>
+                    </div>
 
-                        <div class="flex-col flex">
-                            <button type="button" (click)="apartarNumeros()"
-                                [disabled]="isLoading || numerosSeleccionados().length === 0"
-                                [class.opacity-50]="isLoading || numerosSeleccionados().length === 0"
-                                class="mt-4 duration-200 transition-all hover:bg-(--primary-hover) hover:scale-[1.02] cursor-pointer py-3 w-full rounded-xl bg-(--primary-color) text-(--light) font-bold shadow-lg shadow-(--primary-color)/20">
-                                @if (isLoading) {
-                                Procesando...
-                                } @else {
-                                Apartar {{ numerosSeleccionados().length }} número(s)
-                                }
-                            </button>
+                    <div class="flex-col flex">
+                        <button type="button" (click)="apartarNumeros()"
+                            [disabled]="isLoading || numerosSeleccionados().length === 0"
+                            [class.opacity-50]="isLoading || numerosSeleccionados().length === 0"
+                            class="mt-4 duration-200 transition-all hover:bg-(--primary-hover) hover:scale-[1.02] cursor-pointer py-3 w-full rounded-xl bg-(--primary-color) text-(--light) font-bold shadow-lg shadow-(--primary-color)/20">
+                            @if (isLoading) {
+                            Procesando...
+                            } @else {
+                            Apartar {{ numerosSeleccionados().length }} número(s)
+                            }
+                        </button>
 
-                            <button type="button" (click)="volver()"
-                                class="mt-4 duration-200 transition-all hover:bg-(--third-hover) hover:scale-[1.02] cursor-pointer py-3 w-full rounded-xl bg-(--third-color) text-(--light) font-bold shadow-lg shadow-(--primary-color)/20">
-                                Volver
-                            </button>
-                        </div>
+                        <button type="button" (click)="volver()"
+                            class="mt-4 duration-200 transition-all hover:bg-(--third-hover) hover:scale-[1.02] cursor-pointer py-3 w-full rounded-xl bg-(--third-color) text-(--light) font-bold shadow-lg shadow-(--primary-color)/20">
+                            Cancelar
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</app-sorteo-container>
+</div>
 } @else {
 <div class="text-(--light) text-center p-10 flex flex-col items-center justify-center min-h-[50vh]">
     <div class="w-10 h-10 border-4 border-(--primary-color) border-t-transparent rounded-full animate-spin mb-4"

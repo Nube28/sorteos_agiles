@@ -12,5 +12,5 @@ export class SorteoResponseDto implements ISorteo {
     cantidadNumeros!: number;
     fechaSorteo!: string;
     tiempoLimitePago!: number;
-    nombreOrganizador!: string;
+    organizadorId!: string;
 }

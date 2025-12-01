@@ -36,7 +36,8 @@
         <div class="flex items-center gap-3 text-sm justify-end cursor-pointer col-span-2">
             <span class="text-nowrap">{{ usuario.nombre }} {{ usuario.apellidos }}</span>
             <div class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
-                <!-- user icon -->
+                <lucide-icon [img]="getIcon('user')" [color]="'var(--light)'" [strokeWidth]="'2'" [size]="'16'">
+                </lucide-icon>
             </div>
         </div>
         } @else{

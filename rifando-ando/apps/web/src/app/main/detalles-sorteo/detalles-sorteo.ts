@@ -1,6 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { ActivatedRoute, Router } from '@angular/router';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { forkJoin, switchMap, tap } from 'rxjs';
@@ -9,10 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { NumerosService } from '../../global-services/numero.service';
 import { AuthService } from '../../global-services/auth.service';
 import { InterfaceService } from '../../global-services/interface.service';
+import { IconService } from '../../global-services/icon.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-detalles-sorteo',
-  imports: [SorteoContainer, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './detalles-sorteo.html',
   styleUrl: './detalles-sorteo.css',
 })
@@ -23,6 +24,8 @@ export class DetallesSorteo {
   private authService = inject(AuthService);
   private interfaceService = inject(InterfaceService);
   private sorteoService = inject(SorteoService);
+
+  private iconService = inject(IconService);
 
   // Datos del servidor
   sorteo = this.sorteoService.sorteo;
@@ -104,8 +107,8 @@ export class DetallesSorteo {
       this.interfaceService.toggleAlert(true);
       return;
     }
-    
-    if(!clienteId){
+
+    if (!clienteId) {
       this.interfaceService.setEvent('Error', 'Solo los cliente pueden apartar números.');
       this.interfaceService.toggleAlert(true);
       return;
@@ -140,5 +143,15 @@ export class DetallesSorteo {
 
   get isLoading() {
     return this.interfaceService.loading();
+  }
+
+  get esOrganizador() {
+    const currentUser = this.authService.getCurrentUser();
+    const sorteo = this.sorteo();
+    return currentUser?.organizadorId === sorteo?.organizadorId;
+  }
+
+  getIcon(iconName: string) {
+    return this.iconService.iconsMap[iconName];
   }
 }

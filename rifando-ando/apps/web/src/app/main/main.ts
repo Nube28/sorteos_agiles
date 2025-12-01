@@ -4,10 +4,12 @@ import { InterfaceService } from '../global-services/interface.service';
 import { CommonModule } from '@angular/common';
 import { Alert } from "../global-components/alert/alert";
 import { AuthService } from '../global-services/auth.service';
+import { LucideAngularModule } from "lucide-angular";
+import { IconService } from '../global-services/icon.service';
 
 @Component({
   selector: 'app-main',
-  imports: [RouterOutlet, RouterLink, CommonModule, Alert],
+  imports: [RouterOutlet, RouterLink, CommonModule, Alert, LucideAngularModule],
   templateUrl: './main.html',
   styleUrl: './main.css',
 })
@@ -16,6 +18,7 @@ export class Main {
   private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private iconService = inject(IconService);
 
   currentRoute = signal('');
   currentFilter = signal<string | null>(null);
@@ -65,5 +68,9 @@ export class Main {
       return this.currentRoute() === routePath && this.currentFilter() === filter;
     }
     return this.currentRoute() === routePath && !this.currentFilter();
+  }
+
+  getIcon(name: string) {
+    return this.iconService.iconsMap[name];
   }
 }

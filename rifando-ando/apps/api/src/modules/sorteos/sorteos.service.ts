@@ -37,7 +37,10 @@ export class SorteosService {
                     connect: { id: organizador.id }
                 },
                 cantidadNumeros: totalNumeros,
-                ...restData,
+                ...(() => {
+                    const { organizadorId, ...data } = restData;
+                    return data;
+                })(),
             },
         });
     }

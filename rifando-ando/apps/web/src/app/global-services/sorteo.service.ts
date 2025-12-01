@@ -37,10 +37,6 @@ export class SorteoService {
         );
     }
 
-    // Mejoras, lo cambié para que regresen el observable
-    // Se debe de manejar en el componente, si tira error en el servicio
-    // No había manera de que el commponente lo supiera + se puede implementar pantalla de carga
-    // i think we should be using dtos in here, cuz, we souldn't be exposing the ids
     getSorteos(): Observable<ISorteo[]> {
         return this.httpClient.get<ISorteo[]>(this.apiURL).pipe(
             tap(data => this.sorteos.set(data)),
