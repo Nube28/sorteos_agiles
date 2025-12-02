@@ -1,25 +1,65 @@
-name: Integración Continua Básica
+name: CI Monorepo TS
 
-# 1. ¿Cuándo se ejecuta?
 on:
   push:
-    branches: [ "main", "master" ] # Se ejecuta al hacer push a estas ramas
+    branches: ["main"]
+    # 1. ACTIVADOR INTELIGENTE:
+    # Solo se ejecuta si cambias archivos en estas carpetas o configs
+    paths: 
+      - 'packages/**'      # Tu código compartido (si tienes)
+      - 'apps/**'          # Tus aplicaciones
+      - 'package.json'     # Dependencias raíz
+      - 'tsconfig.json'    # Configuración de TS
   pull_request:
-    branches: [ "main", "master" ] # Se ejecuta al abrir un PR
-  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
+    branches: ["main"]
+    paths:
+      - 'packages/**'
+      - 'apps/**'
+      - 'package.json'
+      - 'tsconfig.json'
 
-# 2. ¿Qué trabajo va a hacer?
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest # El sistema operativo virtual
+  validate-typescript:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm' # Habilita caché automático para que sea más rápido
+
+    - name: Instalar dependencias
+      run: npm ci # 'ci' es más seguro y rápido que 'install' para entornos limpios
+
+    # 2. VERIFICACIÓN DE TIPOS (Type Check):
+    # En proyectos TS, esto es crucial antes de construir
+    - name: Verificar Tipos TypeScript
+      run: npx tsc --noEmit
+      # Nota: Si usas workspaces, esto verifica todo el proyecto si tienes un tsconfig base.
+
+  build-apps:
+    needs: validate-typescript # Solo corre si la validación de tipos pasó
+    runs-on: ubuntu-latest
+    
+    # Matriz: Si tienes varias apps, esto crea un trabajo paralelo para cada una
+    strategy:
+      matrix:
+        app: [frontend, backend] # << EDITA ESTO con los nombres de tus carpetas
 
     steps:
-      # Paso A: Descargar tu código en la máquina virtual
-      - name: Checkout del código
-        uses: actions/checkout@v4
-
-      # Paso B: Ejemplo de un paso simple (puedes borrar esto luego)
-      - name: Imprimir un saludo
-        run: echo "¡Hola! GitHub Actions se ha integrado correctamente."
-        
-      # Aquí irían los pasos reales: Instalar dependencias, correr tests, etc.
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - run: npm ci
+    
+    - name: Build de ${{ matrix.app }}
+      # Ajusta el comando según cómo tengas tus scripts en el package.json
+      # Ejemplo para workspaces: npm run build -w apps/frontend
+      run: npm run build --workspace=apps/${{ matrix.app }}
