@@ -94,4 +94,24 @@ export class SorteoService {
             })
         );
     }
+    eliminarSorteo(sorteoId: string): Observable<void> {
+        const url = `${this.apiURL}/${sorteoId}`;
+
+        return this.httpClient.delete<void>(url).pipe(
+            tap(() => {
+                this.sorteos.update((lista) =>
+                    lista.filter((s) => s.id !== sorteoId)
+                );
+
+                if (this.sorteo()?.id === sorteoId) {
+                    this.sorteo.set(null);
+                }
+            }),
+            catchError((error) => {
+                console.error('Error al eliminar sorteo:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
 }

@@ -251,6 +251,13 @@
                 Cancelar
             </button>
 
+            @if (isEditMode()) {
+            <button (click)="onSolicitarEliminacion()" type="button" [disabled]="loading"
+                class="duration-200 transition-all hover:bg-red-700 cursor-pointer min-w-[100px] w-[10vw] rounded-md bg-red-600 text-white font-bold py-3 shadow-md mx-2">
+                Eliminar
+            </button>
+            }
+
             <!-- Botton de submit -->
             <button type="submit" [disabled]="sorteoForm.invalid || loading"
                 [class.opacity-50]="sorteoForm.invalid || loading"
@@ -265,4 +272,35 @@
         </div>
     </section>
 </form>
+
+@if (mostrarConfirmacion()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animation-fade-in">
+    <div
+        class="bg-(--dark) border border-white/10 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col transform transition-all scale-100">
+
+        <div class="p-6 pb-0 flex flex-col items-center text-center gap-4">
+         
+            <h3 class="text-(--light) font-family-inria-sans-bold text-2xl">¿Eliminar Sorteo?</h3>
+            <p class="text-(--gray) text-sm">
+                Estás a punto de eliminar el sorteo <span class="text-white font-bold">"{{ sorteoParaEditar()?.nombre
+                    }}"</span>.
+                <br><br>
+                Esta acción es irreversible y eliminará todos los datos asociados.
+            </p>
+        </div>
+
+        <div class="p-6 flex gap-3 mt-2">
+            <button (click)="cancelarEliminacion()" type="button"
+                class="flex-1 py-3 px-4 rounded-xl bg-(--dark-gray) text-(--light) hover:bg-zinc-700 transition-colors font-bold cursor-pointer">
+                Cancelar
+            </button>
+
+            <button (click)="confirmarEliminacion()" type="button"
+                class="flex-1 py-3 px-4 rounded-xl bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-900/20 transition-all font-bold cursor-pointer flex items-center justify-center gap-2">
+                <span>Sí, eliminar</span>
+            </button>
+        </div>
+    </div>
+</div>
+}
 }

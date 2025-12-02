@@ -59,6 +59,7 @@ export class FormularioSorteo {
   // Signals para modo edición
   isEditMode = signal(false);
   sorteoParaEditar = signal<ISorteo | null>(null);
+  mostrarConfirmacion = signal(false);
 
   constructor() {
     this.setupForm();
@@ -322,5 +323,38 @@ export class FormularioSorteo {
 
   getIcon(iconName: string) {
     return this.iconService.iconsMap[iconName];
+  }
+
+  onSolicitarEliminacion() {
+    if (!this.isEditMode() || !this.sorteoParaEditar()) {
+      return;
+    }
+    this.mostrarConfirmacion.set(true);
+  }
+
+  cancelarEliminacion() {
+    this.mostrarConfirmacion.set(false);
+  }
+
+  confirmarEliminacion() {
+    this.mostrarConfirmacion.set(false);
+
+    const idSorteo = this.sorteoParaEditar()!.id;
+    this.interfaceService.setLoading(true);
+
+    this.sorteoService.eliminarSorteo(idSorteo).subscribe({
+      next: () => {
+        this.interfaceService.setLoading(false);
+        this.interfaceService.setEvent('Sorteo Eliminado', 'El sorteo ha sido eliminado correctamente.');
+        this.interfaceService.toggleAlert(true);
+        this.router.navigate(['/main/ver-sorteos']);
+      },
+      error: (err) => {
+        console.error('Error al eliminar:', err);
+        this.interfaceService.setLoading(false);
+        this.interfaceService.setEvent('Error', err.error?.message || 'No se pudo eliminar el sorteo.');
+        this.interfaceService.toggleAlert(true);
+      }
+    });
   }
 }
