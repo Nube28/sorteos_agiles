@@ -1,0 +1,25 @@
+name: Integración Continua Básica
+
+# 1. ¿Cuándo se ejecuta?
+on:
+  push:
+    branches: [ "main", "master" ] # Se ejecuta al hacer push a estas ramas
+  pull_request:
+    branches: [ "main", "master" ] # Se ejecuta al abrir un PR
+  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
+
+# 2. ¿Qué trabajo va a hacer?
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # El sistema operativo virtual
+
+    steps:
+      # Paso A: Descargar tu código en la máquina virtual
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # Paso B: Ejemplo de un paso simple (puedes borrar esto luego)
+      - name: Imprimir un saludo
+        run: echo "¡Hola! GitHub Actions se ha integrado correctamente."
+        
+      # Aquí irían los pasos reales: Instalar dependencias, correr tests, etc.
