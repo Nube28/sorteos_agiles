@@ -96,13 +96,25 @@ export class SorteosService {
     }
 
     async deleteSorteo(id: string, userId: string) {
+        // 1. Buscamos el sorteo
         const sorteo = await this.prisma.sorteo.findUnique({
             where: { id },
             select: { organizadorId: true }
         });
 
         if (!sorteo) throw new NotFoundException(`Sorteo con id ${id} no encontrado`);
-        if (sorteo.organizadorId !== userId) throw new ForbiddenException('No tienes permisos para eliminar este sorteo');
+
+
+        const organizadorDelUsuario = await this.organizadorService.findOneByUserId(userId);
+
+        if (!organizadorDelUsuario) {
+            throw new ForbiddenException('No se encontró un perfil de organizador para este usuario');
+        }
+
+      
+        if (sorteo.organizadorId !== organizadorDelUsuario.id) {
+            throw new ForbiddenException('No tienes permisos para eliminar este sorteo');
+        }
 
         return this.prisma.sorteo.delete({ where: { id } });
     }

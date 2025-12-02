@@ -13,7 +13,7 @@ model Numero {
   fechaApartado DateTime
 
   sorteoId String
-  sorteo   Sorteo @relation(fields: [sorteoId], references: [id])
+  sorteo   Sorteo @relation(fields: [sorteoId], references: [id],onDelete: Cascade)
 
   clienteId String?
   cliente   Cliente? @relation(fields: [clienteId], references: [id])
