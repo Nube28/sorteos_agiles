@@ -24,11 +24,45 @@ export class Register {
 
   constructor() {
     this.registerForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.minLength(2)]],
-      apellidos: ['', [Validators.required, Validators.minLength(2)]],
-      nombreUsuario: ['', [Validators.required, Validators.minLength(3)]],
-      contrasenia: ['', [Validators.required, Validators.minLength(8)]],
-      confirmarContrasenia: ['', [Validators.required]]
+      nombre: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúñÑ]+(?: [A-Za-zÁÉÍÓÚáéíóúñÑ]+)?$/)
+        ]
+      ],
+      apellidos: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúñÑ]+(?: [A-Za-zÁÉÍÓÚáéíóúñÑ]+)?$/)
+        ]
+      ],
+      nombreUsuario: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^\S+$/) // sin espacios
+        ]
+      ],
+      contrasenia: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^\S+$/) // sin espacios
+        ]
+      ],
+      confirmarContrasenia: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^\S+$/) // sin espacios
+        ]
+      ]
     }, {
       validators: [this.passwordMatchValidator],
       updateOn: 'change'
@@ -119,6 +153,13 @@ export class Register {
 
     if (control.hasError('required')) {
       return this.getFieldLabel(field) + ' es obligatorio';
+    }
+
+    if (control.hasError('pattern')) {
+      if (field === 'nombre' || field === 'apellidos') {
+        return 'Solo se permite un espacio y letras';
+      }
+      return 'No se permiten espacios';
     }
 
     if (control.hasError('minlength')) {
