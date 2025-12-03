@@ -1,0 +1,178 @@
+<app-sorteo-container title="Mis números apartados">
+    <div class="text-(--light) flex flex-wrap gap-6">
+
+        @if (numerosApartados$().length === 0) {
+        <div class="flex flex-col items-center justify-center py-16 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-(--gray) mb-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="text-2xl font-bold text-(--gray) mb-2">No tienes números apartados</h3>
+            <p class="text-(--gray) max-w-md">Explora los sorteos disponibles y aparta tus números de la suerte.</p>
+        </div>
+        }
+
+        @for (grupo of numerosApartados$(); track $index) {
+        <div class="flex-[1_1_500px] gap-6">
+            <div
+                class="bg-(--dark) rounded-2xl overflow-hidden border-4 border-white/5 hover:border-(--primary-color)/30 transition-all duration-100 shadow-lg">
+
+                <!-- Header del sorteo -->
+                <div class="relative h-48 overflow-hidden bg-linear-to-br from-(--primary-color)/20 to-(--dark)">
+                    @if (grupo.sorteo.urlImg) {
+                    <img [src]="grupo.sorteo.urlImg" [alt]="grupo.sorteo.nombre"
+                        class="absolute inset-0 w-full h-full object-cover opacity-30">
+                    }
+
+                    <div class="absolute inset-0 bg-linear-to-t from-(--dark) via-transparent to-transparent"></div>
+
+                    <div class="relative h-full flex flex-col justify-end p-6">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex-1">
+                                <h2 class="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                                    {{ grupo.sorteo.nombre }}
+                                </h2>
+                                <div class="flex items-center gap-2 text-(--gray)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                                    </svg>
+                                    <span class="text-sm font-medium">{{ grupo.sorteo.premio }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info del sorteo -->
+                <div class="px-6 py-4 border-b border-white/5 bg-black/20">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-(--primary-color)" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-(--gray)">Sorteo:</span>
+                            <span class="font-semibold">{{ grupo.sorteo.fechaSorteo | date:'dd/MM/yyyy' }}</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-(--primary-color)" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-(--gray)">Costo:</span>
+                            <span class="font-semibold">${{ grupo.sorteo.costo }} MXN</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-(--primary-color)" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            <span class="text-(--gray)">Total:</span>
+                            <span class="font-bold text-(--primary-color)">${{ grupo.sorteo.costo * grupo.numeros.length
+                                }}
+                                MXN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Números apartados -->
+                <div class="p-6 flex flex-col gap-6">
+                    <div class="flex gap-1 items-center">
+                        <h3 class="text-md font-bold text-(--gray) uppercase tracking-wider">Tus números</h3>
+                        <div class="text-(--gray) font-bold">
+                            ({{ grupo.numeros.length }})
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3">
+                        @for (numero of grupo.numeros; track numero.id) {
+                        <div class="relative group">
+                            <!-- Badge del número -->
+                            <div
+                                class="relative w-16 h-16 flex items-center justify-center rounded-xl bg-linear-to-br from-(--primary-color) to-(--primary-hover) shadow-lg group-hover:scale-110 transition-transform duration-200 cursor-pointer">
+                                <span class="text-2xl font-bold text-white drop-shadow-md">
+                                    {{ numero.posicion }}
+                                </span>
+
+                                <!-- Indicador de estado -->
+                                <div class="absolute -top-1 -right-1">
+                                    @if (numero.pagosId == null) {
+                                    <div
+                                        class="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    } @else {
+                                    <div
+                                        class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Tooltip -->
+                            <div
+                                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-(--dark) border border-(--primary-color) rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
+                                <div class="text-center">
+                                    <p class="font-bold">Número {{ numero.posicion }}</p>
+                                    <p class="text-(--gray) text-[10px]">{{ numero.fechaApartado | date:'dd/MM/yyyy
+                                        HH:mm'
+                                        }}</p>
+                                    @if (numero.pagosId == null) {
+                                    <p class="text-yellow-400 text-[10px] mt-1">⏱ Pago pendiente</p>
+                                    } @else {
+                                    <p class="text-green-400 text-[10px] mt-1">✓ Pagado</p>
+                                    }
+                                </div>
+                                <div
+                                    class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-(--primary-color)">
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Resumen de estado de pagos -->
+                    @if (hasNumerosSinPagar(grupo)) {
+                    <div
+                        class="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 shrink-0 mt-0.5"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div class="flex-1">
+                            <p class="text-sm font-semibold text-yellow-500 mb-1">Pago pendiente</p>
+                            <p class="text-xs text-(--gray)">
+                                Tienes {{ getNumerosSinPagar(grupo) }} número(s) sin pagar.
+                                Completa el pago antes del {{ grupo.sorteo.periodoFinVenta | date:'dd/MM/yyyy' }}.
+                            </p>
+                        </div>
+                        <button
+                            class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-bold rounded-lg transition-colors whitespace-nowrap">
+                            Pagar ahora
+                        </button>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</app-sorteo-container>

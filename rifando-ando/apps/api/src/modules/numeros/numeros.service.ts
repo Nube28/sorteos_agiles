@@ -49,6 +49,26 @@ export class NumeroService {
         });
     }
 
+    async getNumerosUsuarioId(usuarioId: string) {
+        const cliente = await this.prisma.cliente.findUnique({
+            where: {
+                usuarioId,
+            },
+        });
+
+        if (!cliente) return [];
+
+        return await this.prisma.numero.findMany({
+            where: {
+                clienteId: cliente.id,
+            },
+            include: {
+                cliente: true,
+                sorteo: true,
+            },
+        });
+    }
+
     async updateNumero(id: string, UpdateNumeroDto: Partial<UpdateNumeroDto>,) {
         try {
             await this.getNumeroById(id);

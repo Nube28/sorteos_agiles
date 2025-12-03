@@ -53,6 +53,12 @@ export const appRoutes: Route[] = [
                 data: { rolesPermitidos: [RolUsuario.CLIENTE, RolUsuario.ORGANIZADOR] }
             },
             {
+                path: 'consultar-numeros',
+                loadComponent: () => import('./main/consultar-numeros/consultar-numeros').then((m) => m.ConsultarNumeros),
+                canActivate: [authGuard],
+                data: { rolesPermitidos: [RolUsuario.CLIENTE, RolUsuario.ORGANIZADOR] }
+            },
+            {
                 path: 'crear-sorteo',
                 loadComponent: () => import('./main/formulario-sorteo/formulario-sorteo').then((m) => m.FormularioSorteo),
                 canActivate: [authGuard],

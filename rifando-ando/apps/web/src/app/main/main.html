@@ -16,6 +16,12 @@
                 Ver Sorteos
             </li>
 
+            <li (click)="navigateTo('consultar-numeros')"
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                [ngClass]="{'text-(--primary-color) underline': isActive('/main/consultar-numeros')}">
+                Mis Números
+            </li>
+
             @if (usuario.rol === 'ORGANIZADOR') {
             <li (click)="navigateTo('ver-sorteos', { filter: 'mis-sorteos' })"
                 class="cursor-pointer hover:underline underline-offset-4 text-nowrap"

@@ -31,6 +31,11 @@ export class NumeroController {
         return this.numeroService.getNumeroById(id);
     }
 
+    @Get('numeros-usuario')
+    getNumerosUsuarioId(@UserId() userId: string) {
+        return this.numeroService.getNumerosUsuarioId(userId);
+    }
+
     @Patch(':id')
     updateNumero(
         @Param('id', ParseUUIDPipe) id: string,
