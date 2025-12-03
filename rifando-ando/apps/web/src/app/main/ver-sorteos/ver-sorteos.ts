@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,29 +14,14 @@ import { AuthService } from '../../global-services/auth.service';
 export class VerSorteos implements OnInit {
   private sorteoService = inject(SorteoService);
   private authService = inject(AuthService);
-  private router = inject(Router)
+  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  private rawSorteos = signal<any[]>([]);
   filter = signal<string | null>(null);
 
-  ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.filter.set(params['filter'] || null);
-    });
-
-    this.sorteoService.getSorteos().subscribe({
-      next: (sorteos) => {
-        this.rawSorteos.set(sorteos);
-      },
-      error: (err) => {
-        console.error('Error al obtener los sorteos en VerSorteos:', err);
-      }
-    });
-  }
-
+  // Usar directamente los sorteos del servicio
   sorteos = computed(() => {
-    const allSorteos = this.rawSorteos();
+    const allSorteos = this.sorteoService.sorteos$();
     const userId = this.authService.getCurrentUser().organizadorId;
 
     if (this.filter() === 'mis-sorteos') {
@@ -52,6 +37,20 @@ export class VerSorteos implements OnInit {
     }));
   });
 
+  ngOnInit() {
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.filter.set(params['filter'] || null);
+    });
+
+    // Solo cargar si no hay datos en el servicio
+    // El servicio se encargará de decidir si hace fetch o usa el caché
+    this.sorteoService.getSorteos().subscribe({
+      error: (err) => {
+        console.error('Error al obtener los sorteos en VerSorteos:', err);
+      }
+    });
+  }
+
   verDetalles(sorteoId: string) {
     this.router.navigate(['/main/detalles-sorteo', sorteoId]);
   }
@@ -60,4 +59,3 @@ export class VerSorteos implements OnInit {
     return this.filter() === 'mis-sorteos' ? 'Mis Sorteos' : 'Ver Sorteos';
   }
 }
-

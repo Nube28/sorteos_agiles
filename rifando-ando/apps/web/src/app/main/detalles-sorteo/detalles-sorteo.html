@@ -6,7 +6,7 @@
     <ul class="text-(--light) flex gap-3">
         <li
             class="hover:bg-(--primary-color) cursor-pointer bg-(--dark) py-2 px-4 rounded-md shadow-[0_6px_6px_var(--shadow)] aspect-square sm:aspect-auto flex items-center justify-center">
-            <a href="/main/ver-sorteos" class="flex items-center gap-1">
+            <a routerLink="/main/ver-sorteos" class="flex items-center gap-1">
                 <span class="hidden sm:inline">
                     Regresar
                 </span>
@@ -17,7 +17,7 @@
         @if (esOrganizador) {
         <li
             class="hover:bg-(--primary-color) cursor-pointer bg-(--dark) py-2 px-5 sm:px-4 rounded-md shadow-[0_6px_6px_var(--shadow)] aspect-square sm:aspect-auto flex items-center justify-center">
-            <a href="/main/modificar-sorteo/{{ sorteo().id }}" class="flex items-center gap-1">
+            <a routerLink="/main/modificar-sorteo/{{ sorteo().id }}" class="flex items-center gap-1">
                 <span class="hidden sm:inline">
                     Modificar
                 </span>

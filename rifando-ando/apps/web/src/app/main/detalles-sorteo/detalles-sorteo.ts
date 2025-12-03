@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLinkWithHref } from '@angular/router';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { forkJoin, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,7 @@ import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-detalles-sorteo',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, RouterLinkWithHref],
   templateUrl: './detalles-sorteo.html',
   styleUrl: './detalles-sorteo.css',
 })

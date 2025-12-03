@@ -1,13 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLinkWithHref } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
-import { switchMap, tap, firstValueFrom } from 'rxjs';
+import { switchMap, firstValueFrom } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SorteoService } from '../../global-services/sorteo.service';
 import { CloudinaryService } from '../../global-services/cloudinary.service';
 import { InterfaceService } from '../../global-services/interface.service';
-import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { ISorteo } from 'libs/shared';
 import { AuthService } from '../../global-services/auth.service';
 import { LucideAngularModule } from "lucide-angular";
@@ -33,7 +32,7 @@ const ordenFechasValidator: ValidatorFn = (control: AbstractControl): Validation
 
 @Component({
   selector: 'app-formulario-sorteo',
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, RouterLinkWithHref],
   providers: [DatePipe],
   templateUrl: './formulario-sorteo.html',
   styleUrl: './formulario-sorteo.css',
@@ -240,7 +239,7 @@ export class FormularioSorteo {
         };
 
         this.sorteoService.actualizarSorteo(this.sorteoParaEditar()!.id, datosActualizados).subscribe({
-          next: (sorteoActualizado) => {
+          next: () => {
             this.interfaceService.setEvent('Sorteo Modificado', 'Los cambios han sido guardados exitosamente.');
             this.interfaceService.toggleAlert(true);
             this.router.navigate(['main/ver-sorteos']);
