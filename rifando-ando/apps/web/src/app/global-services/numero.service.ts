@@ -82,4 +82,20 @@ export class NumerosService {
             })
         );
     }
+
+    liberarNumeros(numerosIds: string[]): Observable<any> { 
+    const url = `${this.apiURL}/liberar`; 
+
+    const body = { numerosIds }; 
+
+    return this.httpClient.post<any>(url, body).pipe(
+      tap(() => {
+        this.getNumerosUsuarioId().subscribe();
+      }),
+      catchError(error => {
+        console.error('Error al liberar números:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

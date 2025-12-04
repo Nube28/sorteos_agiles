@@ -140,5 +140,26 @@ export class NumeroService {
             numeros
         };
     }
+    async liberarNumerosMasivo(numerosIds: string[], userId: string) {
+    const cliente = await this.prisma.cliente.findUnique({
+      where: { usuarioId: userId }
+    });
+
+    if (!cliente) {
+      throw new Error('Cliente no encontrado para este usuario');
+    }
+
+    const resultado = await this.prisma.numero.deleteMany({
+      where: {
+        id: { in: numerosIds }, 
+        clienteId: cliente.id   
+      }
+    });
+
+    return {
+      message: 'Números liberados correctamente',
+      count: resultado.count 
+    };
+  }
 
 }

@@ -35,7 +35,12 @@
                 Crear Sorteos
             </li>
             }
+            
             <li (click)="logout()" class="cursor-pointer hover:underline underline-offset-4 text-nowrap">Cerrar Sesión
+            </li>
+            <li (click)="toggleRolDev()" 
+                class="cursor-pointer hover:underline underline-offset-4 text-nowrap">
+                DEV: {{ usuario.rol === 'ORGANIZADOR' ? 'Ser Cliente' : 'Ser Org' }}
             </li>
         </ul>
 

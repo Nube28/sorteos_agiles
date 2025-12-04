@@ -62,4 +62,9 @@ export class NumeroController {
         await this.schedulerService.liberarNumerosAhora();
         return { message: 'Proceso de liberación ejecutado' };
     }
+
+    @Post('liberar')
+    liberarNumeros( @Body() body: { numerosIds: string[] }, @UserId() userId: string ) {
+        return this.numeroService.liberarNumerosMasivo(body.numerosIds, userId);
+    }
 }
