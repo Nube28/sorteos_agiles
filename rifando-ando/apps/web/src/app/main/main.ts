@@ -64,17 +64,6 @@ export class Main {
     return this.authService.getCurrentUser();
   }
 
-  toggleRolDev(): void {
-  const user = this.authService.getCurrentUser();
-  if (user) {
-      // Usamos el Enum directamente en lugar de strings
-      user.rol = user.rol === RolUsuario.ORGANIZADOR 
-                 ? RolUsuario.CLIENTE 
-                 : RolUsuario.ORGANIZADOR;
-      
-      console.log('Rol cambiado a:', user.rol);
-  }
-}
   isActive(routePath: string, filter?: string): boolean {
     if (filter) {
       return this.currentRoute() === routePath && this.currentFilter() === filter;
