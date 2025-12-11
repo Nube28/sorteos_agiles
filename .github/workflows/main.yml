@@ -3,11 +3,8 @@ name: CI Monorepo (pnpm)
 on:
   push:
     branches: ["main"]
-    paths:
-      - 'packages/**'
-      - 'apps/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml' # Importante: observar el lockfile de pnpm
+    # Se eliminó 'paths' para asegurar que el Action corra SIEMPRE
+    # que haya un cambio en la rama main.
   pull_request:
     branches: ["main"]
 
@@ -20,28 +17,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Instalar pnpm (Paso CLAVE)
+      # 2. Instalar pnpm
       - name: Instalar pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9 # O la versión que uses (ej. 8)
+          version: 9
 
       # 3. Configurar Node + Caché de pnpm
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm' # Esto acelera muchísimo las instalaciones futuras
+          cache: 'pnpm'
 
       # 4. Instalar dependencias
       - name: Instalar dependencias
         run: pnpm install --frozen-lockfile
 
-      # 5. Ejecutar tareas (Ejemplo con filtro)
-      # Esto ejecutará el script 'build' en todos los paquetes que lo tengan
+      # 5. Construir todo el monorepo
+      # Ejecuta el script 'build' en todos los paquetes del workspace
       - name: Construir todo el monorepo
         run: pnpm -r run build
       
-      # Opcional: Si quieres correr tests solo en una app específica
-      # - name: Test Frontend
-      #   run: pnpm --filter mi-app-frontend run test
+      # Opcional: Si quieres correr tests
+      # - name: Ejecutar Tests
+      #   run: pnpm -r run test
