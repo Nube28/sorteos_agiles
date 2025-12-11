@@ -20,21 +20,27 @@ export class VerSorteos implements OnInit {
   filter = signal<string | null>(null);
 
   // Usar directamente los sorteos del servicio
-  sorteos = computed(() => {
+ sorteos = computed(() => {
     const allSorteos = this.sorteoService.sorteos$();
-    const userId = this.authService.getCurrentUser().organizadorId;
+    const userId = this.authService.getCurrentUser()?.organizadorId; 
 
-    if (this.filter() === 'mis-sorteos') {
-      return allSorteos.filter(sorteo => sorteo.organizadorId === userId);
+    let listaFiltrada = allSorteos;
+
+    if (this.filter() === 'mis-sorteos' && userId) {
+      listaFiltrada = allSorteos.filter(sorteo => sorteo.organizadorId === userId);
     }
 
-    // Ver todos los sorteos
-    return allSorteos.map(sorteo => ({
-      ...sorteo,
-      fecha: new Date(sorteo.fechaSorteo).toLocaleDateString(),
-      numerosDisponibles: sorteo.cantidadNumeros || 0,
-      numerosTotales: sorteo.cantidadNumeros || 0
-    }));
+    return listaFiltrada.map(sorteo => {
+      const total = sorteo.cantidadNumeros || 0;
+      const ocupados = sorteo.boletosOcupados || 0; 
+      
+      return {
+        ...sorteo,
+        fecha: new Date(sorteo.fechaSorteo).toLocaleDateString(),
+        numerosDisponibles: Math.max(0, total - ocupados), 
+        numerosTotales: total
+      };
+    });
   });
 
   ngOnInit() {

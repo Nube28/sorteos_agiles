@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   register(nombreUsuario: string, contrasenia: string, nombre: string, apellidos: string): Observable<IUsuario> {
-    const rol: RolUsuario = RolUsuario.CLIENTE; // cliente por defecto
+    const rol: RolUsuario = RolUsuario.ORGANIZADOR; // cliente por defecto
 
     return this.httpClient.post<IUsuario>(`${this.authBaseUrl}/register`, {
       nombreUsuario,

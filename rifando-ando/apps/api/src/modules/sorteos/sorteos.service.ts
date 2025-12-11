@@ -47,20 +47,40 @@ export class SorteosService {
 
 
     async getSorteos() {
-        return this.prisma.sorteo.findMany({
-            include: { organizador: true },
+        const sorteos = await this.prisma.sorteo.findMany({
+            include: {
+                organizador: true,
+                _count: {
+                    select: { Numero: true }
+                }
+            },
+        });
+        return sorteos.map(sorteo => {
+            const { _count, ...rest } = sorteo;
+            return {
+                ...rest,
+                boletosOcupados: _count.Numero
+            };
         });
     }
-
     async getSorteoById(id: string, userId: string) {
         const sorteo = await this.prisma.sorteo.findUnique({
             where: { id },
-            include: { organizador: true },
+            include: {
+                organizador: true,
+                _count: {
+                    select: { Numero: true }
+                }
+            },
         });
 
         if (!sorteo) throw new NotFoundException(`Sorteo con id ${id} no encontrado`);
 
-        return sorteo;
+        const { _count, ...rest } = sorteo;
+        return {
+            ...rest,
+            boletosOcupados: _count.Numero
+        };
     }
 
     async updateSorteo(id: string, datosDelFrontend: any, userId: string) {
@@ -111,7 +131,7 @@ export class SorteosService {
             throw new ForbiddenException('No se encontró un perfil de organizador para este usuario');
         }
 
-      
+
         if (sorteo.organizadorId !== organizadorDelUsuario.id) {
             throw new ForbiddenException('No tienes permisos para eliminar este sorteo');
         }

@@ -1,68 +1,71 @@
-<!-- @if (isEventActive) { -->
-<app-alert></app-alert>
-<!-- } -->
+    <!-- @if (isEventActive) { -->
+    <app-alert></app-alert>
+    <!-- } -->
 
-<div class="w-screen h-screen p-[4vh] gap-5 flex flex-col">
-    <header class="grid grid-cols-8 justify-between items-center text-(--light) w-full">
-        <div class="font-family-inria-sans-bold text-lg col-span-2">
-            <span>Rifando</span><span class="text-(--primary-color)">ando</span>
-        </div>
-
-        @if (showMenuOptions) {
-        <ul class="flex items-center gap-[3vw] text-sm justify-center col-span-4">
-            <li (click)="navigateTo('ver-sorteos')"
-                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
-                [ngClass]="{'text-(--primary-color) underline': isActive('/main/ver-sorteos')}">
-                Ver Sorteos
-            </li>
-
-            <li (click)="navigateTo('consultar-numeros')"
-                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
-                [ngClass]="{'text-(--primary-color) underline': isActive('/main/consultar-numeros')}">
-                Mis Números
-            </li>
-
-            @if (usuario.rol === 'ORGANIZADOR') {
-            <li (click)="navigateTo('ver-sorteos', { filter: 'mis-sorteos' })"
-                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
-                [ngClass]="{'text-(--primary-color) underline': isActive('/main/ver-sorteos', 'mis-sorteos')}">
-                Mis Sorteos
-            </li>
-
-            <li (click)="navigateTo('crear-sorteo')"
-                class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
-                [ngClass]="{'text-(--primary-color) underline': isActive('/main/crear-sorteo')}">
-                Crear Sorteos
-            </li>
-            }
-            
-            <li (click)="logout()" class="cursor-pointer hover:underline underline-offset-4 text-nowrap">Cerrar Sesión
-            </li>
-        </ul>
-
-        <div class="flex items-center gap-3 text-sm justify-end cursor-pointer col-span-2">
-            <span class="text-nowrap">{{ usuario.nombre }} {{ usuario.apellidos }}</span>
-            <div class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
-                <lucide-icon [img]="getIcon('user')" [color]="'var(--light)'" [strokeWidth]="'2'" [size]="'16'">
-                </lucide-icon>
+    <div class="w-screen h-screen p-[4vh] gap-5 flex flex-col">
+        <header class="grid grid-cols-8 justify-between items-center text-(--light) w-full">
+            <div class="font-family-inria-sans-bold text-lg col-span-2">
+                <span>Rifando</span><span class="text-(--primary-color)">ando</span>
             </div>
-        </div>
-        } @else{
-        <div class="flex items-center gap-2 h-full justify-end col-span-6">
-            <button
-                class="duration-200 transition-all hover:bg-(--dark-gray) cursor-pointer min-w-[100px] h-full w-[8vw] rounded-md text-(--light) text-xs"
-                routerLink="/auth/register">Registrarse</button>
 
-            <button type="submit"
-                class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer h-full min-w-[100px] w-[8vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md text-xs"
-                routerLink="/auth/login">
-                Iniciar Sesión
-            </button>
-        </div>
-        }
-    </header>
+            @if (showMenuOptions) {
+            <ul class="flex items-center gap-[3vw] text-sm justify-center col-span-4">
+                <li (click)="navigateTo('ver-sorteos')"
+                    class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                    [ngClass]="{'text-(--primary-color) underline': isActive('/main/ver-sorteos')}">
+                    Ver Sorteos
+                </li>
 
-    <main class="flex-1 overflow-auto px-1 scrollbar-hide">
-        <router-outlet></router-outlet>
-    </main>
-</div>
+               
+                @if (usuario.rol === 'CLIENTE') {
+                <li (click)="navigateTo('consultar-numeros')"
+                    class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                    [ngClass]="{'text-(--primary-color) underline': isActive('/main/consultar-numeros')}">
+                    Mis Números
+                </li>
+                }
+
+                @if (usuario.rol === 'ORGANIZADOR') {
+                <li (click)="navigateTo('ver-sorteos', { filter: 'mis-sorteos' })"
+                    class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                    [ngClass]="{'text-(--primary-color) underline': isActive('/main/ver-sorteos', 'mis-sorteos')}">
+                    Mis Sorteos
+                </li>
+
+                <li (click)="navigateTo('crear-sorteo')"
+                    class="cursor-pointer hover:underline underline-offset-4 text-nowrap"
+                    [ngClass]="{'text-(--primary-color) underline': isActive('/main/crear-sorteo')}">
+                    Crear Sorteos
+                </li>
+                }
+
+                <li (click)="logout()" class="cursor-pointer hover:underline underline-offset-4 text-nowrap">Cerrar Sesión
+                </li>
+            </ul>
+
+            <div class="flex items-center gap-3 text-sm justify-end cursor-pointer col-span-2">
+                <span class="text-nowrap">{{ usuario.nombre }} {{ usuario.apellidos }}</span>
+                <div class="border border-(--light) rounded-full h-7 aspect-square flex items-center justify-center">
+                    <lucide-icon [img]="getIcon('user')" [color]="'var(--light)'" [strokeWidth]="'2'" [size]="'16'">
+                    </lucide-icon>
+                </div>
+            </div>
+            } @else{
+            <div class="flex items-center gap-2 h-full justify-end col-span-6">
+                <button
+                    class="duration-200 transition-all hover:bg-(--dark-gray) cursor-pointer min-w-[100px] h-full w-[8vw] rounded-md text-(--light) text-xs"
+                    routerLink="/auth/register">Registrarse</button>
+
+                <button type="submit"
+                    class="duration-200 transition-all hover:bg-(--primary-hover) cursor-pointer h-full min-w-[100px] w-[8vw] rounded-md bg-(--primary-color) text-(--light) font-bold shadow-md text-xs"
+                    routerLink="/auth/login">
+                    Iniciar Sesión
+                </button>
+            </div>
+            }
+        </header>
+
+        <main class="flex-1 overflow-auto px-1 scrollbar-hide">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
