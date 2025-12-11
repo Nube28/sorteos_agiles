@@ -11,17 +11,16 @@ import { ISorteo } from 'libs/shared';
 })
 export class SorteoComponent {
   @Input() sorteoReceiver!: ISorteo;
-
+  
   sorteo = computed(() => {
     if (!this.sorteoReceiver) return null;
-    const total = this.sorteoReceiver.cantidadNumeros || 0;
-    const ocupados = this.sorteoReceiver.boletosOcupados || 0;
+
     return {
       ...this.sorteoReceiver,
       nombre: this.sorteoReceiver.nombre,
       fecha: new Date(this.sorteoReceiver.fechaSorteo).toLocaleDateString(),
-      numerosDisponibles: Math.max(0, total - ocupados),
-      numerosTotales: total
+      numerosDisponibles: this.sorteoReceiver.cantidadNumeros || 0,
+      numerosTotales: this.sorteoReceiver.cantidadNumeros || 0
     };
   });
 }

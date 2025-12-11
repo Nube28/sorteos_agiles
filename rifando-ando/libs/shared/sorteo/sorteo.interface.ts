@@ -12,5 +12,4 @@ export interface ISorteo {
     tiempoLimitePago: number;
     organizadorId: string;
     // nombreOrganizador: string;
-    boletosOcupados?: number;
 }

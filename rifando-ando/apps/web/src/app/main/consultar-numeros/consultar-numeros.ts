@@ -2,11 +2,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { SorteoContainer } from "../sorteo-container/sorteo-container";
 import { NumerosService } from '../../global-services/numero.service';
 import { InterfaceService } from '../../global-services/interface.service';
+import { Alert } from '../../global-components/alert/alert';
 import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-consultar-numeros',
-  imports: [SorteoContainer, DatePipe],
+  imports: [SorteoContainer, DatePipe, Alert],
   templateUrl: './consultar-numeros.html',
   styleUrl: './consultar-numeros.css',
 })
